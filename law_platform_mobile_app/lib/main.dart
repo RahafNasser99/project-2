@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:law_platform_mobile_app/features/login_&_signup/login_page.dart';
+import 'package:law_platform_mobile_app/features/login_&_signup/presentation/pages/login_page.dart';
 
 void main() {
   runApp(const MyApp());
