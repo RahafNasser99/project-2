@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:law_platform_mobile_app/features/login_&_signup/presentation/pages/login_page.dart';
+import 'package:law_platform_mobile_app/config/router/app_router.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,8 +17,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const LoginPage(),
+      initialRoute: '/',
+      onGenerateRoute: (settings) => AppRouter().onGenerateRoute(settings),
     );
   }
 }
-
