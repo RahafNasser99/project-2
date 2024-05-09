@@ -116,14 +116,25 @@ class _SignUpCredentialsState extends State<SignUpCredentials> {
             ),
           ),
           Row(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
+              Text(
+                'حساب محامي',
+                style: TextStyle(
+                  color: Colors.indigo[900],
+                  fontSize: 16,
+                ),
+              ),
               Checkbox(
                 value: _lawyer,
-                side: BorderSide(color: Colors.indigo[900]!),
+                side: BorderSide(
+                  color: Colors.indigo[900]!,
+                  width: 2,
+                ),
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(50)),
                 ),
-                checkColor: Colors.indigo[600],
+                checkColor: Colors.indigo[900],
                 activeColor: Colors.indigo[100],
                 onChanged: (value) {
                   setState(() {
@@ -131,7 +142,6 @@ class _SignUpCredentialsState extends State<SignUpCredentials> {
                   });
                 },
               ),
-              Text('حساب محامي')
             ],
           ),
           const SizedBox(
@@ -157,10 +167,10 @@ class _SignUpCredentialsState extends State<SignUpCredentials> {
               Navigator.of(context).pushReplacementNamed('/');
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white,
+              backgroundColor: Colors.indigo[50],
               shape: RoundedRectangleBorder(
                 borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-                side: BorderSide(color: Colors.indigo[600]!),
+                side: BorderSide(color: Colors.indigo[100]!),
               ),
               fixedSize: Size.fromWidth(widget.width * 0.9),
               elevation: 2.0,
