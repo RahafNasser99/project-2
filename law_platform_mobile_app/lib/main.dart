@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:law_platform_mobile_app/config/router/app_router.dart';
+import 'package:law_platform_mobile_app/config/theme/app_theme.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,11 +14,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Law Platform',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      initialRoute: '/',
+      theme: AppTheme().lightTheme,
+      initialRoute: 'home-page',
       onGenerateRoute: (settings) => AppRouter().onGenerateRoute(settings),
     );
   }

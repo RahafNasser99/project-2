@@ -88,29 +88,21 @@ flutter:
         - asset: assets/fonts/Mirza-Medium.ttf
         - asset: assets/fonts/Mirza-Regular.ttf
         - asset: assets/fonts/Mirza-SemiBold.ttf
-    - family: Marhey
+    - family: ReemKufi
       fonts:
-        - asset: assets/fonts/Marhey-Bold.ttf
-        - asset: assets/fonts/Marhey-Medium.ttf
-        - asset: assets/fonts/Marhey-Regular.ttf
-        - asset: assets/fonts/Marhey-SemiBold.ttf
-        - asset: assets/fonts/Marhey-Light.ttf
-    - family: Cairo
+        - asset: assets/fonts/ReemKufi-Bold.ttf
+        - asset: assets/fonts/ReemKufi-Medium.ttf
+        - asset: assets/fonts/ReemKufi-Regular.ttf
+        - asset: assets/fonts/ReemKufi-SemiBold.ttf
+    - family: Lateef
       fonts:
-        - asset: assets/fonts/Cairo-Black.ttf
-        - asset: assets/fonts/Cairo-Bold.ttf
-        - asset: assets/fonts/Cairo-ExtraBold.ttf
-        - asset: assets/fonts/Cairo-Medium.ttf
-        - asset: assets/fonts/Cairo-Regular.ttf
-        - asset: assets/fonts/Cairo-SemiBold.ttf
-        - asset: assets/fonts/Cairo-Light.ttf
-        - asset: assets/fonts/Cairo-ExtraLight.ttf
-    - family: Harmattan
-      fonts:
-        - asset: assets/fonts/Harmattan-SemiBold.ttf
-        - asset: assets/fonts/Harmattan-Bold.ttf
-        - asset: assets/fonts/Harmattan-Medium.ttf
-        - asset: assets/fonts/Harmattan-Regular.ttf
+        - asset: assets/fonts/Lateef-Bold.ttf
+        - asset: assets/fonts/Lateef-ExtraBold.ttf
+        - asset: assets/fonts/Lateef-Medium.ttf
+        - asset: assets/fonts/Lateef-Regular.ttf
+        - asset: assets/fonts/Lateef-SemiBold.ttf
+        - asset: assets/fonts/Lateef-Light.ttf
+        - asset: assets/fonts/Lateef-ExtraLight.ttf
     - family: Arial
       fonts:
         - asset: assets/fonts/ARIAL.ttf

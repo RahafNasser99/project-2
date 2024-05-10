@@ -10,6 +10,7 @@ class SignUpPage extends StatelessWidget {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.primary,
       body: SingleChildScrollView(
         child: Stack(
           children: <Widget>[
@@ -26,7 +27,7 @@ class SignUpPage extends StatelessWidget {
                     clipper: WaveClipperTwo(reverse: true),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.indigo[400],
+                        color: Theme.of(context).colorScheme.primary,
                       ),
                     ),
                   ),

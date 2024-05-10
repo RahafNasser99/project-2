@@ -18,15 +18,15 @@ class _LoginCredentialsState extends State<LoginCredentials> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  late String email;
-  late String password;
+  String _email = '';
+  String _password = '';
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState?.save();
+      print(_email);
+      print(_password);
       // BlocProvider.of<LoginCubit>(context).login(email, password);
-    } else {
-      return;
     }
   }
 
@@ -54,14 +54,8 @@ class _LoginCredentialsState extends State<LoginCredentials> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              "منصة قانون",
-              style: TextStyle(
-                  color: Colors.indigo[600],
-                  fontWeight: FontWeight.bold,
-                  fontSize: 30.0,
-                  fontFamily: 'Cairo'),
-            ),
+            Text("منصة قانون",
+                style: Theme.of(context).textTheme.headlineLarge),
             const SizedBox(
               height: 20.0,
             ),
@@ -72,13 +66,25 @@ class _LoginCredentialsState extends State<LoginCredentials> {
                 decoration: InputDecoration(
                   hintTextDirection: TextDirection.rtl,
                   hintText: 'البريد الاكتروني',
+                  hintStyle: Theme.of(context).textTheme.labelLarge,
                   prefixIcon: Icon(
                     Icons.mail,
-                    color: Colors.indigo[600],
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
+                validator: (value) {
+                  if (value != null && value.trim().isEmpty) {
+                    return 'يجب أن تدخل البريد الالكتروني';
+                  }
+                  if (value != null &&
+                      (!value.trim().endsWith('@qanon.com') ||
+                          value.trim().length <= 10)) {
+                    return 'البريد الاكتروني غير صحيح';
+                  }
+                  return null;
+                },
                 onSaved: (newValue) {
-                  email = newValue!;
+                  _email = newValue!.trim();
                 },
               ),
             ),
@@ -92,9 +98,10 @@ class _LoginCredentialsState extends State<LoginCredentials> {
                 obscureText: _hidePassword,
                 decoration: InputDecoration(
                     hintText: 'كلمة المرور',
+                    hintStyle: Theme.of(context).textTheme.labelLarge,
                     prefixIcon: Icon(
                       Icons.key,
-                      color: Colors.indigo[600],
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                     suffix: GestureDetector(
                       onTap: () {
@@ -106,11 +113,20 @@ class _LoginCredentialsState extends State<LoginCredentials> {
                         _hidePassword
                             ? Icons.visibility_off_outlined
                             : Icons.visibility_outlined,
-                        color: Colors.indigo[600],
+                        color: Theme.of(context).colorScheme.primary,
                       ),
                     )),
+                validator: (value) {
+                  if (value != null && value.trim().isEmpty) {
+                    return 'يجب أن تدخل كلمة المرور';
+                  }
+                  if (value != null && value.trim().length < 8) {
+                    return 'كلمة المرور غير صحيحة';
+                  }
+                  return null;
+                },
                 onSaved: (newValue) {
-                  password = newValue!;
+                  _password = newValue!;
                 },
               ),
             ),
@@ -120,16 +136,18 @@ class _LoginCredentialsState extends State<LoginCredentials> {
             ElevatedButton(
               onPressed: _submit,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.indigo[600],
+                backgroundColor: Theme.of(context).colorScheme.primary,
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10.0)),
                 ),
                 fixedSize: Size.fromWidth(widget.width * 0.9),
                 elevation: 2.0,
               ),
-              child: const Text(
+              child: Text(
                 "تسجيل الدخول",
-                style: TextStyle(fontFamily: 'Cairo', color: Colors.white),
+                style: TextStyle(
+                    fontFamily: 'Lateef',
+                    color: Theme.of(context).colorScheme.inversePrimary),
               ),
             ),
             ElevatedButton(
@@ -137,7 +155,7 @@ class _LoginCredentialsState extends State<LoginCredentials> {
                 Navigator.of(context).pushReplacementNamed('signup-page');
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.indigo[50],
+                backgroundColor: Theme.of(context).colorScheme.surface,
                 shape: RoundedRectangleBorder(
                     borderRadius: const BorderRadius.all(Radius.circular(10.0)),
                     side: BorderSide(color: Colors.indigo[100]!)),
@@ -146,8 +164,9 @@ class _LoginCredentialsState extends State<LoginCredentials> {
               ),
               child: Text(
                 "إنشاء حساب",
-                style:
-                    TextStyle(fontFamily: 'Cairo', color: Colors.indigo[600]),
+                style: TextStyle(
+                    fontFamily: 'Mirza',
+                    color: Theme.of(context).colorScheme.primary),
               ),
             ),
           ],

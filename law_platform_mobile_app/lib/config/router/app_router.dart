@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:law_platform_mobile_app/home_page.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:law_platform_mobile_app/features/login_&_signup/presentation/cubits/login_cubits/cubit/login_cubit.dart';
 import 'package:law_platform_mobile_app/features/login_&_signup/presentation/pages/signup_page.dart';
@@ -18,6 +19,9 @@ class AppRouter {
 
       case 'signup-page':
         return _generateRoute(const SignUpPage(), settings);
+
+      case 'home-page':
+        return _generateRoute(const HomePage(), settings);
 
       default:
         return _generateRoute(const LoginPage(), settings);
