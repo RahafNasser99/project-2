@@ -32,6 +32,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+    final statusBarHeight = MediaQuery.of(context).viewPadding.top;
     Widget navigationDestination(String label, IconData icon) {
       return NavigationDestination(
         icon: Icon(
@@ -46,7 +49,6 @@ class _HomePageState extends State<HomePage> {
       );
     }
 
-    final height = MediaQuery.of(context).size.height;
     return Scaffold(
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
@@ -76,8 +78,63 @@ class _HomePageState extends State<HomePage> {
           onDestinationSelected: _onItemTapped,
         ),
       ),
-      body: Container(
-        child: _pages.elementAt(_selectedIndex),
+      body: Padding(
+        padding: EdgeInsets.only(top: statusBarHeight),
+        child: Column(
+          children: <Widget>[
+            Container(
+              margin: const EdgeInsets.all(2.0),
+              height: height * 0.06,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    width: width * 0.1,
+                    child: CircleAvatar(
+                        backgroundColor: Colors.grey[600],
+                        maxRadius: height * 0.03),
+                  ),
+                  GestureDetector(
+                    child: Container(
+                      width: width * 0.75,
+                      margin: const EdgeInsets.symmetric(horizontal: 2.0),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(5.0)),
+                      ),
+                      child: Row(
+                        children: <Widget>[
+                          const Icon(
+                            Icons.search_rounded,
+                            color: Colors.grey,
+                          ),
+                          Text(
+                            'Search',
+                            style: Theme.of(context).textTheme.labelLarge,
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: width * 0.1,
+                    child: IconButton(
+                        onPressed: () {},
+                        icon: Icon(
+                          Icons.message_rounded,
+                          color: Colors.grey[600],
+                        )),
+                  )
+                ],
+              ),
+            ),
+            Container(
+              child: _pages.elementAt(_selectedIndex),
+            ),
+          ],
+        ),
       ),
     );
   }
