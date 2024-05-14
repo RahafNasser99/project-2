@@ -13,7 +13,7 @@ class LoginRepositoryImpl extends LoginRepository {
     if (await internetConnectionChecker.hasConnection) {
       print('has connection');
       try {
-        loginRemoteDataSource.login(email, password);
+        await loginRemoteDataSource.login(email, password);
         return const Right(unit);
       } on ServerException {
         print('server exception');
