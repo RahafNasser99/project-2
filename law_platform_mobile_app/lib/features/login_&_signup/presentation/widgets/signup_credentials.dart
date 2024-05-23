@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:law_platform_mobile_app/features/login_&_signup/presentation/cubits/signup_cubits/cubit/signup_cubit.dart';
+import 'package:law_platform_mobile_app/utils/enum/account_type_enum.dart';
 
 class SignUpCredentials extends StatefulWidget {
   const SignUpCredentials(
@@ -29,7 +32,7 @@ class _SignUpCredentialsState extends State<SignUpCredentials> {
 
       print(_email);
       print(_password);
-      // BlocProvider.of<LoginCubit>(context).login(email, password);
+      // BlocProvider.of<SignupCubit>(context).signUp(_email, _password,_lawyer? AccountType.lawyer : AccountType.member);
     }
   }
 

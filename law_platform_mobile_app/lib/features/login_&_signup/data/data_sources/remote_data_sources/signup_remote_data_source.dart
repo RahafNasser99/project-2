@@ -1,19 +1,21 @@
 import 'package:dartz/dartz.dart';
 import 'package:law_platform_mobile_app/utils/configurations.dart';
 import 'package:law_platform_mobile_app/utils/error/exceptions.dart';
+import 'package:law_platform_mobile_app/utils/enum/account_type_enum.dart';
 
-abstract class LoginRemoteDataSource {
-  Future<Unit> login(String email, String password);
+abstract class SignUpRemoteDataSource {
+  Future<Unit> signUp(String email, String password, AccountType accountType);
 }
 
-class LoginRemoteDataSourceImpl extends LoginRemoteDataSource {
+class SignUpRemoteDataSourceImpl extends SignUpRemoteDataSource {
   @override
-  Future<Unit> login(String email, String password) async {
+  Future<Unit> signUp(String email, String password, AccountType accountType) async {
     const url = '';
-    final data = {'email': email, 'password': password};
-
-    print(data['email']);
-    print(data['password']);
+    final data = {
+      'email': email,
+      'password': password,
+      'accountType': accountType,
+    };
 
     final response = await dio.post(
       dio.options.baseUrl + url,

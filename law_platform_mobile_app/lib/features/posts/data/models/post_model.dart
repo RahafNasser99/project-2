@@ -11,6 +11,7 @@ class PostModel extends Post {
     return PostModel(
       postId: json['postId'],
       postBody: json['postBody'],
+      postImage: json['image'],
       postDate: json['postDate'],
     );
   }

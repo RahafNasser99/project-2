@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
-import 'package:law_platform_mobile_app/utils/constant.dart';
+import 'package:law_platform_mobile_app/utils/configurations.dart';
 import 'package:law_platform_mobile_app/utils/error/exceptions.dart';
 import 'package:law_platform_mobile_app/features/posts/domain/entities/post.dart';
 import 'package:law_platform_mobile_app/features/posts/data/models/post_model.dart';
