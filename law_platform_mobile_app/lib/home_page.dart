@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:law_platform_mobile_app/features/posts/presentation/pages/posts_home_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -10,9 +11,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
   static const List<Widget> _pages = <Widget>[
-    Text(
-      'Index 0: posts',
-    ),
+    PostsHomePage(),
     Text(
       'Index 1: advice',
     ),
@@ -130,7 +129,7 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            Container(
+            Expanded(
               child: _pages.elementAt(_selectedIndex),
             ),
           ],
