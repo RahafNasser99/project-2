@@ -17,21 +17,22 @@ class AppTheme {
         fontSize: 30,
         fontWeight: FontWeight.bold,
       ),
-      headlineSmall: TextStyle(
+      headlineMedium: TextStyle(
         color: Colors.indigo.shade600,
         fontFamily: 'Lateef',
-        fontSize: 20,
+        fontSize: 28,
       ),
-      //title of list tile
+      //titles
       titleLarge: const TextStyle(
         color: Colors.black,
         fontFamily: 'Lateef',
         fontSize: 24,
       ),
+      // posts text
       bodyLarge: const TextStyle(
         color: Colors.black,
         fontFamily: 'Lateef',
-        fontSize: 18,
+        fontSize: 20,
       ),
       //like - dislike
       bodyMedium: const TextStyle(
