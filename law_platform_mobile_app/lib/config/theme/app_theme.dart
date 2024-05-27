@@ -22,8 +22,9 @@ class AppTheme {
         fontFamily: 'Lateef',
         fontSize: 20,
       ),
+      //title of list tile
       titleLarge: const TextStyle(
-        color: Colors.white,
+        color: Colors.black,
         fontFamily: 'Lateef',
         fontSize: 24,
       ),
@@ -32,6 +33,13 @@ class AppTheme {
         fontFamily: 'Lateef',
         fontSize: 18,
       ),
+      //like - dislike
+      bodyMedium: const TextStyle(
+        color: Colors.black,
+        fontFamily: 'Lateef',
+        fontSize: 16,
+      ),
+      // in textField label
       labelLarge: const TextStyle(
         color: Colors.grey,
         fontFamily: 'Lateef',
@@ -43,14 +51,3 @@ class AppTheme {
     // ),
   );
 }
-
-// final appTheme = ThemeData(
-//   colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo[600]!),
-//   useMaterial3: true,
-//   textTheme: const TextTheme(
-//     bodyLarge: TextStyle(
-//       fontFamily: 'ReemKufi',
-//       fontSize: 30,
-//     ),
-//   ),
-// );

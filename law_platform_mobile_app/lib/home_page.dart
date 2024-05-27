@@ -34,6 +34,7 @@ class _HomePageState extends State<HomePage> {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     final statusBarHeight = MediaQuery.of(context).viewPadding.top;
+
     Widget navigationDestination(String label, IconData icon) {
       return NavigationDestination(
         icon: Icon(
@@ -67,7 +68,7 @@ class _HomePageState extends State<HomePage> {
             navigationDestination('إشعارات', Icons.notifications_rounded),
             navigationDestination('إشعارات', Icons.notifications_rounded),
           ],
-          height: height * 0.08,
+          height: height * 0.09,
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           surfaceTintColor: Theme.of(context).colorScheme.inversePrimary,
           indicatorShape: const ContinuousRectangleBorder(
