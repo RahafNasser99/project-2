@@ -47,8 +47,5 @@ class AppTheme {
         fontSize: 20,
       ),
     ),
-    // iconTheme: const IconThemeData(
-    //   color: Colors.grey,
-    // ),
   );
 }
