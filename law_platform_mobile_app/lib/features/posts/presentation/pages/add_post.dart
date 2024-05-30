@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
-import 'package:keyboard_height_plugin/keyboard_height_plugin.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:law_platform_mobile_app/features/posts/presentation/widgets/add_post_widget.dart';
 
 class AddPost extends StatefulWidget {
   const AddPost({super.key});
@@ -10,28 +14,40 @@ class AddPost extends StatefulWidget {
 }
 
 class _AddPostState extends State<AddPost> {
-  final _formKey = GlobalKey<FormState>();
-  final ScrollController _scrollController = ScrollController();
-  double _keyboardHeight = 0;
-  final KeyboardHeightPlugin _keyboardHeightPlugin = KeyboardHeightPlugin();
+  File? imageFile;
 
-  @override
-  void initState() {
-    super.initState();
-    _keyboardHeightPlugin.onKeyboardHeightChanged((double height) {
-      setState(() {
-        _keyboardHeight = height;
-        print(_keyboardHeight);
-      });
+  void _setImage(File? image) {
+    setState(() {
+      imageFile = image;
     });
+  }
+
+  Future _pickImage() async {
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (image == null) return;
+      File tempImageFile = File(image.path);
+      File? croppedImage = await _cropImage(imageFile: tempImageFile);
+      croppedImage == null ? _setImage(tempImageFile) : _setImage(croppedImage);
+      print(imageFile?.path);
+    } on PlatformException catch (error) {
+      print('***********************************************');
+      print(error.message);
+      print('failed to pick image');
+    }
+  }
+
+  Future<File?> _cropImage({required File imageFile}) async {
+    CroppedFile? croppedImage =
+        await ImageCropper().cropImage(sourcePath: imageFile.path);
+    if (croppedImage == null) return null;
+    return File(croppedImage.path);
   }
 
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final statusBarHeight = MediaQuery.of(context).viewPadding.top;
-    // final isKeyboardVisible =
-    //     KeyboardVisibilityProvider.isKeyboardVisible(context);
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.only(top: statusBarHeight),
@@ -94,39 +110,11 @@ class _AddPostState extends State<AddPost> {
                 ],
               ),
             ),
-            KeyboardVisibilityBuilder(
-              builder: (context, isKeyboardVisible) => SizedBox(
-                height: isKeyboardVisible
-                    ? (height -
-                        MediaQuery.of(context).viewInsets.bottom -
-                        (height * 0.6) -
-                        statusBarHeight)
-                    : (height - (height * 0.1) - statusBarHeight),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Form(
-                      key: _formKey,
-                      child: TextField(
-                        scrollController: _scrollController,
-                        textAlign: TextAlign.right,
-                        maxLines: null,
-                        textInputAction: TextInputAction.newline,
-                        style: Theme.of(context).textTheme.bodyLarge,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'عن ماذا تريد أن تتحدث، انشر المعرفة!',
-                          hintStyle: Theme.of(context).textTheme.labelLarge,
-                          hintTextDirection: TextDirection.rtl,
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                        onPressed: () {},
-                        icon: Icon(Icons.add, color: Colors.red)),
-                  ],
-                ),
-              ),
+            AddPostWidget(
+              height: height - (height * 0.1) - statusBarHeight,
+              image: imageFile,
+              editImage: _pickImage,
+              setImage: _setImage,
             ),
           ],
         ),
