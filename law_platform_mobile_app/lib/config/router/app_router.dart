@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:law_platform_mobile_app/home_page.dart';
-import 'package:law_platform_mobile_app/features/posts/presentation/pages/add_post.dart';
+import 'package:law_platform_mobile_app/features/posts_&_advices/presentation/pages/add_post.dart';
 import 'package:law_platform_mobile_app/features/login_&_signup/presentation/pages/login_page.dart';
 import 'package:law_platform_mobile_app/features/login_&_signup/presentation/pages/signup_page.dart';
 import 'package:law_platform_mobile_app/features/login_&_signup/presentation/cubits/login_cubits/cubit/login_cubit.dart';

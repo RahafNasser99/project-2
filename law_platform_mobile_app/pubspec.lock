@@ -150,6 +150,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
+  flutter_date_difference:
+    dependency: "direct main"
+    description:
+      name: flutter_date_difference
+      sha256: d1255418c3bf928ac3c559844644d00a690d0bd943dccbceb2247a9763dfa755
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
   flutter_keyboard_visibility:
     dependency: "direct main"
     description:

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:law_platform_mobile_app/features/posts/presentation/pages/posts_home_page.dart';
+import 'package:law_platform_mobile_app/features/posts_&_advices/presentation/pages/posts_home_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

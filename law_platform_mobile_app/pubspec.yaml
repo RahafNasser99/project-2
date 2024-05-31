@@ -48,6 +48,7 @@ dependencies:
   keyboard_height_plugin: ^0.0.5
   image_picker: ^1.1.1
   image_cropper: ^6.0.0
+  flutter_date_difference: ^1.0.1
 
 dev_dependencies:
   flutter_test:
