@@ -6,14 +6,14 @@ import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:law_platform_mobile_app/features/posts_&_advices/presentation/widgets/add_post_widget.dart';
 
-class AddPost extends StatefulWidget {
-  const AddPost({super.key});
+class AddPostPage extends StatefulWidget {
+  const AddPostPage({super.key});
 
   @override
-  State<AddPost> createState() => _AddPostState();
+  State<AddPostPage> createState() => _AddPostState();
 }
 
-class _AddPostState extends State<AddPost> {
+class _AddPostState extends State<AddPostPage> {
   File? imageFile;
 
   void _setImage(File? image) {

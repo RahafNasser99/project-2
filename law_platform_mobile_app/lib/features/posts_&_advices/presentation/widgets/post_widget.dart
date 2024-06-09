@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:like_button/like_button.dart';
+import 'package:law_platform_mobile_app/features/interactions_&_comments/presentation/widgets/interaction_widget.dart';
 
 class PostWidget extends StatelessWidget {
   const PostWidget({super.key});
@@ -49,71 +49,7 @@ class PostWidget extends StatelessWidget {
               'https://static.wixstatic.com/media/1cd646_ae7f0376474742e4ac9a0dee2f3f5a5d~mv2_d_2508_1672_s_2.jpg/v1/fill/w_925,h_616,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/1cd646_ae7f0376474742e4ac9a0dee2f3f5a5d~mv2_d_2508_1672_s_2.jpg',
             ),
           ),
-          Container(
-            margin: const EdgeInsets.only(top: 4.0),
-            decoration: const BoxDecoration(
-              border: Border(top: BorderSide(color: Colors.black12)),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                LikeButton(
-                  likeBuilder: (isLiked) {
-                    return Icon(
-                      isLiked ? Icons.thumb_up_alt : Icons.thumb_up_off_alt,
-                      color: isLiked ? Colors.green[300] : Colors.black54,
-                    );
-                  },
-                  circleColor: CircleColor(
-                    start: Colors.green[300]!,
-                    end: Colors.green[300]!,
-                  ),
-                  bubblesColor: BubblesColor(
-                    dotPrimaryColor: Theme.of(context).colorScheme.secondary,
-                    dotSecondaryColor: Colors.green[300]!,
-                  ),
-                  likeCount: 20,
-                  likeCountAnimationType: LikeCountAnimationType.part,
-                ),
-                LikeButton(
-                  likeBuilder: (isLiked) {
-                    return Icon(
-                      isLiked ? Icons.thumb_down_alt : Icons.thumb_down_off_alt,
-                      color: isLiked ? Colors.red[300] : Colors.black54,
-                    );
-                  },
-                  circleColor: CircleColor(
-                    start: Colors.red[300]!,
-                    end: Colors.red[300]!,
-                  ),
-                  bubblesColor: BubblesColor(
-                    dotPrimaryColor: Theme.of(context).colorScheme.secondary,
-                    dotSecondaryColor: Colors.red[300]!,
-                  ),
-                  likeCount: 20,
-                  likeCountAnimationType: LikeCountAnimationType.part,
-                ),
-                LikeButton(
-                  likeBuilder: (isLiked) {
-                    return const Icon(
-                      Icons.chat_outlined,
-                      color: Colors.black54,
-                    );
-                  },
-                  circleColor: CircleColor(
-                      start: Theme.of(context).colorScheme.inversePrimary,
-                      end: Theme.of(context).colorScheme.inversePrimary),
-                  bubblesColor: BubblesColor(
-                      dotPrimaryColor:
-                          Theme.of(context).colorScheme.inversePrimary,
-                      dotSecondaryColor:
-                          Theme.of(context).colorScheme.inversePrimary),
-                  likeCount: 20,
-                  likeCountAnimationType: LikeCountAnimationType.part,
-                ),
-              ],
-            ),
-          )
+          const InteractionWidget(),
         ],
       ),
     );
