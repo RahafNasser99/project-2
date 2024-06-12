@@ -26,6 +26,7 @@ class _InteractionWidgetState extends State<InteractionWidget> {
         if (_like) {
           _dislike = false;
           _numOfLike++;
+          // if number of dislike greater than the base likes reduce it one like
         } else {
           _numOfLike--;
         }
@@ -43,6 +44,7 @@ class _InteractionWidgetState extends State<InteractionWidget> {
         if (_dislike) {
           _like = false;
           _numOfDislike++;
+          // if number of like greater than the base likes reduce it one like
         } else {
           _numOfDislike--;
         }
