@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:law_platform_mobile_app/features/posts/presentation/pages/posts_home_page.dart';
+import 'package:law_platform_mobile_app/features/posts_&_advices/presentation/pages/posts_home_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -24,9 +24,13 @@ class _HomePageState extends State<HomePage> {
   ];
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    if (index == 2) {
+      Navigator.of(context).pushNamed('add-post-page');
+    } else {
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
   }
 
   @override
@@ -34,6 +38,7 @@ class _HomePageState extends State<HomePage> {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     final statusBarHeight = MediaQuery.of(context).viewPadding.top;
+
     Widget navigationDestination(String label, IconData icon) {
       return NavigationDestination(
         icon: Icon(
@@ -67,7 +72,7 @@ class _HomePageState extends State<HomePage> {
             navigationDestination('إشعارات', Icons.notifications_rounded),
             navigationDestination('إشعارات', Icons.notifications_rounded),
           ],
-          height: height * 0.08,
+          height: height * 0.09,
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           surfaceTintColor: Theme.of(context).colorScheme.inversePrimary,
           indicatorShape: const ContinuousRectangleBorder(
