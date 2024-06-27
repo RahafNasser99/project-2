@@ -4,7 +4,7 @@ import 'package:law_platform_mobile_app/utils/error/exceptions.dart';
 
 abstract class InteractionsRemoteDataSource {
   Future<Unit> addInteraction(bool interaction);
-  Future<Unit> removeInteraction(bool interaction);
+  Future<Unit> removeInteraction();
 }
 
 class InteractionsRemoteDataSourceImpl extends InteractionsRemoteDataSource {
@@ -24,7 +24,7 @@ class InteractionsRemoteDataSourceImpl extends InteractionsRemoteDataSource {
   }
 
   @override
-  Future<Unit> removeInteraction(bool interaction) async {
+  Future<Unit> removeInteraction() async {
     const url = '';
 
     final data = {};

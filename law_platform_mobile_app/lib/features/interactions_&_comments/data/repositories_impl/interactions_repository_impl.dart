@@ -8,14 +8,31 @@ import 'package:law_platform_mobile_app/features/interactions_&_comments/data/da
 class InteractionsRepositoryImpl extends InteractionsRepository {
   InteractionsRemoteDataSource interactionsRemoteDataSource =
       InteractionsRemoteDataSourceImpl();
+
   @override
-  Future<Either<Failure, Unit>> addOrRemoveInteraction(bool interaction) async {
+  Future<Either<Failure, Unit>> addInteraction(bool interaction) async {
     if (await internetConnectionChecker.hasConnection) {
       try {
         await interactionsRemoteDataSource.addInteraction(interaction);
         return const Right(unit);
       } on ServerException {
         return Left(ServerFailure());
+      }
+    } else {
+      return Left(OfflineFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> removeInteraction() async {
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+        await interactionsRemoteDataSource.removeInteraction();
+
+        return const Right(unit);
+
+      } on ServerException {
+        return Left(OfflineFailure());
       }
     } else {
       return Left(OfflineFailure());
