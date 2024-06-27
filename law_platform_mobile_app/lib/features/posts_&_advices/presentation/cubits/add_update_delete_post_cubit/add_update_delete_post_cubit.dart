@@ -14,6 +14,7 @@ class AddUpdateDeletePostCubit extends Cubit<AddUpdateDeletePostState> {
   AddPostUseCase addPostUseCase = AddPostUseCase();
   UpdatePostUseCase updatePostUseCase = UpdatePostUseCase();
   DeletePostUseCase deletePostUseCase = DeletePostUseCase();
+
   AddUpdateDeletePostCubit() : super(AddUpdateDeletePostInitial());
 
   Future<void> addUpdatePost(String addOrUpdate, Post post) async {
@@ -27,19 +28,22 @@ class AddUpdateDeletePostCubit extends Cubit<AddUpdateDeletePostState> {
       either = await updatePostUseCase(post);
     }
 
-    either.fold((failure) {
-      switch (failure.runtimeType) {
-        case ServerFailure:
-          return const AddUpdateDeletePostError(
-              errorMessage: SERVER_FAILURE_MESSAGE);
-        case OfflineFailure:
-          return const AddUpdateDeletePostError(
-              errorMessage: OFFLINE_SERVER_MESSAGE);
-        default:
-          return const AddUpdateDeletePostError(
-              errorMessage: DEFAULT_FAILURE_MESSAGE);
-      }
-    }, (post) => AddUpdateDeletePostDone());
+    either.fold(
+      (failure) {
+        switch (failure.runtimeType) {
+          case ServerFailure:
+            return const AddUpdateDeletePostError(
+                errorMessage: SERVER_FAILURE_MESSAGE);
+          case OfflineFailure:
+            return const AddUpdateDeletePostError(
+                errorMessage: OFFLINE_SERVER_MESSAGE);
+          default:
+            return const AddUpdateDeletePostError(
+                errorMessage: DEFAULT_FAILURE_MESSAGE);
+        }
+      },
+      (_) => AddUpdateDeletePostDone(),
+    );
   }
 
   Future<void> deletePost(int postId) async {
