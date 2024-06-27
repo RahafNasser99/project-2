@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
-import 'package:law_platform_mobile_app/features/login_&_signup/presentation/widgets/login_credentials.dart';
+import 'package:law_platform_mobile_app/features/login_&_signup/presentation/widgets/login_credentials_widget.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});

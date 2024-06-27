@@ -3,18 +3,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:law_platform_mobile_app/features/login_&_signup/presentation/cubits/signup_cubits/cubit/signup_cubit.dart';
 import 'package:law_platform_mobile_app/utils/enum/account_type_enum.dart';
 
-class SignUpCredentials extends StatefulWidget {
-  const SignUpCredentials(
+class SignUpCredentialsWidget extends StatefulWidget {
+  const SignUpCredentialsWidget(
       {super.key, required this.height, required this.width});
 
   final double height;
   final double width;
 
   @override
-  State<SignUpCredentials> createState() => _SignUpCredentialsState();
+  State<SignUpCredentialsWidget> createState() => _SignUpCredentialsWidgetState();
 }
 
-class _SignUpCredentialsState extends State<SignUpCredentials> {
+class _SignUpCredentialsWidgetState extends State<SignUpCredentialsWidget> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController1 = TextEditingController();
@@ -25,6 +25,7 @@ class _SignUpCredentialsState extends State<SignUpCredentials> {
   String _password = '';
 
   void _submit() {
+    print('submit');
     print(_email);
     print(_password);
     if (_formKey.currentState!.validate()) {
@@ -32,7 +33,8 @@ class _SignUpCredentialsState extends State<SignUpCredentials> {
 
       print(_email);
       print(_password);
-      // BlocProvider.of<SignupCubit>(context).signUp(_email, _password,_lawyer? AccountType.lawyer : AccountType.member);
+      BlocProvider.of<SignupCubit>(context).signUp(
+          _email, _password, _lawyer ? AccountType.lawyer : AccountType.member);
     }
   }
 
@@ -89,8 +91,9 @@ class _SignUpCredentialsState extends State<SignUpCredentials> {
                   }
                   return null;
                 },
-                onSaved: (newValue) {
-                  _email = newValue!.trim();
+                onChanged: (value) {
+                  print('on saved email');
+                  _email = value.trim();
                 },
               ),
             ),
@@ -132,8 +135,11 @@ class _SignUpCredentialsState extends State<SignUpCredentials> {
                   }
                   return null;
                 },
-                onSaved: (newValue) {
-                  _password = newValue!.trim();
+                onChanged: (value) {
+                  _password = value.trim();
+                  print('on saved pass');
+                  print(value);
+                  print(_password);
                 },
               ),
             ),
@@ -172,13 +178,16 @@ class _SignUpCredentialsState extends State<SignUpCredentials> {
                   }
                   return null;
                 },
+                onSaved: (newValue) {
+                  print(newValue);
+                },
               ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 Text('حساب محامي',
-                    style: Theme.of(context).textTheme.headlineSmall),
+                    style: Theme.of(context).textTheme.labelLarge),
                 Checkbox(
                   value: _lawyer,
                   side: BorderSide(
