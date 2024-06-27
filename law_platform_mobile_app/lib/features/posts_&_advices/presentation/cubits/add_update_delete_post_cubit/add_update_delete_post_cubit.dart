@@ -48,6 +48,7 @@ class AddUpdateDeletePostCubit extends Cubit<AddUpdateDeletePostState> {
 
   Future<void> deletePost(int postId) async {
     emit(AddUpdateDeletePostLoading());
+    
     final either = await deletePostUseCase(postId);
 
     either.fold((failure) {
