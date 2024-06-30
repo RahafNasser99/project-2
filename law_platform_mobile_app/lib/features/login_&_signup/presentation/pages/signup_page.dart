@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
-import 'package:law_platform_mobile_app/features/login_&_signup/presentation/widgets/signup_credentials.dart';
+import 'package:law_platform_mobile_app/features/login_&_signup/presentation/widgets/signup_credentials_widget.dart';
 
 class SignUpPage extends StatelessWidget {
   const SignUpPage({super.key});
@@ -34,7 +34,7 @@ class SignUpPage extends StatelessWidget {
                 ),
               ],
             ),
-            SignUpCredentials(height: height, width: width),
+            SignUpCredentialsWidget(height: height, width: width),
           ],
         ),
       ),

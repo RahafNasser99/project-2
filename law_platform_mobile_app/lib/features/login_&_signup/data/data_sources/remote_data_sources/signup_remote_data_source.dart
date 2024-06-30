@@ -9,22 +9,40 @@ abstract class SignUpRemoteDataSource {
 
 class SignUpRemoteDataSourceImpl extends SignUpRemoteDataSource {
   @override
-  Future<Unit> signUp(String email, String password, AccountType accountType) async {
-    const url = '';
+  Future<Unit> signUp(
+      String email, String password, AccountType accountType) async {
+    final url = accountType == AccountType.member
+        ? '/api/member/register'
+        : '/api/lawyer/register';
+
+    print(dio.options.baseUrl + url);
     final data = {
       'email': email,
       'password': password,
-      'accountType': accountType,
+      'password_confirmation': password,
     };
+
+    print('**********************************');
 
     final response = await dio.post(
       dio.options.baseUrl + url,
       data: data,
     );
 
+    print('-------------------------------------------------');
+
+    print(response.statusCode);
+    print(response.statusMessage);
+
     if (response.statusCode! >= 200 && response.statusCode! < 400) {
+      print('200 -> 400');
+      print(response.statusCode);
+      print(response.statusMessage);
       return Future.value(unit);
     } else {
+      print('401 -->');
+      print(response.statusCode);
+      print(response.statusMessage);
       throw ServerException();
     }
   }

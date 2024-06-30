@@ -43,6 +43,12 @@ dependencies:
   dio: ^5.4.3+1
   internet_connection_checker: ^1.0.0+1
   bloc: ^8.1.4
+  like_button: ^2.0.5
+  flutter_keyboard_visibility: ^6.0.0
+  keyboard_height_plugin: ^0.0.5
+  image_picker: ^1.1.1
+  image_cropper: ^6.0.0
+  flutter_date_difference: ^1.0.1
 
 dev_dependencies:
   flutter_test:
