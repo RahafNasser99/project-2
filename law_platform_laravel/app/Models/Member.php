@@ -47,8 +47,23 @@ class Member extends Authenticatable
         ];
     }
 
-    public function member_profile(): HasOne
+    public function profile(): HasOne
     {
         return $this->hasOne(MemberProfile::class);
+    }
+
+    public function interactions(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(PostInteraction::class, 'user_id');
+    }
+
+    public function comments(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        return $this->morphMany(Comment::class, 'user');
+    }
+
+    public function legalAdvices(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(LegalAdvice::class);
     }
 }

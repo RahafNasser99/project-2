@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('lawyer_profiles', function (Blueprint $table) {
+        Schema::create('legal_advice_comments', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('legal_advice_id');
             $table->unsignedBigInteger('lawyer_id');
-            $table->string('specialization');
-            $table->string('biography');
-            $table->string('image')->nullable();
+            $table->text('comment');
             $table->timestamps();
 
+            $table->foreign('legal_advice_id')->references('id')->on('legal_advices')->onDelete('cascade');
             $table->foreign('lawyer_id')->references('id')->on('lawyers')->onDelete('cascade');
         });
     }
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('lawyer_profiles');
+        Schema::dropIfExists('legal_advice_comments');
     }
 };
