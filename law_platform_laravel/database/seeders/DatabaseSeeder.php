@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\LegalAdvice;
 use App\Models\User;
 use App\Models\Member;
 use App\Models\Lawyer;
@@ -18,6 +19,13 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
         Member::factory(50)->create();
         Lawyer::factory(24)->create();
+        LegalAdvice::factory(20)->create();
+
+        $this->call([
+            AdviceTypeSeeder::class,
+            LegalAdviceSeeder::class,
+            // Add other seeders here
+        ]);
 
         // User::factory()->create([
         //     'name' => 'Test User',

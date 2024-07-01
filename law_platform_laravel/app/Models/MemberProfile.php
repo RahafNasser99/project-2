@@ -12,13 +12,14 @@ class MemberProfile extends Model
     use HasFactory;
 
     protected $fillable = [
+        'member_id',
         'work',
         'biography',
         'image',
     ];
 
-    public function member(): HasOne
+    public function member(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->hasOne(Member::class);
+        return $this->belongsTo(Member::class);
     }
 }

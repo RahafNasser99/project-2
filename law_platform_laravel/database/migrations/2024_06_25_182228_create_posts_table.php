@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('lawyer_profiles', function (Blueprint $table) {
+        Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('lawyer_id');
-            $table->string('specialization');
-            $table->string('biography');
+            $table->text('text');
             $table->string('image')->nullable();
+            $table->date('date');
             $table->timestamps();
 
             $table->foreign('lawyer_id')->references('id')->on('lawyers')->onDelete('cascade');
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('lawyer_profiles');
+        Schema::dropIfExists('posts');
     }
 };

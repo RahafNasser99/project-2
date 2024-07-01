@@ -4,21 +4,23 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use App\Models\Lawyer;
 
-class LawyerProfile extends Model
+class LegalAdviceComment extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'legal_advice_id',
         'lawyer_id',
-        'specialization',
-        'biography',
-        'image',
+        'comment',
     ];
 
-    public function lawyer(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function legalAdvice()
+    {
+        return $this->belongsTo(LegalAdvice::class);
+    }
+
+    public function lawyer()
     {
         return $this->belongsTo(Lawyer::class);
     }

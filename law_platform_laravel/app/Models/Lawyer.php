@@ -48,8 +48,23 @@ class Lawyer extends Authenticatable
         ];
     }
 
-    public function lawyer_profile(): HasOne
+    public function profile(): HasOne
     {
         return $this->hasOne(LawyerProfile::class);
+    }
+
+    public function posts(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    public function interactions(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(PostInteraction::class, 'user_id');
+    }
+
+    public function comments(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        return $this->morphMany(Comment::class, 'user');
     }
 }

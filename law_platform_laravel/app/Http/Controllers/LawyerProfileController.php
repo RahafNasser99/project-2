@@ -2,64 +2,128 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Lawyer;
 use App\Models\LawyerProfile;
+use App\Models\Member;
 use Illuminate\Http\Request;
 
 class LawyerProfileController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    // View Profile (GET, Auth Token)
+    public function viewProfile(Request $request)
     {
-        //
+        $user = $request->user();
+        $profile = $user->profile;
+
+        if (!$profile) {
+            // Create a new profile with default values
+            $profile = LawyerProfile::create([
+                'lawyer_id' => $user->id,
+                'specialization' => 'Default specialization',
+                'biography' => 'Default Biography',
+                'image' => null,
+            ]);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Profile retrieved successfully',
+            'data' => $profile
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+
+    // Edit Profile (PUT, Auth Token)
+    public function editProfile(Request $request)
     {
-        //
+        $user = $request->user();
+        $profile = $user->profile;
+
+        $request->validate([
+            'specialization' => 'required|string|max:255',
+            'biography' => 'required|string|max:1000',
+            'image' => 'nullable|image|max:2048',
+        ]);
+
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('profile_images', 'public');
+        }
+
+        if ($profile) {
+            $profile->update([
+                'specialization' => $request->specialization,
+                'biography' => $request->biography,
+                'image' => $request->hasFile('image') ? $imagePath : $profile->image,
+            ]);
+        } else {
+            $profile = LawyerProfile::create([
+                'lawyer_id' => $user->id,
+                'specialization' => $request->specialization,
+                'biography' => $request->biography,
+                'image' => $request->hasFile('image') ? $imagePath : null,
+            ]);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Profile updated successfully',
+            'data' => $profile
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    // View Member's Profile (GET, Auth Token)
+    public function viewMemberProfile($id)
     {
-        //
+        $member = Member::find($id);
+
+        if (!$member) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Member not found'
+            ], 404);
+        }
+
+        $profile = $member->profile;
+
+        if (!$profile) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Profile not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Profile retrieved successfully',
+            'data' => $profile
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(LawyerProfile $lawyerProfile)
+    // View Another Lawyer's Profile (GET, Auth Token)
+    public function viewLawyerProfile($id)
     {
-        //
-    }
+        $lawyer = Lawyer::find($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(LawyerProfile $lawyerProfile)
-    {
-        //
-    }
+        if (!$lawyer) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Lawyer not found'
+            ], 404);
+        }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, LawyerProfile $lawyerProfile)
-    {
-        //
-    }
+        $profile = $lawyer->profile; // Assuming Lawyer has a profile relationship
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(LawyerProfile $lawyerProfile)
-    {
-        //
+        if (!$profile) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Profile not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Profile retrieved successfully',
+            'data' => $profile
+        ]);
     }
 }
