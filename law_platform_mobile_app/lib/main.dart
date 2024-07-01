@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:law_platform_mobile_app/config/router/app_router.dart';
 import 'package:law_platform_mobile_app/config/theme/app_theme.dart';
+import 'package:law_platform_mobile_app/config/router/app_router.dart';
 
 void main() {
   runApp(const MyApp());

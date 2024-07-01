@@ -11,15 +11,15 @@ class SignupCubit extends Cubit<SignUpState> {
   SignUpUseCase signUpUseCase = SignUpUseCase();
   SignupCubit() : super(SignUpInitial());
 
-  Future<void> signUp(
-      String email, String password, AccountType accountType) async {
+  Future<void> signUp(String name, String email, String password,
+      AccountType accountType) async {
     emit(SignUpLoading());
 
-    final either = await signUpUseCase(email, password, accountType);
+    final either = await signUpUseCase(name,email, password, accountType);
 
     either.fold(
       (failure) {
-        print('#########################################333');
+        print('#########################################');
         print(failure.toString());
         switch (failure.runtimeType) {
           case ServerFailure:

@@ -9,12 +9,12 @@ import 'package:law_platform_mobile_app/features/login_&_signup/data/data_source
 class SignUpRepositoryImpl extends SignUpRepository {
   SignUpRemoteDataSource signUpRemoteDataSource = SignUpRemoteDataSourceImpl();
   @override
-  Future<Either<Failure, Unit>> signUp(
-      String email, String password, AccountType accountType) async {
+  Future<Either<Failure, Unit>> signUp(String name, String email,
+      String password, AccountType accountType) async {
     if (await internetConnectionChecker.hasConnection) {
       print('has connection');
       try {
-        await signUpRemoteDataSource.signUp(email, password, accountType);
+        await signUpRemoteDataSource.signUp(name, email, password, accountType);
         return const Right(unit);
       } on ServerException {
         print('server exception');

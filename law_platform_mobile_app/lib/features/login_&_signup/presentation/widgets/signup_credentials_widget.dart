@@ -11,30 +11,32 @@ class SignUpCredentialsWidget extends StatefulWidget {
   final double width;
 
   @override
-  State<SignUpCredentialsWidget> createState() => _SignUpCredentialsWidgetState();
+  State<SignUpCredentialsWidget> createState() =>
+      _SignUpCredentialsWidgetState();
 }
 
 class _SignUpCredentialsWidgetState extends State<SignUpCredentialsWidget> {
   final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController1 = TextEditingController();
   final _passwordController2 = TextEditingController();
   bool _hidePassword = true;
   bool _lawyer = false;
+  String _name = '';
   String _email = '';
   String _password = '';
 
   void _submit() {
     print('submit');
-    print(_email);
-    print(_password);
     if (_formKey.currentState!.validate()) {
       _formKey.currentState?.save();
 
+      print(_name);
       print(_email);
       print(_password);
-      BlocProvider.of<SignupCubit>(context).signUp(
-          _email, _password, _lawyer ? AccountType.lawyer : AccountType.member);
+      BlocProvider.of<SignupCubit>(context).signUp(_name, _email, _password,
+          _lawyer ? AccountType.lawyer : AccountType.member);
     }
   }
 
@@ -43,7 +45,7 @@ class _SignUpCredentialsWidgetState extends State<SignUpCredentialsWidget> {
     return Container(
       padding: const EdgeInsets.all(20.0),
       margin: EdgeInsets.only(
-        top: widget.height * 0.2,
+        top: widget.height * 0.15,
         left: widget.width * 0.06,
         right: widget.width * 0.06,
       ),
@@ -66,6 +68,34 @@ class _SignUpCredentialsWidgetState extends State<SignUpCredentialsWidget> {
                 style: Theme.of(context).textTheme.headlineLarge),
             const SizedBox(
               height: 20.0,
+            ),
+            Directionality(
+              textDirection: TextDirection.rtl,
+              child: TextFormField(
+                controller: _nameController,
+                decoration: InputDecoration(
+                  hintTextDirection: TextDirection.rtl,
+                  hintText: 'اسم المستخدم',
+                  hintStyle: Theme.of(context).textTheme.labelLarge,
+                  prefixIcon: Icon(
+                    Icons.person_2_rounded,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+                validator: (value) {
+                  if (value != null && value.trim().isEmpty) {
+                    return 'يجب أن تدخل اسم المستخدم';
+                  }
+                  return null;
+                },
+                onChanged: (value) {
+                  print('on saved name');
+                  _name = value.trim();
+                },
+              ),
+            ),
+            const SizedBox(
+              height: 15.0,
             ),
             Directionality(
               textDirection: TextDirection.rtl,
@@ -131,7 +161,7 @@ class _SignUpCredentialsWidgetState extends State<SignUpCredentialsWidget> {
                     return 'يجب أن تدخل كلمة المرور';
                   }
                   if (value != null && value.trim().length < 8) {
-                    return 'كلمة المرور أقل من 6 محارف';
+                    return 'كلمة المرور أقل من 8 محارف';
                   }
                   return null;
                 },

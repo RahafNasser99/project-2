@@ -28,7 +28,7 @@ class AppTheme {
         fontFamily: 'Lateef',
         fontSize: 24,
       ),
-      // posts text
+      // posts text - search text
       bodyLarge: const TextStyle(
         color: Colors.black,
         fontFamily: 'Lateef',

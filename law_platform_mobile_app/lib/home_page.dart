@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:law_platform_mobile_app/features/posts_&_advices/presentation/pages/posts_home_page.dart';
-import 'package:law_platform_mobile_app/features/search/presentation/pages/search_page.dart';
-import 'package:law_platform_mobile_app/features/search/presentation/widgets/search_bar_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -12,7 +10,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
-  bool _searchBarTapped = false;
   static const List<Widget> _pages = <Widget>[
     PostsHomePage(),
     Text(
@@ -38,6 +35,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     final statusBarHeight = MediaQuery.of(context).viewPadding.top;
 
@@ -56,7 +54,7 @@ class _HomePageState extends State<HomePage> {
     }
 
     return Scaffold(
-      bottomNavigationBar: !_searchBarTapped ? Container(
+      bottomNavigationBar: Container(
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
@@ -83,14 +81,72 @@ class _HomePageState extends State<HomePage> {
           selectedIndex: _selectedIndex,
           onDestinationSelected: _onItemTapped,
         ),
-      ) : null,
+      ),
       body: Padding(
         padding: EdgeInsets.only(top: statusBarHeight),
         child: Column(
           children: <Widget>[
-            SearchBarWidget(searchBarTapped: _searchBarTapped,),
+            Container(
+              margin: const EdgeInsets.all(2.0),
+              height: height * 0.06,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    width: width * 0.1,
+                    child: GestureDetector(
+                      child: CircleAvatar(
+                        backgroundColor: Colors.grey[600],
+                        maxRadius: height * 0.03,
+                      ),
+                      onTap: () {
+                        Navigator.of(context).pushNamed('profile-page');
+                      },
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pushNamed('search-page');
+                    },
+                    child: Container(
+                      width: width * 0.75,
+                      margin: const EdgeInsets.symmetric(horizontal: 2.0),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(5.0)),
+                      ),
+                      child: Row(
+                        children: <Widget>[
+                          const Icon(
+                            Icons.search_rounded,
+                            color: Colors.grey,
+                          ),
+                          Text(
+                            'البحث',
+                            textDirection: TextDirection.rtl,
+                            style: Theme.of(context).textTheme.labelLarge,
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: width * 0.1,
+                    child: IconButton(
+                      onPressed: () {},
+                      icon: Icon(
+                        Icons.message_rounded,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
             Expanded(
-              child: _searchBarTapped ? const SearchPage() : _pages.elementAt(_selectedIndex),
+              child: _pages.elementAt(_selectedIndex),
             ),
           ],
         ),

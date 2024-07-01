@@ -7,9 +7,9 @@ import 'package:law_platform_mobile_app/features/login_&_signup/data/repositorie
 class SignUpUseCase {
   final SignUpRepository signUpRepository = SignUpRepositoryImpl();
 
-  Future<Either<Failure, Unit>> call(
+  Future<Either<Failure, Unit>> call(String name,
       String email, String password, AccountType accountType) async {
     print('sign up use case');
-    return await signUpRepository.signUp(email, password, accountType);
+    return await signUpRepository.signUp(name,email, password, accountType);
   }
 }

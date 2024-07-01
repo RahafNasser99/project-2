@@ -7,7 +7,7 @@ class AddInteractionUseCase {
   InteractionsRepository interactionsRepository = InteractionsRepositoryImpl();
 
   Future<Either<Failure, Unit>> call(bool interaction) async {
-    print('interaction use case');
+    print('add interaction use case');
     return await interactionsRepository.addInteraction(interaction);
   }
 }

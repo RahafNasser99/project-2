@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:law_platform_mobile_app/features/interactions_&_comments/presentation/pages/comments_page.dart';
 import 'package:law_platform_mobile_app/features/login_&_signup/presentation/cubits/signup_cubits/cubit/signup_cubit.dart';
+import 'package:law_platform_mobile_app/features/profile/presentation/pages/profile_page.dart';
 import 'package:law_platform_mobile_app/features/search/presentation/pages/search_page.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:law_platform_mobile_app/home_page.dart';
@@ -43,8 +44,13 @@ class AppRouter {
             const CommentsPage(), settings, PageTransitionType.bottomToTop);
 
       case 'search-page':
+        return MaterialPageRoute(
+          builder: (context) => const SearchPage(),
+        );
+
+      case 'profile-page':
         return _generateRoute(
-            const SearchPage(), settings, PageTransitionType.bottomToTop);
+            const ProfilePage(), settings, PageTransitionType.rightToLeft);
 
       default:
         return _generateRoute(
