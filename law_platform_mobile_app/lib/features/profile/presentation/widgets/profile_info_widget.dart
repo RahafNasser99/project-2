@@ -27,8 +27,8 @@ class ProfileInfoWidget extends StatelessWidget {
         ),
         Icon(
           icon,
-          size: 27.0,
-          color: Theme.of(context).colorScheme.secondary,
+          size: 25.0,
+          color: Theme.of(context).colorScheme.primary,
         ),
       ],
     );
