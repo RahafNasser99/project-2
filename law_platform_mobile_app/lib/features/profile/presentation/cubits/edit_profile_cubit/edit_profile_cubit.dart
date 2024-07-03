@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:law_platform_mobile_app/utils/messages.dart';
 import 'package:law_platform_mobile_app/utils/error/failures.dart';
 import 'package:law_platform_mobile_app/features/profile/domain/entities/profile.dart';
-import 'package:law_platform_mobile_app/features/profile/domain/usecases/edit_profile.dart';
+import 'package:law_platform_mobile_app/features/profile/domain/usecases/edit_profile_usecase.dart';
 
 part 'edit_profile_state.dart';
 

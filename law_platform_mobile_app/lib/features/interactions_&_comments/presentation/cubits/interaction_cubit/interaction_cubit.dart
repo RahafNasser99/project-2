@@ -2,8 +2,8 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:law_platform_mobile_app/utils/messages.dart';
 import 'package:law_platform_mobile_app/utils/error/failures.dart';
-import 'package:law_platform_mobile_app/features/interactions_&_comments/domain/usecases/add_interaction.dart';
-import 'package:law_platform_mobile_app/features/interactions_&_comments/domain/usecases/remove_interaction.dart';
+import 'package:law_platform_mobile_app/features/interactions_&_comments/domain/usecases/add_interaction_usecase.dart';
+import 'package:law_platform_mobile_app/features/interactions_&_comments/domain/usecases/remove_interaction_usecase.dart';
 
 part 'interaction_state.dart';
 

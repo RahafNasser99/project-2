@@ -4,7 +4,7 @@ import 'package:law_platform_mobile_app/utils/messages.dart';
 import 'package:law_platform_mobile_app/utils/error/failures.dart';
 import 'package:law_platform_mobile_app/utils/error/exceptions.dart';
 import 'package:law_platform_mobile_app/features/profile/domain/entities/profile.dart';
-import 'package:law_platform_mobile_app/features/profile/domain/usecases/get_profile.dart';
+import 'package:law_platform_mobile_app/features/profile/domain/usecases/get_profile_usecase.dart';
 
 part 'get_profile_state.dart';
 

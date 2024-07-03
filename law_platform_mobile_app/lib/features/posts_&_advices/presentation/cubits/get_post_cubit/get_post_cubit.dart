@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:law_platform_mobile_app/utils/messages.dart';
 import 'package:law_platform_mobile_app/utils/error/failures.dart';
 import 'package:law_platform_mobile_app/features/posts_&_advices/domain/entities/post.dart';
-import 'package:law_platform_mobile_app/features/posts_&_advices/domain/usecases/get_posts.dart';
+import 'package:law_platform_mobile_app/features/posts_&_advices/domain/usecases/get_posts_usecase.dart';
 
 part 'get_post_state.dart';
 

@@ -11,7 +11,11 @@ final class SearchInitial extends SearchState {}
 
 final class SearchLoading extends SearchState {}
 
-final class SearchDone extends SearchState {}
+final class SearchDone extends SearchState {
+  final List<Profile> profiles;
+
+  const SearchDone({required this.profiles});
+}
 
 final class SearchError extends SearchState {
   final String errorMessage;

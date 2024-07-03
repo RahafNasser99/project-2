@@ -4,9 +4,9 @@ import 'package:equatable/equatable.dart';
 import 'package:law_platform_mobile_app/utils/messages.dart';
 import 'package:law_platform_mobile_app/utils/error/failures.dart';
 import 'package:law_platform_mobile_app/features/posts_&_advices/domain/entities/post.dart';
-import 'package:law_platform_mobile_app/features/posts_&_advices/domain/usecases/add_post.dart';
-import 'package:law_platform_mobile_app/features/posts_&_advices/domain/usecases/update_post.dart';
-import 'package:law_platform_mobile_app/features/posts_&_advices/domain/usecases/delete_post.dart';
+import 'package:law_platform_mobile_app/features/posts_&_advices/domain/usecases/add_post_usecase.dart';
+import 'package:law_platform_mobile_app/features/posts_&_advices/domain/usecases/update_post_usecase.dart';
+import 'package:law_platform_mobile_app/features/posts_&_advices/domain/usecases/delete_post_usecase.dart';
 
 part 'add_update_delete_post_state.dart';
 
