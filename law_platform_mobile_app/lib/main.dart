@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       title: 'Law Platform',
       debugShowCheckedModeBanner: false,
       theme: AppTheme().lightTheme,
-      initialRoute: 'home-page',
+      initialRoute: 'signup-page',
       onGenerateRoute: (settings) => AppRouter().onGenerateRoute(settings),
     );
   }
