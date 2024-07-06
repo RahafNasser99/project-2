@@ -9,7 +9,6 @@ class SignUpUseCase {
 
   Future<Either<Failure, Unit>> call(String name,
       String email, String password, AccountType accountType) async {
-    print('sign up use case');
     return await signUpRepository.signUp(name,email, password, accountType);
   }
 }

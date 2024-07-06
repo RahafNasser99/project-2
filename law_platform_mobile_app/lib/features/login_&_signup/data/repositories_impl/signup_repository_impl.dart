@@ -12,16 +12,13 @@ class SignUpRepositoryImpl extends SignUpRepository {
   Future<Either<Failure, Unit>> signUp(String name, String email,
       String password, AccountType accountType) async {
     if (await internetConnectionChecker.hasConnection) {
-      print('has connection');
       try {
         await signUpRemoteDataSource.signUp(name, email, password, accountType);
         return const Right(unit);
       } on ServerException {
-        print('server exception');
         return Left(ServerFailure());
       }
     } else {
-      print('offline failure');
       return Left(OfflineFailure());
     }
   }

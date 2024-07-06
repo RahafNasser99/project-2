@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:law_platform_mobile_app/features/login_&_signup/presentation/cubits/signup_cubits/cubit/signup_cubit.dart';
 import 'package:law_platform_mobile_app/utils/enum/account_type_enum.dart';
 import 'package:law_platform_mobile_app/utils/global_widgets/loading.dart';
 import 'package:law_platform_mobile_app/utils/global_widgets/show_dialog.dart';
+import 'package:law_platform_mobile_app/features/login_&_signup/presentation/cubits/signup_cubits/cubit/signup_cubit.dart';
 
 class SignUpCredentialsWidget extends StatefulWidget {
   const SignUpCredentialsWidget(
@@ -30,59 +30,77 @@ class _SignUpCredentialsWidgetState extends State<SignUpCredentialsWidget> {
   String _password = '';
 
   void _submit() {
-    print('submit');
     if (_formKey.currentState!.validate()) {
       _formKey.currentState?.save();
-
-      print(_name);
-      print(_email);
-      print(_password);
-      BlocProvider.of<SignupCubit>(context).signUp(_name, _email, _password,
-          _lawyer ? AccountType.lawyer : AccountType.member);
+      BlocProvider.of<SignupCubit>(context).signUp(
+        _name,
+        _email,
+        _password,
+        _lawyer ? AccountType.lawyer : AccountType.member,
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20.0),
-      margin: EdgeInsets.only(
-        top: widget.height * 0.15,
-        left: widget.width * 0.06,
-        right: widget.width * 0.06,
-      ),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-        boxShadow: [
-          BoxShadow(
-            blurRadius: 2.0,
-            color: Colors.grey[100]!,
-          )
-        ],
-      ),
-      child: BlocConsumer<SignupCubit, SignUpState>(
-        listener: (context, state) {
-          if (state is SignUpError) {
-            showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (context) => ShowDialog(
-                dialogMessage: state.errorMessage,
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            );
-          } else if (state is SignUpDone) {
-            Navigator.of(context).pushNamed('home-page');
-          }
-        },
-        builder: (context, state) {
-          if (state is SignUpLoading) {
-            return const Loading();
-          } else {
-            return Form(
+    return BlocConsumer<SignupCubit, SignUpState>(
+      listener: (context, state) {
+        if (state is SignUpError) {
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => ShowDialog(
+              dialogMessage: state.errorMessage,
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          );
+        } else if (state is SignUpDone) {
+          Navigator.of(context).pushNamed('home-page');
+        }
+      },
+      builder: (context, state) {
+        if (state is SignUpLoading) {
+          return Container(
+            height: widget.height * 0.7,
+            padding: const EdgeInsets.all(20.0),
+            margin: EdgeInsets.only(
+              top: widget.height * 0.15,
+              left: widget.width * 0.06,
+              right: widget.width * 0.06,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+              boxShadow: [
+                BoxShadow(
+                  blurRadius: 2.0,
+                  color: Colors.grey[100]!,
+                )
+              ],
+            ),
+            child: const Loading(),
+          );
+        } else {
+          return Container(
+            padding: const EdgeInsets.all(20.0),
+            margin: EdgeInsets.only(
+              top: widget.height * 0.15,
+              left: widget.width * 0.06,
+              right: widget.width * 0.06,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+              boxShadow: [
+                BoxShadow(
+                  blurRadius: 2.0,
+                  color: Colors.grey[100]!,
+                )
+              ],
+            ),
+            child: Form(
               key: _formKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -112,7 +130,6 @@ class _SignUpCredentialsWidgetState extends State<SignUpCredentialsWidget> {
                         return null;
                       },
                       onChanged: (value) {
-                        print('on saved name');
                         _name = value.trim();
                       },
                     ),
@@ -145,7 +162,6 @@ class _SignUpCredentialsWidgetState extends State<SignUpCredentialsWidget> {
                         return null;
                       },
                       onChanged: (value) {
-                        print('on saved email');
                         _email = value.trim();
                       },
                     ),
@@ -190,9 +206,6 @@ class _SignUpCredentialsWidgetState extends State<SignUpCredentialsWidget> {
                       },
                       onChanged: (value) {
                         _password = value.trim();
-                        print('on saved pass');
-                        print(value);
-                        print(_password);
                       },
                     ),
                   ),
@@ -231,9 +244,7 @@ class _SignUpCredentialsWidgetState extends State<SignUpCredentialsWidget> {
                         }
                         return null;
                       },
-                      onSaved: (newValue) {
-                        print(newValue);
-                      },
+                      onSaved: (newValue) {},
                     ),
                   ),
                   Row(
@@ -305,10 +316,10 @@ class _SignUpCredentialsWidgetState extends State<SignUpCredentialsWidget> {
                   ),
                 ],
               ),
-            );
-          }
-        },
-      ),
+            ),
+          );
+        }
+      },
     );
   }
 }

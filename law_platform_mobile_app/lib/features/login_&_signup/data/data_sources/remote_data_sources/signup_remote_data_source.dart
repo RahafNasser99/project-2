@@ -31,17 +31,10 @@ class SignUpRemoteDataSourceImpl extends SignUpRemoteDataSource {
       data: data,
     );
 
-    print(response.toString());
-
-    print(response.statusCode);
-    print(response.headers);
-    print(response.data['token']);
-
     if (response.statusCode! >= 200 && response.statusCode! < 400) {
       final CheckAuthentication checkAuthentication = CheckAuthentication();
       final String token = response.data['token'];
       checkAuthentication.storeAuthenticationValue(email, token);
-      print(checkAuthentication.getToken());
       return Future.value(unit);
     } else {
       throw ServerException();

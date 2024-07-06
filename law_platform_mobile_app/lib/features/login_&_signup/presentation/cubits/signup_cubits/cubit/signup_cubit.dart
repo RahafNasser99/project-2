@@ -31,11 +31,4 @@ class SignupCubit extends Cubit<SignUpState> {
       (_) => emit(SignUpDone()),
     );
   }
-
-  @override
-  void onChange(Change<SignUpState> change) {
-    print(change.currentState);
-    print(change.nextState);
-    super.onChange(change);
-  }
 }
