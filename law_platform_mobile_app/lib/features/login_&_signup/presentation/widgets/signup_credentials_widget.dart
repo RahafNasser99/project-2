@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:law_platform_mobile_app/features/login_&_signup/presentation/cubits/signup_cubits/cubit/signup_cubit.dart';
 import 'package:law_platform_mobile_app/utils/enum/account_type_enum.dart';
+import 'package:law_platform_mobile_app/utils/global_widgets/loading.dart';
+import 'package:law_platform_mobile_app/utils/global_widgets/show_dialog.dart';
 
 class SignUpCredentialsWidget extends StatefulWidget {
   const SignUpCredentialsWidget(
@@ -59,228 +61,253 @@ class _SignUpCredentialsWidgetState extends State<SignUpCredentialsWidget> {
           )
         ],
       ),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text("منصة قانون",
-                style: Theme.of(context).textTheme.headlineLarge),
-            const SizedBox(
-              height: 20.0,
-            ),
-            Directionality(
-              textDirection: TextDirection.rtl,
-              child: TextFormField(
-                controller: _nameController,
-                decoration: InputDecoration(
-                  hintTextDirection: TextDirection.rtl,
-                  hintText: 'اسم المستخدم',
-                  hintStyle: Theme.of(context).textTheme.labelLarge,
-                  prefixIcon: Icon(
-                    Icons.person_2_rounded,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                ),
-                validator: (value) {
-                  if (value != null && value.trim().isEmpty) {
-                    return 'يجب أن تدخل اسم المستخدم';
-                  }
-                  return null;
-                },
-                onChanged: (value) {
-                  print('on saved name');
-                  _name = value.trim();
+      child: BlocConsumer<SignupCubit, SignUpState>(
+        listener: (context, state) {
+          if (state is SignUpError) {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) => ShowDialog(
+                dialogMessage: state.errorMessage,
+                onPressed: () {
+                  Navigator.of(context).pop();
                 },
               ),
-            ),
-            const SizedBox(
-              height: 15.0,
-            ),
-            Directionality(
-              textDirection: TextDirection.rtl,
-              child: TextFormField(
-                controller: _emailController,
-                decoration: InputDecoration(
-                  hintTextDirection: TextDirection.rtl,
-                  hintText: 'البريد الاكتروني',
-                  hintStyle: Theme.of(context).textTheme.labelLarge,
-                  prefixIcon: Icon(
-                    Icons.mail,
-                    color: Theme.of(context).colorScheme.primary,
+            );
+          } else if (state is SignUpDone) {
+            Navigator.of(context).pushNamed('home-page');
+          }
+        },
+        builder: (context, state) {
+          if (state is SignUpLoading) {
+            return const Loading();
+          } else {
+            return Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text("منصة قانون",
+                      style: Theme.of(context).textTheme.headlineLarge),
+                  const SizedBox(
+                    height: 20.0,
                   ),
-                ),
-                validator: (value) {
-                  if (value != null && value.trim().isEmpty) {
-                    return 'يجب أن تدخل البريد الالكتروني';
-                  }
-                  if (value != null &&
-                      (!value.trim().endsWith('@qanon.com') ||
-                          value.trim().length <= 10)) {
-                    return 'البريد الاكتروني غير صحيح';
-                  }
-                  return null;
-                },
-                onChanged: (value) {
-                  print('on saved email');
-                  _email = value.trim();
-                },
-              ),
-            ),
-            const SizedBox(
-              height: 15.0,
-            ),
-            Directionality(
-              textDirection: TextDirection.rtl,
-              child: TextFormField(
-                controller: _passwordController1,
-                obscureText: _hidePassword,
-                decoration: InputDecoration(
-                  hintText: 'كلمة المرور',
-                  hintStyle: Theme.of(context).textTheme.labelLarge,
-                  prefixIcon: Icon(
-                    Icons.key,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  suffix: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _hidePassword = !_hidePassword;
-                      });
-                    },
-                    child: Icon(
-                      _hidePassword
-                          ? Icons.visibility_off_outlined
-                          : Icons.visibility_outlined,
-                      color: Theme.of(context).colorScheme.primary,
+                  Directionality(
+                    textDirection: TextDirection.rtl,
+                    child: TextFormField(
+                      controller: _nameController,
+                      decoration: InputDecoration(
+                        hintTextDirection: TextDirection.rtl,
+                        hintText: 'اسم المستخدم',
+                        hintStyle: Theme.of(context).textTheme.labelLarge,
+                        prefixIcon: Icon(
+                          Icons.person_2_rounded,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value != null && value.trim().isEmpty) {
+                          return 'يجب أن تدخل اسم المستخدم';
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        print('on saved name');
+                        _name = value.trim();
+                      },
                     ),
                   ),
-                ),
-                validator: (value) {
-                  if (value != null && value.trim().isEmpty) {
-                    return 'يجب أن تدخل كلمة المرور';
-                  }
-                  if (value != null && value.trim().length < 8) {
-                    return 'كلمة المرور أقل من 8 محارف';
-                  }
-                  return null;
-                },
-                onChanged: (value) {
-                  _password = value.trim();
-                  print('on saved pass');
-                  print(value);
-                  print(_password);
-                },
-              ),
-            ),
-            const SizedBox(
-              height: 15.0,
-            ),
-            Directionality(
-              textDirection: TextDirection.rtl,
-              child: TextFormField(
-                controller: _passwordController2,
-                obscureText: _hidePassword,
-                decoration: InputDecoration(
-                  hintText: 'تأكيد كلمة المرور',
-                  hintStyle: Theme.of(context).textTheme.labelLarge,
-                  prefixIcon: Icon(
-                    Icons.key,
-                    color: Theme.of(context).colorScheme.primary,
+                  const SizedBox(
+                    height: 15.0,
                   ),
-                  suffix: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _hidePassword = !_hidePassword;
-                      });
-                    },
-                    child: Icon(
-                      _hidePassword
-                          ? Icons.visibility_off_outlined
-                          : Icons.visibility_outlined,
-                      color: Theme.of(context).colorScheme.primary,
+                  Directionality(
+                    textDirection: TextDirection.rtl,
+                    child: TextFormField(
+                      controller: _emailController,
+                      decoration: InputDecoration(
+                        hintTextDirection: TextDirection.rtl,
+                        hintText: 'البريد الاكتروني',
+                        hintStyle: Theme.of(context).textTheme.labelLarge,
+                        prefixIcon: Icon(
+                          Icons.mail,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value != null && value.trim().isEmpty) {
+                          return 'يجب أن تدخل البريد الالكتروني';
+                        }
+                        if (value != null &&
+                            (!value.trim().endsWith('@qanon.com') ||
+                                value.trim().length <= 10)) {
+                          return 'البريد الاكتروني غير صحيح';
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        print('on saved email');
+                        _email = value.trim();
+                      },
                     ),
                   ),
-                ),
-                validator: (value) {
-                  if (value != null && value.trim() != _password) {
-                    return 'كلمة المرور غير متطابقة';
-                  }
-                  return null;
-                },
-                onSaved: (newValue) {
-                  print(newValue);
-                },
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Text('حساب محامي',
-                    style: Theme.of(context).textTheme.labelLarge),
-                Checkbox(
-                  value: _lawyer,
-                  side: BorderSide(
-                    color: Colors.indigo[900]!,
-                    width: 2,
+                  const SizedBox(
+                    height: 15.0,
                   ),
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(50)),
+                  Directionality(
+                    textDirection: TextDirection.rtl,
+                    child: TextFormField(
+                      controller: _passwordController1,
+                      obscureText: _hidePassword,
+                      decoration: InputDecoration(
+                        hintText: 'كلمة المرور',
+                        hintStyle: Theme.of(context).textTheme.labelLarge,
+                        prefixIcon: Icon(
+                          Icons.key,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        suffix: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _hidePassword = !_hidePassword;
+                            });
+                          },
+                          child: Icon(
+                            _hidePassword
+                                ? Icons.visibility_off_outlined
+                                : Icons.visibility_outlined,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value != null && value.trim().isEmpty) {
+                          return 'يجب أن تدخل كلمة المرور';
+                        }
+                        if (value != null && value.trim().length < 8) {
+                          return 'كلمة المرور أقل من 8 محارف';
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        _password = value.trim();
+                        print('on saved pass');
+                        print(value);
+                        print(_password);
+                      },
+                    ),
                   ),
-                  checkColor: Colors.indigo[900],
-                  activeColor: Colors.indigo[100],
-                  onChanged: (value) {
-                    setState(() {
-                      _lawyer = value!;
-                    });
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 20.0,
-            ),
-            ElevatedButton(
-              onPressed: _submit,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                ),
-                fixedSize: Size.fromWidth(widget.width * 0.9),
-                elevation: 2.0,
+                  const SizedBox(
+                    height: 15.0,
+                  ),
+                  Directionality(
+                    textDirection: TextDirection.rtl,
+                    child: TextFormField(
+                      controller: _passwordController2,
+                      obscureText: _hidePassword,
+                      decoration: InputDecoration(
+                        hintText: 'تأكيد كلمة المرور',
+                        hintStyle: Theme.of(context).textTheme.labelLarge,
+                        prefixIcon: Icon(
+                          Icons.key,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        suffix: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _hidePassword = !_hidePassword;
+                            });
+                          },
+                          child: Icon(
+                            _hidePassword
+                                ? Icons.visibility_off_outlined
+                                : Icons.visibility_outlined,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value != null && value.trim() != _password) {
+                          return 'كلمة المرور غير متطابقة';
+                        }
+                        return null;
+                      },
+                      onSaved: (newValue) {
+                        print(newValue);
+                      },
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      Text('مختص في القانون',
+                          style: Theme.of(context).textTheme.bodyLarge),
+                      Checkbox(
+                        value: _lawyer,
+                        side: BorderSide(
+                          color: Colors.indigo[900]!,
+                          width: 2,
+                        ),
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(50)),
+                        ),
+                        checkColor: Colors.indigo[900],
+                        activeColor: Colors.indigo[100],
+                        onChanged: (value) {
+                          setState(() {
+                            _lawyer = value!;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 20.0,
+                  ),
+                  ElevatedButton(
+                    onPressed: _submit,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      ),
+                      fixedSize: Size.fromWidth(widget.width * 0.9),
+                      elevation: 2.0,
+                    ),
+                    child: Text(
+                      "تم",
+                      style: TextStyle(
+                        fontFamily: 'Lateef',
+                        color: Theme.of(context).colorScheme.inversePrimary,
+                      ),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pushReplacementNamed('/');
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.surface,
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(10.0)),
+                        side: BorderSide(color: Colors.indigo[100]!),
+                      ),
+                      fixedSize: Size.fromWidth(widget.width * 0.9),
+                      elevation: 2.0,
+                    ),
+                    child: Text(
+                      "تسجيل الدخول",
+                      style: TextStyle(
+                        fontFamily: 'Lateef',
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              child: Text(
-                "تم",
-                style: TextStyle(
-                  fontFamily: 'Lateef',
-                  color: Theme.of(context).colorScheme.inversePrimary,
-                ),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pushReplacementNamed('/');
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.surface,
-                shape: RoundedRectangleBorder(
-                  borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-                  side: BorderSide(color: Colors.indigo[100]!),
-                ),
-                fixedSize: Size.fromWidth(widget.width * 0.9),
-                elevation: 2.0,
-              ),
-              child: Text(
-                "تسجيل الدخول",
-                style: TextStyle(
-                  fontFamily: 'Lateef',
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-            ),
-          ],
-        ),
+            );
+          }
+        },
       ),
     );
   }

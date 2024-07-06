@@ -15,22 +15,27 @@ class SignupCubit extends Cubit<SignUpState> {
       AccountType accountType) async {
     emit(SignUpLoading());
 
-    final either = await signUpUseCase(name,email, password, accountType);
+    final either = await signUpUseCase(name, email, password, accountType);
 
     either.fold(
       (failure) {
-        print('#########################################');
-        print(failure.toString());
         switch (failure.runtimeType) {
           case ServerFailure:
-            return const SignUpError(errorMessage: SERVER_FAILURE_MESSAGE);
+            emit(const SignUpError(errorMessage: SERVER_FAILURE_MESSAGE));
           case OfflineFailure:
-            return const SignUpError(errorMessage: OFFLINE_SERVER_MESSAGE);
+            emit(const SignUpError(errorMessage: OFFLINE_SERVER_MESSAGE));
           default:
-            return const SignUpError(errorMessage: DEFAULT_FAILURE_MESSAGE);
+            emit(const SignUpError(errorMessage: DEFAULT_FAILURE_MESSAGE));
         }
       },
-      (_) => SignUpDone(),
+      (_) => emit(SignUpDone()),
     );
+  }
+
+  @override
+  void onChange(Change<SignUpState> change) {
+    print(change.currentState);
+    print(change.nextState);
+    super.onChange(change);
   }
 }

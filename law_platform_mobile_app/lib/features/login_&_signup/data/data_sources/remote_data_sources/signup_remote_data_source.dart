@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:law_platform_mobile_app/utils/configurations.dart';
 import 'package:law_platform_mobile_app/utils/error/exceptions.dart';
+import 'package:law_platform_mobile_app/utils/check_authentication.dart';
 import 'package:law_platform_mobile_app/utils/enum/account_type_enum.dart';
 
 abstract class SignUpRemoteDataSource {
@@ -26,10 +27,7 @@ class SignUpRemoteDataSourceImpl extends SignUpRemoteDataSource {
 
     final response = await dio.post(
       dio.options.baseUrl + url,
-      options: Options(headers: {
-        // 'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      }),
+      options: Options(headers: {'Accept': 'application/json'}),
       data: data,
     );
 
@@ -37,8 +35,13 @@ class SignUpRemoteDataSourceImpl extends SignUpRemoteDataSource {
 
     print(response.statusCode);
     print(response.headers);
+    print(response.data['token']);
 
     if (response.statusCode! >= 200 && response.statusCode! < 400) {
+      final CheckAuthentication checkAuthentication = CheckAuthentication();
+      final String token = response.data['token'];
+      checkAuthentication.storeAuthenticationValue(email, token);
+      print(checkAuthentication.getToken());
       return Future.value(unit);
     } else {
       throw ServerException();
