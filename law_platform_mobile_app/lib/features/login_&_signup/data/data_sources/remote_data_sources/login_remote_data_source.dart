@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:dartz/dartz.dart';
+import 'package:law_platform_mobile_app/utils/check_authentication.dart';
 import 'package:law_platform_mobile_app/utils/configurations.dart';
 import 'package:law_platform_mobile_app/utils/error/exceptions.dart';
 import 'package:law_platform_mobile_app/utils/enum/account_type_enum.dart';
@@ -23,9 +24,16 @@ class LoginRemoteDataSourceImpl extends LoginRemoteDataSource {
       data: data,
     );
 
-    print(response.data);
-
     if (response.statusCode! >= 200 && response.statusCode! < 400) {
+      final CheckAuthentication checkAuthentication = CheckAuthentication();
+      final String token = response.data['token'];
+      final String storedAccountType =
+          accountType == AccountType.member ? 'member' : 'lawyer';
+      checkAuthentication.storeAuthenticationValue(
+        email,
+        token,
+        storedAccountType,
+      );
       return Future.value(unit);
     } else {
       throw ServerException();

@@ -3,7 +3,6 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:law_platform_mobile_app/utils/messages.dart';
 import 'package:law_platform_mobile_app/utils/error/failures.dart';
-import 'package:law_platform_mobile_app/features/posts_&_advices/domain/entities/post.dart';
 import 'package:law_platform_mobile_app/features/posts_&_advices/domain/usecases/add_post_usecase.dart';
 import 'package:law_platform_mobile_app/features/posts_&_advices/domain/usecases/update_post_usecase.dart';
 import 'package:law_platform_mobile_app/features/posts_&_advices/domain/usecases/delete_post_usecase.dart';
@@ -17,52 +16,56 @@ class AddUpdateDeletePostCubit extends Cubit<AddUpdateDeletePostState> {
 
   AddUpdateDeletePostCubit() : super(AddUpdateDeletePostInitial());
 
-  Future<void> addUpdatePost(String addOrUpdate, Post post) async {
+  Future<void> addUpdatePost(String addOrUpdate, String postId, String postBody,
+      String? imagePath, String? imageName) async {
     emit(AddUpdateDeletePostLoading());
 
     final Either<Failure, Unit> either;
 
     if (addOrUpdate == 'add') {
-      either = await addPostUseCase(post);
+      either = await addPostUseCase(postBody, imagePath, imageName);
     } else {
-      either = await updatePostUseCase(post);
+      either = await updatePostUseCase(postId, postBody, imagePath, imageName);
     }
 
     either.fold(
       (failure) {
         switch (failure.runtimeType) {
           case ServerFailure:
-            return const AddUpdateDeletePostError(
-                errorMessage: SERVER_FAILURE_MESSAGE);
+            emit(const AddUpdateDeletePostError(
+                errorMessage: SERVER_FAILURE_MESSAGE));
           case OfflineFailure:
-            return const AddUpdateDeletePostError(
-                errorMessage: OFFLINE_SERVER_MESSAGE);
+            emit(const AddUpdateDeletePostError(
+                errorMessage: OFFLINE_SERVER_MESSAGE));
           default:
-            return const AddUpdateDeletePostError(
-                errorMessage: DEFAULT_FAILURE_MESSAGE);
+            emit(const AddUpdateDeletePostError(
+                errorMessage: DEFAULT_FAILURE_MESSAGE));
         }
       },
-      (_) => AddUpdateDeletePostDone(),
+      (_) => emit(AddUpdateDeletePostDone()),
     );
   }
 
   Future<void> deletePost(int postId) async {
     emit(AddUpdateDeletePostLoading());
-    
+
     final either = await deletePostUseCase(postId);
 
-    either.fold((failure) {
-      switch (failure.runtimeType) {
-        case ServerFailure:
-          return const AddUpdateDeletePostError(
-              errorMessage: SERVER_FAILURE_MESSAGE);
-        case OfflineFailure:
-          return const AddUpdateDeletePostError(
-              errorMessage: OFFLINE_SERVER_MESSAGE);
-        default:
-          return const AddUpdateDeletePostError(
-              errorMessage: DEFAULT_FAILURE_MESSAGE);
-      }
-    }, (_) => AddUpdateDeletePostDone());
+    either.fold(
+      (failure) {
+        switch (failure.runtimeType) {
+          case ServerFailure:
+            emit(const AddUpdateDeletePostError(
+                errorMessage: SERVER_FAILURE_MESSAGE));
+          case OfflineFailure:
+            emit(const AddUpdateDeletePostError(
+                errorMessage: OFFLINE_SERVER_MESSAGE));
+          default:
+            emit(const AddUpdateDeletePostError(
+                errorMessage: DEFAULT_FAILURE_MESSAGE));
+        }
+      },
+      (_) => emit(AddUpdateDeletePostDone()),
+    );
   }
 }

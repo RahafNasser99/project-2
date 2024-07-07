@@ -7,9 +7,7 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 InternetConnectionChecker internetConnectionChecker =
     InternetConnectionChecker();
 
-
 late SharedPreferences prefs;
-
 
 const BASE_URL = 'http://192.168.43.59:8000';
 

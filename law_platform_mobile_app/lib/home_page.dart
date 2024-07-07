@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:law_platform_mobile_app/features/posts_&_advices/presentation/cubits/get_post_cubit/get_post_cubit.dart';
 import 'package:law_platform_mobile_app/features/posts_&_advices/presentation/pages/posts_home_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -10,15 +12,18 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
-  static const List<Widget> _pages = <Widget>[
-    PostsHomePage(),
-    Text(
+  static final List<Widget> _pages = <Widget>[
+    BlocProvider(
+      create: (context) => GetPostCubit(),
+      child: const PostsHomePage(),
+    ),
+    const Text(
       'Index 1: advice',
     ),
-    Text(
+    const Text(
       'Index 2: add',
     ),
-    Text(
+    const Text(
       'Index 3: notifications',
     ),
   ];

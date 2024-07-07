@@ -34,7 +34,13 @@ class SignUpRemoteDataSourceImpl extends SignUpRemoteDataSource {
     if (response.statusCode! >= 200 && response.statusCode! < 400) {
       final CheckAuthentication checkAuthentication = CheckAuthentication();
       final String token = response.data['token'];
-      checkAuthentication.storeAuthenticationValue(email, token);
+      final String storedAccountType =
+          accountType == AccountType.member ? 'member' : 'lawyer';
+      checkAuthentication.storeAuthenticationValue(
+        email,
+        token,
+        storedAccountType,
+      );
       return Future.value(unit);
     } else {
       throw ServerException();

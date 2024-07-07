@@ -7,13 +7,20 @@ class CheckAuthentication {
   }
 
   Future<void> storeAuthenticationValue(
-      String email, String token) async {
+      String email, String token, String accountType) async {
     await prefs.setString('token', token);
     await prefs.setString('email', email);
+    await prefs.setString('accountType', accountType);
     await prefs.setBool('isAuthenticated', true);
   }
 
   String getToken() {
     return prefs.getString('token')!;
   }
+
+  String getAccountType() {
+    return prefs.getString('accountType')!;
+  }
+
+
 }

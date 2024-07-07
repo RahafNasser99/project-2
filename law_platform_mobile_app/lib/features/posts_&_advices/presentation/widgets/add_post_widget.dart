@@ -7,16 +7,24 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 class AddPostWidget extends StatefulWidget {
   const AddPostWidget({
     super.key,
+    required this.postBody,
+    required this.postImage,
     required this.height,
     required this.image,
+    required this.textEditingController,
     required this.editImage,
     required this.setImage,
+    required this.setPostBody,
   });
 
+  final String? postBody;
+  final String? postImage;
   final double height;
   final File? image;
+  final TextEditingController textEditingController;
   final void Function()? editImage;
   final void Function(File?) setImage;
+  final void Function(String) setPostBody;
 
   @override
   State<AddPostWidget> createState() => _AddPostWidgetState();
@@ -24,6 +32,7 @@ class AddPostWidget extends StatefulWidget {
 
 class _AddPostWidgetState extends State<AddPostWidget> {
   File? showedImage;
+  String? postImage;
   String? postText;
   double _keyboardHeight = 0;
   double insideHeight = 0;
@@ -35,12 +44,17 @@ class _AddPostWidgetState extends State<AddPostWidget> {
 
   @override
   void initState() {
-    super.initState();
+    // if (widget.post != null) {
+    //   _textEditingController.text = widget.post!.postBody;
+    // }
+    postText = widget.postBody;
+    postImage = widget.postImage;
     _keyboardHeightPlugin.onKeyboardHeightChanged((double height) {
       setState(() {
         _keyboardHeight = height;
       });
     });
+    super.initState();
   }
 
   @override
@@ -83,7 +97,9 @@ class _AddPostWidgetState extends State<AddPostWidget> {
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: Form(
                           key: _formKey,
-                          child: TextField(
+                          child: TextFormField(
+                            controller: _textEditingController,
+                            // initialValue: postText,
                             textAlign: TextAlign.right,
                             maxLines: showedImage != null ? 4 : maxLines,
                             textInputAction: TextInputAction.newline,
@@ -96,6 +112,7 @@ class _AddPostWidgetState extends State<AddPostWidget> {
                             ),
                             onChanged: (value) {
                               postText = value;
+                              widget.setPostBody(value);
                             },
                           ),
                         ),

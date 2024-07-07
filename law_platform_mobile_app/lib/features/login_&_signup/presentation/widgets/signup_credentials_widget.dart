@@ -80,7 +80,10 @@ class _SignUpCredentialsWidgetState extends State<SignUpCredentialsWidget> {
                 )
               ],
             ),
-            child: const Loading(),
+            child: Loading(
+              evenColor: Theme.of(context).colorScheme.primary,
+              oddColor: Theme.of(context).colorScheme.secondary,
+            ),
           );
         } else {
           return Container(
@@ -105,8 +108,10 @@ class _SignUpCredentialsWidgetState extends State<SignUpCredentialsWidget> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text("منصة قانون",
-                      style: Theme.of(context).textTheme.headlineLarge),
+                  Text(
+                    "منصة قانون",
+                    style: Theme.of(context).textTheme.headlineLarge,
+                  ),
                   const SizedBox(
                     height: 20.0,
                   ),

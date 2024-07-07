@@ -2,8 +2,6 @@ import 'package:dartz/dartz.dart';
 import 'package:law_platform_mobile_app/utils/configurations.dart';
 import 'package:law_platform_mobile_app/utils/error/failures.dart';
 import 'package:law_platform_mobile_app/utils/error/exceptions.dart';
-import 'package:law_platform_mobile_app/features/posts_&_advices/domain/entities/post.dart';
-import 'package:law_platform_mobile_app/features/posts_&_advices/data/models/post_model.dart';
 import 'package:law_platform_mobile_app/features/posts_&_advices/domain/repositories/post_repository.dart';
 import 'package:law_platform_mobile_app/features/posts_&_advices/data/data_sources/remote_data_source/post_remote_data_source.dart';
 
@@ -11,13 +9,13 @@ class PostRepositoryImpl extends PostRepository {
   PostRemoteDataSource postRemoteDataSource = PostRemoteDataSourceImpl();
 
   @override
-  Future<Either<Failure, List<Post>>> getPosts() async {
+  Future<Either<Failure, Map<String,dynamic>>> getPosts(int pageNumber) async {
     if (await internetConnectionChecker.hasConnection) {
       print('has connection');
 
       try {
-        final posts = await postRemoteDataSource.getPosts();
-        return Right(posts);
+        final returnedPosts = await postRemoteDataSource.getPosts(pageNumber);
+        return Right(returnedPosts);
       } on ServerException {
         return Left(ServerFailure());
       }
@@ -27,17 +25,11 @@ class PostRepositoryImpl extends PostRepository {
   }
 
   @override
-  Future<Either<Failure, Unit>> addPost(Post post) async {
-    PostModel postModel = PostModel(
-      postId: post.postId,
-      postBody: post.postBody,
-      postImage: post.postImage,
-      postDate: post.postDate,
-    );
-
+  Future<Either<Failure, Unit>> addPost(
+      String postBody, String? imagePath, String? imageName) async {
     if (await internetConnectionChecker.hasConnection) {
       try {
-        await postRemoteDataSource.addPost(postModel);
+        await postRemoteDataSource.addPost(postBody, imagePath, imageName);
         return const Right(unit);
       } on ServerException {
         return Left(ServerFailure());
@@ -48,17 +40,16 @@ class PostRepositoryImpl extends PostRepository {
   }
 
   @override
-  Future<Either<Failure, Unit>> updatePost(Post post) async {
-    PostModel postModel = PostModel(
-      postId: post.postId,
-      postBody: post.postBody,
-      postImage: post.postImage,
-      postDate: post.postDate,
-    );
-
+  Future<Either<Failure, Unit>> updatePost(String postId, String postBody,
+      String? imagePath, String? imageName) async {
     if (await internetConnectionChecker.hasConnection) {
       try {
-        await postRemoteDataSource.updatePost(postModel);
+        await postRemoteDataSource.updatePost(
+          postId,
+          postBody,
+          imagePath,
+          imageName,
+        );
         return const Right(unit);
       } on ServerException {
         return Left(ServerFailure());

@@ -74,7 +74,12 @@ class _LoginCredentialsState extends State<LoginCredentials> {
                 )
               ],
             ),
-            child: const Center(child: Loading()),
+            child: Center(
+              child: Loading(
+                evenColor: Theme.of(context).colorScheme.primary,
+                oddColor: Theme.of(context).colorScheme.secondary,
+              ),
+            ),
           );
         } else {
           return Container(
