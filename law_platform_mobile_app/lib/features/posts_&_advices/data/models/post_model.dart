@@ -15,7 +15,7 @@ class PostModel extends Post {
         postId: json['id'],
         postBody: json['text'],
         postImage: json['image'],
-        postDate: json['date'],
+        postDate: DateTime.now(),
         commentsCount: json['comments_count'],
         likesCount: json['likes_count'],
         dislikesCount: json['dislikes_count'],

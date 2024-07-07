@@ -87,18 +87,18 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       ),
                     ),
-                    const SliverToBoxAdapter(
-                      child: PostWidget(),
-                    ),
-                    const SliverToBoxAdapter(
-                      child: PostWidget(),
-                    ),
-                    const SliverToBoxAdapter(
-                      child: PostWidget(),
-                    ),
-                    const SliverToBoxAdapter(
-                      child: PostWidget(),
-                    ),
+                    // const SliverToBoxAdapter(
+                    //   child: PostWidget(),
+                    // ),
+                    // const SliverToBoxAdapter(
+                    //   child: PostWidget(),
+                    // ),
+                    // const SliverToBoxAdapter(
+                    //   child: PostWidget(),
+                    // ),
+                    // const SliverToBoxAdapter(
+                    //   child: PostWidget(),
+                    // ),
                   ],
                 ),
               ),
