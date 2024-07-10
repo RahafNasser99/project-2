@@ -6,7 +6,7 @@ class AppTheme {
     colorScheme: ColorScheme.fromSeed(
       seedColor: Colors.indigo.shade600,
       brightness: Brightness.light,
-      secondary: Colors.amberAccent.shade700,
+      secondary: Color.fromARGB(255, 215, 190, 99),
       surface: Colors.indigo.shade50,
       inversePrimary: Colors.white,
     ),

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
-import 'package:law_platform_mobile_app/features/profile/presentation/widgets/profile_picture_widget.dart';
-import 'package:law_platform_mobile_app/features/profile/presentation/widgets/profile_info_widget.dart';
+import 'package:law_platform_mobile_app/features/posts_&_advices/data/models/post_model.dart';
 import 'package:law_platform_mobile_app/features/posts_&_advices/presentation/widgets/post_widget.dart';
+import 'package:law_platform_mobile_app/features/profile/presentation/pages/edit_profile_page.dart';
+import 'package:law_platform_mobile_app/features/profile/presentation/widgets/profile_info_widget.dart';
+import 'package:law_platform_mobile_app/features/profile/presentation/widgets/profile_picture_widget.dart';
 import 'package:law_platform_mobile_app/features/profile/presentation/widgets/sticky_header_delegate.dart';
 import 'package:law_platform_mobile_app/features/profile/presentation/widgets/sliver_to_box_adapter_widget.dart';
+import 'package:page_transition/page_transition.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -28,7 +31,17 @@ class _ProfilePageState extends State<ProfilePage> {
                 clipper: WaveClipperTwo(),
                 child: Container(
                   height: height * 0.21,
-                  color: Theme.of(context).colorScheme.primary,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      tileMode: TileMode.decal,
+                      begin: Alignment.bottomRight,
+                      end: Alignment.topLeft,
+                      colors: [
+                        Theme.of(context).colorScheme.surface,
+                        Theme.of(context).colorScheme.primary,
+                      ],
+                    ),
+                  ),
                 ),
               ),
               Container(
@@ -87,9 +100,54 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       ),
                     ),
-                    // const SliverToBoxAdapter(
-                    //   child: PostWidget(),
-                    // ),
+                    SliverToBoxAdapter(
+                      child: PostWidget(
+                        post: PostModel(
+                          postId: 1,
+                          postBody: 'postBody',
+                          postDate: DateTime.now(),
+                          commentsCount: 20,
+                          likesCount: 30,
+                          dislikesCount: 60,
+                        ),
+                      ),
+                    ),
+                    SliverToBoxAdapter(
+                      child: PostWidget(
+                        post: PostModel(
+                          postId: 1,
+                          postBody: 'postBody',
+                          postDate: DateTime.now(),
+                          commentsCount: 20,
+                          likesCount: 30,
+                          dislikesCount: 60,
+                        ),
+                      ),
+                    ),
+                    SliverToBoxAdapter(
+                      child: PostWidget(
+                        post: PostModel(
+                          postId: 1,
+                          postBody: 'postBody',
+                          postDate: DateTime.now(),
+                          commentsCount: 20,
+                          likesCount: 30,
+                          dislikesCount: 60,
+                        ),
+                      ),
+                    ),
+                    SliverToBoxAdapter(
+                      child: PostWidget(
+                        post: PostModel(
+                          postId: 1,
+                          postBody: 'postBody',
+                          postDate: DateTime.now(),
+                          commentsCount: 20,
+                          likesCount: 30,
+                          dislikesCount: 60,
+                        ),
+                      ),
+                    ),
                     // const SliverToBoxAdapter(
                     //   child: PostWidget(),
                     // ),
@@ -105,6 +163,28 @@ class _ProfilePageState extends State<ProfilePage> {
             ],
           ),
           ProfilePictureWidget(width: width, height: height),
+          Container(
+            alignment: Alignment.topLeft,
+            margin: EdgeInsets.only(
+              top: height * 0.195,
+              left: 2.0,
+            ),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(
+                  PageTransition(
+                    child: const EditProfilePage(),
+                    type: PageTransitionType.rightToLeft,
+                    duration: const Duration(milliseconds: 300),
+                  ),
+                );
+              },
+              child: Icon(
+                Icons.edit_rounded,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+          )
         ],
       ),
     );
