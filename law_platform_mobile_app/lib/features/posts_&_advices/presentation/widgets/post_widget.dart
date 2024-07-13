@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:law_platform_mobile_app/features/interactions_&_comments/presentation/widgets/interaction_widget.dart';
 import 'package:law_platform_mobile_app/features/posts_&_advices/domain/entities/post.dart';
+import 'package:law_platform_mobile_app/utils/global_classes/data.dart';
 
 class PostWidget extends StatelessWidget {
   const PostWidget({super.key, required this.post});
@@ -37,28 +38,32 @@ class PostWidget extends StatelessWidget {
                 'رهف نصر',
                 style: Theme.of(context).textTheme.titleLarge,
               ),
+              subtitle: Text(Date(comingDate: '').getStringDate(post.postDate),
+                  style: Theme.of(context).textTheme.headlineSmall),
             ),
           ),
-          Directionality(
-            textDirection: TextDirection.rtl,
-            child: Padding(
-              padding:
-                  const EdgeInsets.only(right: 12.0, left: 12.0, bottom: 6.0),
-              // arabic text => alignment to right , english => to left
-              child: Text(
-                post.postBody,
-                textAlign: TextAlign.right,
-                style: Theme.of(context).textTheme.bodyLarge,
+          if (post.postBody != null)
+            Directionality(
+              textDirection: TextDirection.rtl,
+              child: Padding(
+                padding:
+                    const EdgeInsets.only(right: 12.0, left: 12.0, bottom: 6.0),
+                // arabic text => alignment to right , english => to left
+                child: Text(
+                  post.postBody!,
+                  textAlign: TextAlign.right,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 6.0),
-            child: Image.network(
-              fit: BoxFit.cover,
-              'https://static.wixstatic.com/media/1cd646_ae7f0376474742e4ac9a0dee2f3f5a5d~mv2_d_2508_1672_s_2.jpg/v1/fill/w_925,h_616,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/1cd646_ae7f0376474742e4ac9a0dee2f3f5a5d~mv2_d_2508_1672_s_2.jpg',
+          if (post.postImage != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 6.0),
+              child: Image.network(
+                fit: BoxFit.cover,
+                post.postImage!,
+              ),
             ),
-          ),
           const InteractionWidget(),
         ],
       ),

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
-import 'package:law_platform_mobile_app/utils/configurations.dart';
+import 'package:law_platform_mobile_app/utils/global_classes/configurations.dart';
 import 'package:law_platform_mobile_app/utils/error/exceptions.dart';
 import 'package:law_platform_mobile_app/features/interactions_&_comments/data/models/comment_model.dart';
 

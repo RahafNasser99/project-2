@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:law_platform_mobile_app/utils/messages.dart';
+import 'package:law_platform_mobile_app/utils/enum/messages.dart';
 import 'package:law_platform_mobile_app/utils/error/failures.dart';
 import 'package:law_platform_mobile_app/utils/enum/account_type_enum.dart';
 import 'package:law_platform_mobile_app/features/login_&_signup/domain/usecases/signup_usecase.dart';

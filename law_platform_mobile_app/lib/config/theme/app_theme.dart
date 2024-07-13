@@ -46,6 +46,12 @@ class AppTheme {
         fontFamily: 'Lateef',
         fontSize: 20,
       ),
+      // in date
+      headlineSmall: const TextStyle(
+        color: Colors.grey,
+        fontFamily: 'Lateef',
+        fontSize: 16,
+      ),
     ),
   );
 }

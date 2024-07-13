@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
-import 'package:law_platform_mobile_app/utils/configurations.dart';
+import 'package:law_platform_mobile_app/utils/global_classes/configurations.dart';
 import 'package:law_platform_mobile_app/utils/error/exceptions.dart';
-import 'package:law_platform_mobile_app/utils/check_authentication.dart';
+import 'package:law_platform_mobile_app/utils/global_classes/check_authentication.dart';
 import 'package:law_platform_mobile_app/utils/enum/account_type_enum.dart';
 
 abstract class SignUpRemoteDataSource {

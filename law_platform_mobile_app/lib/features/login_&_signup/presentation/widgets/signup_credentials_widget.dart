@@ -57,7 +57,7 @@ class _SignUpCredentialsWidgetState extends State<SignUpCredentialsWidget> {
             ),
           );
         } else if (state is SignUpDone) {
-          Navigator.of(context).pushNamed('home-page');
+          Navigator.of(context).pushReplacementNamed('home-page');
         }
       },
       builder: (context, state) {
@@ -299,7 +299,7 @@ class _SignUpCredentialsWidgetState extends State<SignUpCredentialsWidget> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.of(context).pushReplacementNamed('/');
+                      Navigator.of(context).pushReplacementNamed('login-page');
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Theme.of(context).colorScheme.surface,

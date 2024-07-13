@@ -52,7 +52,7 @@ class _LoginCredentialsState extends State<LoginCredentials> {
             ),
           );
         } else if (state is LoginDone) {
-          Navigator.of(context).pushNamed('home-page');
+          Navigator.of(context).pushReplacementNamed('home-page');
         }
       },
       builder: (context, state) {

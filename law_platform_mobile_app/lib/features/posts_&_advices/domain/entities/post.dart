@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 
 class Post extends Equatable {
   final int postId;
-  final String postBody;
+  final String? postBody;
   final String? postImage;
   final DateTime postDate;
   final int commentsCount;

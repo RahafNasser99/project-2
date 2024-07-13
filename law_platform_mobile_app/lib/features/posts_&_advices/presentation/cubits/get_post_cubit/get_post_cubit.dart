@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:law_platform_mobile_app/utils/messages.dart';
+import 'package:law_platform_mobile_app/utils/enum/messages.dart';
 import 'package:law_platform_mobile_app/utils/error/failures.dart';
 import 'package:law_platform_mobile_app/features/posts_&_advices/domain/entities/post.dart';
 import 'package:law_platform_mobile_app/features/posts_&_advices/domain/usecases/get_posts_usecase.dart';

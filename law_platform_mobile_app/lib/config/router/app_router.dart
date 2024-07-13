@@ -15,7 +15,7 @@ import 'package:law_platform_mobile_app/features/posts_&_advices/presentation/cu
 class AppRouter {
   Route onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
-      case '/':
+      case 'login-page':
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
             create: (context) => LoginCubit(),

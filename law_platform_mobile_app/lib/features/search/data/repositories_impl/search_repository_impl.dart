@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:law_platform_mobile_app/utils/error/failures.dart';
-import 'package:law_platform_mobile_app/utils/configurations.dart';
+import 'package:law_platform_mobile_app/utils/global_classes/configurations.dart';
 import 'package:law_platform_mobile_app/utils/error/exceptions.dart';
 import 'package:law_platform_mobile_app/features/profile/domain/entities/profile.dart';
 import 'package:law_platform_mobile_app/features/search/domain/repositories/search_repository.dart';

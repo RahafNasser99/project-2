@@ -1,4 +1,4 @@
-import 'package:law_platform_mobile_app/utils/configurations.dart';
+import 'package:law_platform_mobile_app/utils/global_classes/configurations.dart';
 
 class CheckAuthentication {
   bool isAuthenticated() {

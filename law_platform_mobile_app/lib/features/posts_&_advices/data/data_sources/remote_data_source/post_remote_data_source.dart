@@ -1,10 +1,8 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:dartz/dartz.dart';
-import 'package:law_platform_mobile_app/utils/configurations.dart';
+import 'package:law_platform_mobile_app/utils/global_classes/configurations.dart';
 import 'package:law_platform_mobile_app/utils/error/exceptions.dart';
-import 'package:law_platform_mobile_app/utils/check_authentication.dart';
+import 'package:law_platform_mobile_app/utils/global_classes/check_authentication.dart';
 import 'package:law_platform_mobile_app/features/posts_&_advices/data/models/post_model.dart';
 
 abstract class PostRemoteDataSource {
@@ -21,8 +19,6 @@ class PostRemoteDataSourceImpl extends PostRemoteDataSource {
   Future<Map<String, dynamic>> getPosts(int pageNumber) async {
     const url = '/api/post/all?per_page=10';
 
-    print('get data');
-
     final response = await dio.get(
       url,
       options: Options(
@@ -33,11 +29,9 @@ class PostRemoteDataSourceImpl extends PostRemoteDataSource {
       ),
     );
 
-    print(response.data);
-
     if (response.statusCode! >= 200 && response.statusCode! < 400) {
-      final totalPages = json.decode(response.data['pagination']['total_page']);
-      final List decodedJson = json.decode(response.data['data']) as List;
+      final totalPages = response.data['pagination']['total_pages'];
+      final List decodedJson = response.data['data'] as List;
       final List<PostModel> postModels = decodedJson
           .map((jsonPostModel) => PostModel.fromJson(jsonPostModel))
           .toList();
@@ -65,10 +59,6 @@ class PostRemoteDataSourceImpl extends PostRemoteDataSource {
       'text': postBody,
       'image': multipartFile,
     });
-
-    // final data = postModel.toJson();
-
-    // print(data);
 
     final response = await dio.post(
       url,
