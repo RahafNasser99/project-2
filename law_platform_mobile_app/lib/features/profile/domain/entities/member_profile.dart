@@ -1,7 +1,7 @@
 import 'package:law_platform_mobile_app/features/profile/domain/entities/profile.dart';
 
 abstract class MemberProfile extends Profile {
-  final String job;
+  final String? job;
 
   MemberProfile({
     required super.id,

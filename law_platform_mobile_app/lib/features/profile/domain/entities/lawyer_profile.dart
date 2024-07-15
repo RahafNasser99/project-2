@@ -1,7 +1,7 @@
 import 'package:law_platform_mobile_app/features/profile/domain/entities/profile.dart';
 
 abstract class LawyerProfile extends Profile {
-  final String specialization;
+  final String? specialization;
 
   LawyerProfile({
     required super.id,
