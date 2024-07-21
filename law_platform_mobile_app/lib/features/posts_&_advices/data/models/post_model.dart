@@ -16,7 +16,7 @@ class PostModel extends Post {
   factory PostModel.fromJson(Map<String, dynamic> json) => PostModel(
         postId: json['id'],
         postBody: json['text'],
-        postImage: json['image'] != null ? '$BASE_URL/${json['image']}' : null,
+        postImage: json['image'] != null ? '$BASE_URL/storage/${json['image']}' : null,
         postDate: Date(comingDate: json['date']).handleDate(),
         commentsCount: json['comments_count'],
         likesCount: json['likes_count'],

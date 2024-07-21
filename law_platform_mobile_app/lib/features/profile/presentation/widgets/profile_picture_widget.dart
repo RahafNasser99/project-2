@@ -1,20 +1,28 @@
 import 'package:flutter/material.dart';
 
 class ProfilePictureWidget extends StatelessWidget {
-  const ProfilePictureWidget(
-      {super.key, required this.width, required this.height});
+  const ProfilePictureWidget({
+    super.key,
+    //  required this.width,
+    //  required this.height,
+    required this.margin,
+    required this.radius,
+  });
 
-  final double width;
-  final double height;
+  // final double width;
+  // final double height;
+  final double radius;
+  final EdgeInsetsGeometry? margin;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.topRight,
-      margin: EdgeInsets.only(
-        top: height * 0.07,
-        right: 25,
-      ),
+      margin: margin,
+      //  EdgeInsets.only(
+      //   top: height * 0.07,
+      //   right: 25,
+      // ),
       child: Container(
         decoration: BoxDecoration(
           shape: BoxShape.circle,
@@ -27,7 +35,7 @@ class ProfilePictureWidget extends StatelessWidget {
           ],
         ),
         child: CircleAvatar(
-          radius: width * 0.15,
+          radius: radius,
           backgroundImage: const AssetImage('assets/images/profile.png'),
         ),
       ),

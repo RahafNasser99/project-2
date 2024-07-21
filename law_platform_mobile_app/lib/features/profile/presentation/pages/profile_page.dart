@@ -163,7 +163,16 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ],
           ),
-          ProfilePictureWidget(width: width, height: height),
+          Hero(
+            tag: 'm',
+            child: ProfilePictureWidget(
+              radius: width * 0.15,
+              margin: EdgeInsets.only(
+                top: height * 0.07,
+                right: 25,
+              ),
+            ),
+          ),
           Container(
             alignment: Alignment.topLeft,
             margin: EdgeInsets.only(

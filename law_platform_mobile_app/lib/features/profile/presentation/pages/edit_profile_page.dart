@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:law_platform_mobile_app/features/profile/domain/entities/lawyer_profile.dart';
 import 'package:law_platform_mobile_app/features/profile/domain/entities/member_profile.dart';
 import 'package:law_platform_mobile_app/features/profile/domain/entities/profile.dart';
+import 'package:law_platform_mobile_app/features/profile/presentation/widgets/profile_picture_widget.dart';
 import 'package:law_platform_mobile_app/utils/global_classes/check_authentication.dart';
 
 class EditProfilePage extends StatefulWidget {
@@ -49,6 +50,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final double width = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
@@ -83,6 +85,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
+              GestureDetector(
+                onTap: () {
+                  print('object');
+                },
+                child: ProfilePictureWidget(
+                  margin: EdgeInsets.only(
+                    top: 25.0,
+                    right: width * 0.3,
+                    left: width * 0.3,
+                  ),
+                  radius: width * 0.2,
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.only(
                   right: 12.0,
