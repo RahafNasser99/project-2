@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:law_platform_mobile_app/features/profile/presentation/widgets/hero_picture.dart';
+import 'package:law_platform_mobile_app/features/profile/presentation/widgets/show_profile_picture.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:law_platform_mobile_app/features/posts_&_advices/data/models/post_model.dart';
@@ -173,7 +173,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const HeroPicture(
+                    builder: (context) => const ShowProfilePicture(
                       image: 'assets/images/profile.png',
                       name: 'Rahaf Nasser',
                     ),

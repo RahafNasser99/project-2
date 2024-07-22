@@ -1,4 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:law_platform_mobile_app/features/profile/domain/entities/lawyer_profile.dart';
 import 'package:law_platform_mobile_app/features/profile/domain/entities/member_profile.dart';
 import 'package:law_platform_mobile_app/features/profile/domain/entities/profile.dart';
@@ -23,6 +28,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final CheckAuthentication _checkAuthentication = CheckAuthentication();
   String newName = '';
   String newProfession = '';
+  File? _imageFile;
 
   @override
   void didChangeDependencies() {
@@ -46,6 +52,31 @@ class _EditProfilePageState extends State<EditProfilePage> {
       _formKey.currentState!.save();
       // send request;
     }
+  }
+
+  void _setImage(File? image) {
+    setState(() {
+      _imageFile = image;
+    });
+  }
+
+  Future _pickImage(ImageSource imageSource) async {
+    try {
+      final image = await ImagePicker().pickImage(source: imageSource);
+      if (image == null) return;
+      File tempImageFile = File(image.path);
+      File? croppedImage = await _cropImage(imageFile: tempImageFile);
+      croppedImage == null ? _setImage(tempImageFile) : _setImage(croppedImage);
+    } on PlatformException catch (error) {
+      print(error.message);
+    }
+  }
+
+  Future<File?> _cropImage({required File imageFile}) async {
+    CroppedFile? croppedImage =
+        await ImageCropper().cropImage(sourcePath: imageFile.path);
+    if (croppedImage == null) return null;
+    return File(croppedImage.path);
   }
 
   @override
@@ -87,7 +118,52 @@ class _EditProfilePageState extends State<EditProfilePage> {
             children: <Widget>[
               GestureDetector(
                 onTap: () {
-                  print('object');
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (context) => Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 10.0,
+                      ),
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surface,
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(25.0),
+                            topRight: Radius.circular(25.0),
+                          )),
+                      width: double.infinity,
+                      child: Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.end,
+                        direction: Axis.vertical,
+                        children: <Widget>[
+                          ElevatedButton.icon(
+                            onPressed: () {
+                              _pickImage(ImageSource.camera);
+                            },
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.surface,
+                                elevation: 0.0,
+                                fixedSize: Size.fromWidth(width - 32.0)),
+                            label: const Text('التقاط صورة'),
+                            icon: const Icon(Icons.camera_alt_rounded),
+                          ),
+                          ElevatedButton.icon(
+                            onPressed: () {
+                              _pickImage(ImageSource.gallery);
+                            },
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.surface,
+                                elevation: 0.0,
+                                fixedSize: Size.fromWidth(width - 32.0)),
+                            label: const Text('اختيار من الاستديو'),
+                            icon: const Icon(Icons.image_rounded),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
                 },
                 child: ProfilePictureWidget(
                   margin: EdgeInsets.only(
