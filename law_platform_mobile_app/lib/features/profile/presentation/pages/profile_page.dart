@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:law_platform_mobile_app/features/profile/presentation/widgets/hero_picture.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:law_platform_mobile_app/features/posts_&_advices/data/models/post_model.dart';
@@ -26,6 +29,12 @@ class _ProfilePageState extends State<ProfilePage> {
       backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       body: Stack(
         children: <Widget>[
+          BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+            child: Container(
+              color: Colors.black.withOpacity(0),
+            ),
+          ),
           Column(
             children: <Widget>[
               ClipPath(
@@ -55,10 +64,13 @@ class _ProfilePageState extends State<ProfilePage> {
                       rightPadding: 12.0,
                       leftPadding: 12.0,
                       bottomPadding: 10.0,
-                      child: ProfileInfoWidget(
-                        width: width,
-                        text: 'Rahaf Nasser',
-                        icon: Icons.person_2_rounded,
+                      child: Hero(
+                        tag: 'profile-name',
+                        child: ProfileInfoWidget(
+                          width: width,
+                          text: 'Rahaf Nasser',
+                          icon: Icons.person_2_rounded,
+                        ),
                       ),
                     ),
                     SliverToBoxAdapterWidget(
@@ -149,27 +161,31 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       ),
                     ),
-                    // const SliverToBoxAdapter(
-                    //   child: PostWidget(),
-                    // ),
-                    // const SliverToBoxAdapter(
-                    //   child: PostWidget(),
-                    // ),
-                    // const SliverToBoxAdapter(
-                    //   child: PostWidget(),
-                    // ),
                   ],
                 ),
               ),
             ],
           ),
           Hero(
-            tag: 'm',
-            child: ProfilePictureWidget(
-              radius: width * 0.15,
-              margin: EdgeInsets.only(
-                top: height * 0.07,
-                right: 25,
+            tag: 'profile-picture',
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const HeroPicture(
+                      image: 'assets/images/profile.png',
+                      name: 'Rahaf Nasser',
+                    ),
+                  ),
+                );
+              },
+              child: ProfilePictureWidget(
+                radius: width * 0.15,
+                margin: EdgeInsets.only(
+                  top: height * 0.07,
+                  right: 25,
+                ),
               ),
             ),
           ),
