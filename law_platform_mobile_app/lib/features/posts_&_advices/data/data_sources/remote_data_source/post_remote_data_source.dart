@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:dartz/dartz.dart';
-import 'package:law_platform_mobile_app/utils/global_classes/configurations.dart';
 import 'package:law_platform_mobile_app/utils/error/exceptions.dart';
+import 'package:law_platform_mobile_app/utils/global_classes/configurations.dart';
 import 'package:law_platform_mobile_app/utils/global_classes/check_authentication.dart';
 import 'package:law_platform_mobile_app/features/posts_&_advices/data/models/post_model.dart';
 

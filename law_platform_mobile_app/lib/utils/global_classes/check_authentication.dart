@@ -14,6 +14,10 @@ class CheckAuthentication {
     await prefs.setBool('isAuthenticated', true);
   }
 
+  Future<void> destroyAuthenticationValue() async {
+    await prefs.clear();
+  }
+
   String getToken() {
     return prefs.getString('token')!;
   }
@@ -21,6 +25,4 @@ class CheckAuthentication {
   String getAccountType() {
     return prefs.getString('accountType')!;
   }
-
-
 }

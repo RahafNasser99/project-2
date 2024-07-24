@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:law_platform_mobile_app/app_drawer.dart';
 import 'package:law_platform_mobile_app/features/posts_&_advices/presentation/cubits/get_post_cubit/get_post_cubit.dart';
 import 'package:law_platform_mobile_app/features/posts_&_advices/presentation/pages/posts_home_page.dart';
 
@@ -87,6 +88,7 @@ class _HomePageState extends State<HomePage> {
           onDestinationSelected: _onItemTapped,
         ),
       ),
+      drawer: const AppDrawer(),
       body: Padding(
         padding: EdgeInsets.only(top: statusBarHeight),
         child: Column(
@@ -100,15 +102,17 @@ class _HomePageState extends State<HomePage> {
                 children: <Widget>[
                   SizedBox(
                     width: width * 0.1,
-                    child: GestureDetector(
-                      child: CircleAvatar(
-                        backgroundColor: Colors.grey[600],
-                        maxRadius: height * 0.03,
-                      ),
-                      onTap: () {
-                        Navigator.of(context).pushNamed('profile-page');
-                      },
-                    ),
+                    child: Builder(builder: (context) {
+                      return GestureDetector(
+                        child: CircleAvatar(
+                          backgroundColor: Colors.grey[600],
+                          maxRadius: height * 0.03,
+                        ),
+                        onTap: () {
+                          Scaffold.of(context).openDrawer();
+                        },
+                      );
+                    }),
                   ),
                   GestureDetector(
                     onTap: () {

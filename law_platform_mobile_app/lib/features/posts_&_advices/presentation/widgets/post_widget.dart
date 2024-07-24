@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:law_platform_mobile_app/features/interactions_&_comments/presentation/widgets/interaction_widget.dart';
-import 'package:law_platform_mobile_app/features/posts_&_advices/domain/entities/post.dart';
 import 'package:law_platform_mobile_app/utils/global_classes/data.dart';
+import 'package:law_platform_mobile_app/features/posts_&_advices/domain/entities/post.dart';
+import 'package:law_platform_mobile_app/features/interactions_&_comments/presentation/widgets/interaction_widget.dart';
 
 class PostWidget extends StatelessWidget {
   const PostWidget({super.key, required this.post});
@@ -23,6 +23,7 @@ class PostWidget extends StatelessWidget {
         ],
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: <Widget>[
           Directionality(
             textDirection: TextDirection.rtl,
