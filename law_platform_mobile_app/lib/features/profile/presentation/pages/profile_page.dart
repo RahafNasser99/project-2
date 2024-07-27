@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:law_platform_mobile_app/features/profile/presentation/widgets/show_profile_picture.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:law_platform_mobile_app/features/posts_&_advices/data/models/post_model.dart';
@@ -9,6 +8,7 @@ import 'package:law_platform_mobile_app/features/profile/data/models/lawyer_prof
 import 'package:law_platform_mobile_app/features/profile/presentation/pages/edit_profile_page.dart';
 import 'package:law_platform_mobile_app/features/profile/presentation/widgets/profile_info_widget.dart';
 import 'package:law_platform_mobile_app/features/posts_&_advices/presentation/widgets/post_widget.dart';
+import 'package:law_platform_mobile_app/features/profile/presentation/widgets/show_profile_picture.dart';
 import 'package:law_platform_mobile_app/features/profile/presentation/widgets/profile_picture_widget.dart';
 import 'package:law_platform_mobile_app/features/profile/presentation/widgets/sticky_header_delegate.dart';
 import 'package:law_platform_mobile_app/features/profile/presentation/widgets/sliver_to_box_adapter_widget.dart';

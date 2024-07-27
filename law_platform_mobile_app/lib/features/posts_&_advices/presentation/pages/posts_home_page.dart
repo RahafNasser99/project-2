@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:law_platform_mobile_app/features/posts_&_advices/domain/entities/post.dart';
-import 'package:law_platform_mobile_app/features/posts_&_advices/presentation/cubits/get_post_cubit/get_post_cubit.dart';
-import 'package:law_platform_mobile_app/features/posts_&_advices/presentation/widgets/post_widget.dart';
 import 'package:law_platform_mobile_app/utils/global_widgets/loading.dart';
 import 'package:law_platform_mobile_app/utils/global_widgets/show_dialog.dart';
+import 'package:law_platform_mobile_app/features/posts_&_advices/domain/entities/post.dart';
+import 'package:law_platform_mobile_app/features/posts_&_advices/presentation/widgets/post_widget.dart';
+import 'package:law_platform_mobile_app/features/posts_&_advices/presentation/cubits/get_post_cubit/get_post_cubit.dart';
 
 class PostsHomePage extends StatefulWidget {
   const PostsHomePage({super.key});

@@ -19,7 +19,7 @@ class LoginRemoteDataSourceImpl extends LoginRemoteDataSource {
     final data = {'email': email, 'password': password};
 
     final response = await dio.post(
-      dio.options.baseUrl + url,
+      url,
       options: Options(headers: {'Accept': 'application/json'}),
       data: data,
     );

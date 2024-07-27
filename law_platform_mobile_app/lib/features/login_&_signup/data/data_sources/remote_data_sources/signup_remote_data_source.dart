@@ -26,7 +26,7 @@ class SignUpRemoteDataSourceImpl extends SignUpRemoteDataSource {
     };
 
     final response = await dio.post(
-      dio.options.baseUrl + url,
+      url,
       options: Options(headers: {'Accept': 'application/json'}),
       data: data,
     );

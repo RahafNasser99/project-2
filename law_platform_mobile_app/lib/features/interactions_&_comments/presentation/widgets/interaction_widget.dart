@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:law_platform_mobile_app/utils/global_classes/check_authentication.dart';
 import 'package:like_button/like_button.dart';
 
 class InteractionWidget extends StatefulWidget {
@@ -14,6 +15,7 @@ class _InteractionWidgetState extends State<InteractionWidget> {
   int _numOfLike = 20;
   int _numOfDislike = 20;
   int _numOfComments = 30;
+  final CheckAuthentication _checkAuthentication = CheckAuthentication();
 
   @override
   Widget build(BuildContext context) {
@@ -61,44 +63,46 @@ class _InteractionWidgetState extends State<InteractionWidget> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
-          LikeButton(
-            isLiked: _like,
-            onTap: onLikeButtonTapped,
-            likeBuilder: (isLiked) {
-              return Icon(
-                isLiked ? Icons.thumb_up_alt : Icons.thumb_up_off_alt,
-                color: isLiked ? Colors.green[300] : Colors.black54,
-              );
-            },
-            circleColor: CircleColor(
-              start: Colors.green[300]!,
-              end: Colors.green[300]!,
+          if (_checkAuthentication.getAccountType() != 'member')
+            LikeButton(
+              isLiked: _like,
+              onTap: onLikeButtonTapped,
+              likeBuilder: (isLiked) {
+                return Icon(
+                  isLiked ? Icons.thumb_up_alt : Icons.thumb_up_off_alt,
+                  color: isLiked ? Colors.green[300] : Colors.black54,
+                );
+              },
+              circleColor: CircleColor(
+                start: Colors.green[300]!,
+                end: Colors.green[300]!,
+              ),
+              bubblesColor: BubblesColor(
+                dotPrimaryColor: Theme.of(context).colorScheme.secondary,
+                dotSecondaryColor: Colors.green[300]!,
+              ),
+              likeCount: _numOfLike,
             ),
-            bubblesColor: BubblesColor(
-              dotPrimaryColor: Theme.of(context).colorScheme.secondary,
-              dotSecondaryColor: Colors.green[300]!,
+          if (_checkAuthentication.getAccountType() != 'member')
+            LikeButton(
+              isLiked: _dislike,
+              onTap: onDislikeButtonTapped,
+              likeBuilder: (isLiked) {
+                return Icon(
+                  isLiked ? Icons.thumb_down_alt : Icons.thumb_down_off_alt,
+                  color: isLiked ? Colors.red[300] : Colors.black54,
+                );
+              },
+              circleColor: CircleColor(
+                start: Colors.red[300]!,
+                end: Colors.red[300]!,
+              ),
+              bubblesColor: BubblesColor(
+                dotPrimaryColor: Theme.of(context).colorScheme.secondary,
+                dotSecondaryColor: Colors.red[300]!,
+              ),
+              likeCount: _numOfDislike,
             ),
-            likeCount: _numOfLike,
-          ),
-          LikeButton(
-            isLiked: _dislike,
-            onTap: onDislikeButtonTapped,
-            likeBuilder: (isLiked) {
-              return Icon(
-                isLiked ? Icons.thumb_down_alt : Icons.thumb_down_off_alt,
-                color: isLiked ? Colors.red[300] : Colors.black54,
-              );
-            },
-            circleColor: CircleColor(
-              start: Colors.red[300]!,
-              end: Colors.red[300]!,
-            ),
-            bubblesColor: BubblesColor(
-              dotPrimaryColor: Theme.of(context).colorScheme.secondary,
-              dotSecondaryColor: Colors.red[300]!,
-            ),
-            likeCount: _numOfDislike,
-          ),
           TextButton.icon(
             onPressed: () {
               Navigator.of(context).pushNamed('comments-page');
