@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:law_platform_flutter/utils/global_classes/check_authentication.dart';
+import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
 import 'package:law_platform_flutter/features/interactions_&_comments/presentation/widgets/comment_widget.dart';
 import 'package:law_platform_flutter/features/interactions_&_comments/presentation/widgets/add_comment_widget.dart';
 
@@ -11,7 +11,6 @@ class CommentsPage extends StatefulWidget {
 }
 
 class _CommentsPageState extends State<CommentsPage> {
-  final CheckAuthentication _checkAuthentication = CheckAuthentication();
   @override
   Widget build(BuildContext context) {
     AppBar appBar = AppBar(
@@ -24,8 +23,21 @@ class _CommentsPageState extends State<CommentsPage> {
           ),
           Row(
             children: [
-              GestureDetector(child: const Icon(Icons.thumb_down_alt)),
-              GestureDetector(child: const Icon(Icons.thumb_up_alt)),
+              GestureDetector(
+                child: Icon(
+                  Icons.thumb_up_alt,
+                  color: Colors.green[300],
+                ),
+              ),
+              const SizedBox(
+                width: 6.0,
+              ),
+              GestureDetector(
+                child: Icon(
+                  Icons.thumb_down_alt,
+                  color: Colors.red[300],
+                ),
+              ),
             ],
           ),
         ],
@@ -47,7 +59,7 @@ class _CommentsPageState extends State<CommentsPage> {
               ),
             ),
           ),
-          if (_checkAuthentication.getAccountType() != 'member')
+          if (checkAuthentication.getAccountType() != 'member')
             Container(
               padding:
                   const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),

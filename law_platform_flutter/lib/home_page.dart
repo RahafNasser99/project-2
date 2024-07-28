@@ -16,10 +16,11 @@ class _HomePageState extends State<HomePage> {
   static final List<Widget> _pages = <Widget>[
     BlocProvider(
       create: (context) => GetPostCubit(),
-      child: const PostsHomePage(),
+      child: const PostsHomePage(postPage: true,),
     ),
-    const Text(
-      'Index 1: advice',
+    BlocProvider(
+      create: (context) => GetPostCubit(),
+      child: const PostsHomePage(postPage: false,),
     ),
     const Text(
       'Index 2: add',

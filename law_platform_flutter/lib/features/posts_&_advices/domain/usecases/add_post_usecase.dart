@@ -6,7 +6,8 @@ import 'package:law_platform_flutter/features/posts_&_advices/data/repositories_
 class AddPostUseCase {
   PostRepository postRepository = PostRepositoryImpl();
 
-  Future<Either<Failure, Unit>> call(String postBody,String? imagePath,String? imageName) async {
-    return await postRepository.addPost(postBody,imagePath,imageName);
+  // true for posts, false for advice
+  Future<Either<Failure, Unit>> call(String postBody,String? imagePath,String? imageName,bool postOrAdvice) async {
+    return await postRepository.addPost(postBody,imagePath,imageName,postOrAdvice);
   }
 }

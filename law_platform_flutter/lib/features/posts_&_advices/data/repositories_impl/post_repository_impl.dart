@@ -9,12 +9,10 @@ class PostRepositoryImpl extends PostRepository {
   PostRemoteDataSource postRemoteDataSource = PostRemoteDataSourceImpl();
 
   @override
-  Future<Either<Failure, Map<String,dynamic>>> getPosts(int pageNumber) async {
+  Future<Either<Failure, Map<String,dynamic>>> getPosts(int pageNumber, bool postOrAdvice) async {
     if (await internetConnectionChecker.hasConnection) {
-      print('has connection');
-
       try {
-        final returnedPosts = await postRemoteDataSource.getPosts(pageNumber);
+        final returnedPosts = await postRemoteDataSource.getPosts(pageNumber,postOrAdvice);
         return Right(returnedPosts);
       } on ServerException {
         return Left(ServerFailure());
@@ -26,10 +24,10 @@ class PostRepositoryImpl extends PostRepository {
 
   @override
   Future<Either<Failure, Unit>> addPost(
-      String postBody, String? imagePath, String? imageName) async {
+      String postBody, String? imagePath, String? imageName,bool postOrAdvice) async {
     if (await internetConnectionChecker.hasConnection) {
       try {
-        await postRemoteDataSource.addPost(postBody, imagePath, imageName);
+        await postRemoteDataSource.addPost(postBody, imagePath, imageName,postOrAdvice,);
         return const Right(unit);
       } on ServerException {
         return Left(ServerFailure());
@@ -41,7 +39,7 @@ class PostRepositoryImpl extends PostRepository {
 
   @override
   Future<Either<Failure, Unit>> updatePost(String postId, String postBody,
-      String? imagePath, String? imageName) async {
+      String? imagePath, String? imageName,bool postOrAdvice) async {
     if (await internetConnectionChecker.hasConnection) {
       try {
         await postRemoteDataSource.updatePost(
@@ -49,6 +47,7 @@ class PostRepositoryImpl extends PostRepository {
           postBody,
           imagePath,
           imageName,
+          postOrAdvice,
         );
         return const Right(unit);
       } on ServerException {
@@ -60,10 +59,10 @@ class PostRepositoryImpl extends PostRepository {
   }
 
   @override
-  Future<Either<Failure, Unit>> deletePost(int postId) async {
+  Future<Either<Failure, Unit>> deletePost(int postId,bool postOrAdvice) async {
     if (await internetConnectionChecker.hasConnection) {
       try {
-        await postRemoteDataSource.deletePost(postId);
+        await postRemoteDataSource.deletePost(postId,postOrAdvice);
         return const Right(unit);
       } on ServerException {
         return Left(ServerFailure());

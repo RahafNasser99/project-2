@@ -2,14 +2,12 @@ import 'package:dio/dio.dart';
 import 'package:dartz/dartz.dart';
 import 'package:law_platform_flutter/utils/error/exceptions.dart';
 import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
-import 'package:law_platform_flutter/utils/global_classes/check_authentication.dart';
 
 abstract class LogoutRemoteDataSource {
   Future<Unit> logout();
 }
 
 class LogoutRemoteDataSourceImpl extends LogoutRemoteDataSource {
-  CheckAuthentication checkAuthentication = CheckAuthentication();
 
   @override
   Future<Unit> logout() async {
@@ -26,8 +24,6 @@ class LogoutRemoteDataSourceImpl extends LogoutRemoteDataSource {
         },
       ),
     );
-
-    print(response);
 
     if (response.statusCode! >= 200 && response.statusCode! < 400) {
       await checkAuthentication.destroyAuthenticationValue();

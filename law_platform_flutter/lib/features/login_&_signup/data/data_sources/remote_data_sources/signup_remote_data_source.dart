@@ -1,8 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
-import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
 import 'package:law_platform_flutter/utils/error/exceptions.dart';
-import 'package:law_platform_flutter/utils/global_classes/check_authentication.dart';
+import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
 import 'package:law_platform_flutter/utils/enum/account_type_enum.dart';
 
 abstract class SignUpRemoteDataSource {
@@ -32,7 +31,6 @@ class SignUpRemoteDataSourceImpl extends SignUpRemoteDataSource {
     );
 
     if (response.statusCode! >= 200 && response.statusCode! < 400) {
-      final CheckAuthentication checkAuthentication = CheckAuthentication();
       final String token = response.data['token'];
       final String storedAccountType =
           accountType == AccountType.member ? 'member' : 'lawyer';

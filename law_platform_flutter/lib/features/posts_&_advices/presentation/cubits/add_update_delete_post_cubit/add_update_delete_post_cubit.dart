@@ -17,15 +17,15 @@ class AddUpdateDeletePostCubit extends Cubit<AddUpdateDeletePostState> {
   AddUpdateDeletePostCubit() : super(AddUpdateDeletePostInitial());
 
   Future<void> addUpdatePost(String addOrUpdate, String postId, String postBody,
-      String? imagePath, String? imageName) async {
+      String? imagePath, String? imageName,bool postOrAdvice) async {
     emit(AddUpdateDeletePostLoading());
 
     final Either<Failure, Unit> either;
 
     if (addOrUpdate == 'add') {
-      either = await addPostUseCase(postBody, imagePath, imageName);
+      either = await addPostUseCase(postBody, imagePath, imageName,postOrAdvice);
     } else {
-      either = await updatePostUseCase(postId, postBody, imagePath, imageName);
+      either = await updatePostUseCase(postId, postBody, imagePath, imageName,postOrAdvice);
     }
 
     either.fold(
@@ -46,10 +46,10 @@ class AddUpdateDeletePostCubit extends Cubit<AddUpdateDeletePostState> {
     );
   }
 
-  Future<void> deletePost(int postId) async {
+  Future<void> deletePost(int postId,bool postOrAdvice) async {
     emit(AddUpdateDeletePostLoading());
 
-    final either = await deletePostUseCase(postId);
+    final either = await deletePostUseCase(postId,postOrAdvice);
 
     either.fold(
       (failure) {

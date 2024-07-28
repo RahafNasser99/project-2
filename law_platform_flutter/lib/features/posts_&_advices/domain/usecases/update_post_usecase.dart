@@ -6,10 +6,11 @@ import 'package:law_platform_flutter/features/posts_&_advices/data/repositories_
 class UpdatePostUseCase {
   PostRepository postRepository = PostRepositoryImpl();
 
+  // true for posts, false for advice
   Future<Either<Failure, Unit>> call(String postId, String postBody,
-      String? imagePath, String? imageName) async {
+      String? imagePath, String? imageName,bool postOrAdvice) async {
     print('update post use case');
     return await postRepository.updatePost(
-        postId, postBody, imagePath, imageName);
+        postId, postBody, imagePath, imageName,postOrAdvice);
   }
 }

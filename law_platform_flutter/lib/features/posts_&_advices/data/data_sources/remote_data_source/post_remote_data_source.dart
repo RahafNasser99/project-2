@@ -6,18 +6,22 @@ import 'package:law_platform_flutter/utils/global_classes/check_authentication.d
 import 'package:law_platform_flutter/features/posts_&_advices/data/models/post_model.dart';
 
 abstract class PostRemoteDataSource {
-  Future<Map<String, dynamic>> getPosts(int pageNumber);
-  Future<Unit> addPost(String postBody, String? imagePath, String? imageName);
-  Future<Unit> updatePost(
-      String postId, String postBody, String? imagePath, String? imageName);
-  Future<Unit> deletePost(int postId);
+  Future<Map<String, dynamic>> getPosts(
+      int pageNumber, bool postOrAdvice); // true for posts, false for advice
+  Future<Unit> addPost(
+      String postBody, String? imagePath, String? imageName, bool postOrAdvice);
+  Future<Unit> updatePost(String postId, String postBody, String? imagePath,
+      String? imageName, bool postOrAdvice);
+  Future<Unit> deletePost(int postId, bool postOrAdvice);
 }
 
 class PostRemoteDataSourceImpl extends PostRemoteDataSource {
   CheckAuthentication checkAuthentication = CheckAuthentication();
   @override
-  Future<Map<String, dynamic>> getPosts(int pageNumber) async {
-    const url = '/api/post/all?per_page=10';
+  Future<Map<String, dynamic>> getPosts(
+      int pageNumber, bool postOrAdvice) async {
+    final url =
+        postOrAdvice ? '/api/post/all?per_page=10' : '/api/legalAdvice/all';
 
     final response = await dio.get(
       url,
@@ -47,18 +51,24 @@ class PostRemoteDataSourceImpl extends PostRemoteDataSource {
   }
 
   @override
-  Future<Unit> addPost(
-      String postBody, String? imagePath, String? imageName) async {
-    const url = '/api/post/create';
+  Future<Unit> addPost(String postBody, String? imagePath, String? imageName,
+      bool postOrAdvice) async {
+    final url = postOrAdvice ? '/api/post/create' : '/api/legalAdvice/create';
 
     MultipartFile? multipartFile = (imagePath != null)
         ? await MultipartFile.fromFile(imagePath, filename: imageName)
         : null;
 
-    FormData formData = FormData.fromMap({
-      'text': postBody,
-      'image': multipartFile,
-    });
+    FormData formData = postOrAdvice
+        ? FormData.fromMap({
+            'text': postBody,
+            'image': multipartFile,
+          })
+        : FormData.fromMap({
+            'advice_type_id': 1,
+            'text': postBody,
+            'image': multipartFile,
+          });
 
     final response = await dio.post(
       url,
@@ -82,8 +92,8 @@ class PostRemoteDataSourceImpl extends PostRemoteDataSource {
 
   @override
   Future<Unit> updatePost(String postId, String postBody, String? imagePath,
-      String? imageName) async {
-    final url = '/api/post/update/$postId';
+      String? imageName, bool postOrAdvice) async {
+    final url = postOrAdvice ? '/api/post/update/$postId' : '';
 
     // final data = postModel.toJson();
 
@@ -100,8 +110,8 @@ class PostRemoteDataSourceImpl extends PostRemoteDataSource {
   }
 
   @override
-  Future<Unit> deletePost(int postId) async {
-    const url = '';
+  Future<Unit> deletePost(int postId, bool postOrAdvice) async {
+    final url = postOrAdvice ? '' : '';
     print('delete post');
 
     final data = {

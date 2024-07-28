@@ -8,7 +8,9 @@ import 'package:law_platform_flutter/features/posts_&_advices/presentation/widge
 import 'package:law_platform_flutter/features/posts_&_advices/presentation/cubits/get_post_cubit/get_post_cubit.dart';
 
 class PostsHomePage extends StatefulWidget {
-  const PostsHomePage({super.key});
+  const PostsHomePage({super.key, required this.postPage});
+
+  final bool postPage;  // true for posts, false for advice
 
   @override
   State<PostsHomePage> createState() => _PostsHomePageState();
@@ -20,7 +22,7 @@ class _PostsHomePageState extends State<PostsHomePage> {
   @override
   Future<void> didChangeDependencies() async {
     if (_isInit) {
-      await BlocProvider.of<GetPostCubit>(context).getPosts();
+      await BlocProvider.of<GetPostCubit>(context).getPosts(widget.postPage);
     }
     _isInit = false;
     super.didChangeDependencies();

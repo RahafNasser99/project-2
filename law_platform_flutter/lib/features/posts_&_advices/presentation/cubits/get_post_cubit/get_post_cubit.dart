@@ -12,21 +12,24 @@ class GetPostCubit extends Cubit<GetPostState> {
   GetPostsUseCase getPostsUseCase = GetPostsUseCase();
   ScrollController scrollController = ScrollController();
   bool isLoadingMore = false;
+  bool postOrAdviceCubit = true;
   int pageNumber = 0;
   int pageCount = 0;
 
   GetPostCubit() : super(GetPostInitial()) {
     scrollController.addListener(() async {
-      await getMorePosts().then((_) => isLoadingMore = false);
+      await getMorePosts(postOrAdviceCubit).then((_) => isLoadingMore = false);
     });
   }
 
-  Future<void> getPosts() async {
+  Future<void> getPosts(bool postsOrAdvice) async {
+    // true for posts, false for advice
     pageNumber = 0;
+    postOrAdviceCubit = postsOrAdvice;
 
     emit(GetPostLoading());
 
-    final either = await getPostsUseCase(pageNumber);
+    final either = await getPostsUseCase(pageNumber, postsOrAdvice);
 
     either.fold(
       (failure) {
@@ -51,14 +54,14 @@ class GetPostCubit extends Cubit<GetPostState> {
     );
   }
 
-  Future<void> getMorePosts() async {
+  Future<void> getMorePosts(bool postsOrAdvice) async {
     if (scrollController.position.pixels ==
             scrollController.position.maxScrollExtent &&
         pageNumber < pageCount) {
       isLoadingMore = true;
       pageNumber++;
 
-      final either = await getPostsUseCase(pageNumber);
+      final either = await getPostsUseCase(pageNumber, postsOrAdvice);
 
       either.fold(
         (failure) {

@@ -11,7 +11,9 @@ import 'package:law_platform_flutter/utils/global_widgets/loading.dart';
 import 'package:law_platform_flutter/utils/global_widgets/show_dialog.dart';
 
 class AddPostPage extends StatefulWidget {
-  const AddPostPage({super.key});
+  const AddPostPage({super.key, required this.addPostPage});
+
+  final bool addPostPage;  // true for posts, false for advice
 
   @override
   State<AddPostPage> createState() => _AddPostState();
@@ -38,8 +40,14 @@ class _AddPostState extends State<AddPostPage> {
   }
 
   void _post() {
-    BlocProvider.of<AddUpdateDeletePostCubit>(context).addUpdatePost('add', '',
-        _postBody, _imageFile?.path, _imageFile?.path.split('/').last);
+    BlocProvider.of<AddUpdateDeletePostCubit>(context).addUpdatePost(
+      'add',
+      '',
+      _postBody,
+      _imageFile?.path,
+      _imageFile?.path.split('/').last,
+      widget.addPostPage,
+    );
   }
 
   void _setImage(File? image) {

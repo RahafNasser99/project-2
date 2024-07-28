@@ -6,8 +6,9 @@ import 'package:law_platform_flutter/features/posts_&_advices/data/repositories_
 class GetPostsUseCase {
   PostRepository postRepository = PostRepositoryImpl();
 
-  Future<Either<Failure, Map<String,dynamic>>> call(int pageNumber) async {
-    print('get posts use case');
-    return await postRepository.getPosts(pageNumber);
+  // true for posts, false for advice
+  Future<Either<Failure, Map<String, dynamic>>> call(
+      int pageNumber, bool postOrAdvice) async {
+    return await postRepository.getPosts(pageNumber, postOrAdvice);
   }
 }

@@ -1,11 +1,14 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:dio/dio.dart';
+import 'package:law_platform_flutter/utils/global_classes/check_authentication.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 InternetConnectionChecker internetConnectionChecker =
     InternetConnectionChecker();
+
+CheckAuthentication checkAuthentication = CheckAuthentication();
 
 late SharedPreferences prefs;
 

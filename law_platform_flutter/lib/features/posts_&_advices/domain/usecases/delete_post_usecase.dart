@@ -6,8 +6,9 @@ import 'package:law_platform_flutter/features/posts_&_advices/data/repositories_
 class DeletePostUseCase {
   PostRepository postRepository = PostRepositoryImpl();
 
-  Future<Either<Failure, Unit>> call(int postId) async {
+  // true for posts, false for advice
+  Future<Either<Failure, Unit>> call(int postId,bool postOrAdvice) async {
     print('delete post use case');
-    return await postRepository.deletePost(postId);
+    return await postRepository.deletePost(postId,postOrAdvice);
   }
 }

@@ -1,9 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:dartz/dartz.dart';
-import 'package:law_platform_flutter/utils/global_classes/check_authentication.dart';
-import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
 import 'package:law_platform_flutter/utils/error/exceptions.dart';
 import 'package:law_platform_flutter/utils/enum/account_type_enum.dart';
+import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
 
 abstract class LoginRemoteDataSource {
   Future<Unit> login(String email, String password, AccountType accountType);
@@ -25,7 +24,6 @@ class LoginRemoteDataSourceImpl extends LoginRemoteDataSource {
     );
 
     if (response.statusCode! >= 200 && response.statusCode! < 400) {
-      final CheckAuthentication checkAuthentication = CheckAuthentication();
       final String token = response.data['token'];
       final String storedAccountType =
           accountType == AccountType.member ? 'member' : 'lawyer';
