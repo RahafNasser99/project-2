@@ -1,4 +1,0 @@
-enum AccountType {
-  lawyer,
-  member,
-}
