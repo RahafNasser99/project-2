@@ -5,10 +5,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
-import 'package:law_platform_flutter/features/posts_&_advices/presentation/cubits/add_update_delete_post_cubit/add_update_delete_post_cubit.dart';
-import 'package:law_platform_flutter/features/posts_&_advices/presentation/widgets/add_post_widget.dart';
 import 'package:law_platform_flutter/utils/global_widgets/loading.dart';
 import 'package:law_platform_flutter/utils/global_widgets/show_dialog.dart';
+import 'package:law_platform_flutter/features/posts_&_advices/presentation/widgets/add_post_widget.dart';
+import 'package:law_platform_flutter/features/posts_&_advices/presentation/cubits/add_update_delete_post_cubit/add_update_delete_post_cubit.dart';
 
 class AddPostPage extends StatefulWidget {
   const AddPostPage({super.key, required this.addPostPage});
@@ -173,6 +173,7 @@ class _AddPostState extends State<AddPostPage> {
                     ),
                   ),
                   AddPostWidget(
+                    postOrAdvice: widget.addPostPage,
                     postBody: _postBody,
                     postImage: _imageFile?.path,
                     height: height - (height * 0.1) - statusBarHeight,

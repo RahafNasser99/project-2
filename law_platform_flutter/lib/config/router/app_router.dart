@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:law_platform_flutter/home_page.dart';
+import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
 import 'package:law_platform_flutter/features/search/presentation/pages/search_page.dart';
 import 'package:law_platform_flutter/features/profile/presentation/pages/profile_page.dart';
 import 'package:law_platform_flutter/features/login_&_signup/presentation/pages/login_page.dart';
@@ -44,7 +45,11 @@ class AppRouter {
         return _generateRoute(
           BlocProvider(
             create: (context) => AddUpdateDeletePostCubit(),
-            child: const AddPostPage(),
+            child: AddPostPage(
+              addPostPage: checkAuthentication.getAccountType() == 'member'
+                  ? false
+                  : true,
+            ),
           ),
           settings,
           PageTransitionType.bottomToTop,

@@ -7,6 +7,7 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 class AddPostWidget extends StatefulWidget {
   const AddPostWidget({
     super.key,
+    required this.postOrAdvice,
     required this.postBody,
     required this.postImage,
     required this.height,
@@ -17,6 +18,7 @@ class AddPostWidget extends StatefulWidget {
     required this.setPostBody,
   });
 
+  final bool postOrAdvice; //true for post, false for advice
   final String? postBody;
   final String? postImage;
   final double height;
@@ -106,7 +108,9 @@ class _AddPostWidgetState extends State<AddPostWidget> {
                             style: Theme.of(context).textTheme.bodyLarge,
                             decoration: InputDecoration(
                               border: InputBorder.none,
-                              hintText: 'عن ماذا تريد أن تتحدث، انشر المعرفة!',
+                              hintText: widget.postOrAdvice
+                                  ? 'عن ماذا تريد أن تتحدث، انشر المعرفة!'
+                                  : 'ماذا تريد أن تعرف، اكتب سؤالك',
                               hintStyle: Theme.of(context).textTheme.labelLarge,
                               hintTextDirection: TextDirection.rtl,
                             ),
