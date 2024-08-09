@@ -3,11 +3,9 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
-import 'package:law_platform_flutter/features/posts_&_advices/data/models/post_model.dart';
 import 'package:law_platform_flutter/features/profile/data/models/lawyer_profile_model.dart';
 import 'package:law_platform_flutter/features/profile/presentation/pages/edit_profile_page.dart';
 import 'package:law_platform_flutter/features/profile/presentation/widgets/profile_info_widget.dart';
-import 'package:law_platform_flutter/features/posts_&_advices/presentation/widgets/post_widget.dart';
 import 'package:law_platform_flutter/features/profile/presentation/widgets/show_profile_picture.dart';
 import 'package:law_platform_flutter/features/profile/presentation/widgets/profile_picture_widget.dart';
 import 'package:law_platform_flutter/features/profile/presentation/widgets/sticky_header_delegate.dart';
@@ -113,54 +111,54 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       ),
                     ),
-                    SliverToBoxAdapter(
-                      child: PostWidget(
-                        post: PostModel(
-                          postId: 1,
-                          postBody: 'postBody',
-                          postDate: DateTime.now(),
-                          commentsCount: 20,
-                          likesCount: 30,
-                          dislikesCount: 60,
-                        ),
-                      ),
-                    ),
-                    SliverToBoxAdapter(
-                      child: PostWidget(
-                        post: PostModel(
-                          postId: 1,
-                          postBody: 'postBody',
-                          postDate: DateTime.now(),
-                          commentsCount: 20,
-                          likesCount: 30,
-                          dislikesCount: 60,
-                        ),
-                      ),
-                    ),
-                    SliverToBoxAdapter(
-                      child: PostWidget(
-                        post: PostModel(
-                          postId: 1,
-                          postBody: 'postBody',
-                          postDate: DateTime.now(),
-                          commentsCount: 20,
-                          likesCount: 30,
-                          dislikesCount: 60,
-                        ),
-                      ),
-                    ),
-                    SliverToBoxAdapter(
-                      child: PostWidget(
-                        post: PostModel(
-                          postId: 1,
-                          postBody: 'postBody',
-                          postDate: DateTime.now(),
-                          commentsCount: 20,
-                          likesCount: 30,
-                          dislikesCount: 60,
-                        ),
-                      ),
-                    ),
+                    // SliverToBoxAdapter(
+                    //   child: PostWidget(
+                    //     post: PostModel(
+                    //       postId: 1,
+                    //       postBody: 'postBody',
+                    //       postDate: DateTime.now(),
+                    //       commentsCount: 20,
+                    //       likesCount: 30,
+                    //       dislikesCount: 60,
+                    //     ),
+                    //   ),
+                    // ),
+                    // SliverToBoxAdapter(
+                    //   child: PostWidget(
+                    //     post: PostModel(
+                    //       postId: 1,
+                    //       postBody: 'postBody',
+                    //       postDate: DateTime.now(),
+                    //       commentsCount: 20,
+                    //       likesCount: 30,
+                    //       dislikesCount: 60,
+                    //     ),
+                    //   ),
+                    // ),
+                    // SliverToBoxAdapter(
+                    //   child: PostWidget(
+                    //     post: PostModel(
+                    //       postId: 1,
+                    //       postBody: 'postBody',
+                    //       postDate: DateTime.now(),
+                    //       commentsCount: 20,
+                    //       likesCount: 30,
+                    //       dislikesCount: 60,
+                    //     ),
+                    //   ),
+                    // ),
+                    // SliverToBoxAdapter(
+                    //   child: PostWidget(
+                    //     post: PostModel(
+                    //       postId: 1,
+                    //       postBody: 'postBody',
+                    //       postDate: DateTime.now(),
+                    //       commentsCount: 20,
+                    //       likesCount: 30,
+                    //       dislikesCount: 60,
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),
@@ -201,7 +199,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   PageTransition(
                     child: EditProfilePage(
                       profile: LawyerProfileModel(
-                        id: '1',
+                        id: 1,
                         name: 'name',
                         email: 'email',
                         profilePicture: null,

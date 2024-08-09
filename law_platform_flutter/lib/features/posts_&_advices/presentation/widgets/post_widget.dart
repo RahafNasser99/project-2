@@ -30,13 +30,18 @@ class PostWidget extends StatelessWidget {
             child: ListTile(
               contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
               leading: CircleAvatar(
-                child: Icon(
-                  Icons.person_rounded,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
+                backgroundImage: post.profile.profilePicture != null
+                    ? NetworkImage(post.profile.profilePicture!)
+                    : null,
+                child: post.profile.profilePicture == null
+                    ? Icon(
+                        Icons.person_rounded,
+                        color: Theme.of(context).colorScheme.primary,
+                      )
+                    : null,
               ),
               title: Text(
-                'رهف نصر',
+                post.profile.name,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               subtitle: Text(Date(comingDate: '').getStringDate(post.postDate),

@@ -1,5 +1,5 @@
 abstract class Profile {
-  final String id;
+  final int id;
   final String name;
   final String email;
   final String? profilePicture;

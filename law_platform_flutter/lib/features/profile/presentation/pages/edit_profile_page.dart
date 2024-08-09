@@ -2,13 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:law_platform_flutter/features/profile/domain/entities/lawyer_profile.dart';
-import 'package:law_platform_flutter/features/profile/domain/entities/member_profile.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:law_platform_flutter/features/profile/domain/entities/profile.dart';
-import 'package:law_platform_flutter/features/profile/presentation/widgets/profile_picture_widget.dart';
 import 'package:law_platform_flutter/utils/global_classes/check_authentication.dart';
+import 'package:law_platform_flutter/features/profile/domain/entities/lawyer_profile.dart';
+import 'package:law_platform_flutter/features/profile/presentation/widgets/profile_picture_widget.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key, required this.profile});

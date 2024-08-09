@@ -19,7 +19,6 @@ class MemberProfileModel extends MemberProfile implements ProfileModel {
         job: json['job'],
       );
 
-  @override
   Map<String, dynamic> toJson() => {
         "id": id,
         "name": name,

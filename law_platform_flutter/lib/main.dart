@@ -6,9 +6,8 @@ import 'package:law_platform_flutter/config/router/app_router.dart';
 import 'package:law_platform_flutter/utils/global_classes/check_authentication.dart';
 
 void main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   prefs = await SharedPreferences.getInstance();
 
   final CheckAuthentication checkAuthentication = CheckAuthentication();
@@ -32,8 +31,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Law Platform',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme().lightTheme, 
+      theme: AppTheme().lightTheme,
       initialRoute: isAuthenticated ? 'home-page' : 'signup-page',
+      //isAuthenticated ? 'home-page' :
       // initialRoute:  'profile-page',
       onGenerateRoute: (settings) => AppRouter().onGenerateRoute(settings),
     );
