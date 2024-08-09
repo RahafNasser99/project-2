@@ -25,12 +25,19 @@ class ProfileRemoteDataSourceImpl extends ProfileRemoteDataSource {
         : null;
 
     FormData formData = FormData.fromMap({
+      'biography': 'biography',
       'specialization': specializationOrJob,
       'image': multipartFile,
     });
 
     final response = await dio.post(
       url,
+      options: Options(
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${checkAuthentication.getToken()}'
+        },
+      ),
       data: formData,
     );
 

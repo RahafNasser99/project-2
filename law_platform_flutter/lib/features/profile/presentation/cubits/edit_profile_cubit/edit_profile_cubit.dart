@@ -32,4 +32,11 @@ class EditProfileCubit extends Cubit<EditProfileState> {
       (_) => emit(EditProfileDone()),
     );
   }
+
+  @override
+  void onChange(Change<EditProfileState> change) {
+    print(change.currentState);
+    print(change.nextState);
+    super.onChange(change);
+  }
 }

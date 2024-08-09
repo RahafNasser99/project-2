@@ -48,10 +48,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
     super.didChangeDependencies();
   }
 
-  void _submit() {
+  void _submit() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      BlocProvider.of<EditProfileCubit>(context).editProfile(
+      await BlocProvider.of<EditProfileCubit>(context).editProfile(
         _professionEditingController.text,
         _imageFile?.path,
         _imageFile?.path.split('/').last,
@@ -139,12 +139,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 },
               ),
             );
+          } else if (state is EditProfileDone) {
+            Navigator.of(context).pop();
           }
         },
         builder: (context, state) {
-          if (state is EditProfileDone) {
-            Navigator.of(context).pop();
-          }
           return SingleChildScrollView(
             controller: _scrollController,
             child: Form(

@@ -223,7 +223,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.of(context).push(
+                      Navigator.of(context)
+                          .push(
                         PageTransition(
                           child: BlocProvider<EditProfileCubit>(
                             create: (context) => EditProfileCubit(),
@@ -234,6 +235,12 @@ class _ProfilePageState extends State<ProfilePage> {
                           type: PageTransitionType.rightToLeft,
                           duration: const Duration(milliseconds: 300),
                         ),
+                      )
+                          .then(
+                        (_) async {
+                          await BlocProvider.of<GetProfileCubit>(context)
+                              .getProfile();
+                        },
                       );
                     },
                     child: Icon(
