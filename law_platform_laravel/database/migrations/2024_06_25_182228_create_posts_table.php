@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('lawyer_id');
-            $table->text('text');
+            $table->text('text')->nullable();
             $table->string('image')->nullable();
             $table->date('date');
             $table->timestamps();

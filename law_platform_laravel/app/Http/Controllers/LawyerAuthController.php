@@ -129,6 +129,58 @@ class LawyerAuthController extends Controller
         ]);
     }
 
+    // Update Account (PUT, Auth Token)
+    public function nameUpdate(Request $request)
+    {
+        $user = $request->user();
+
+        // Validation
+        $request->validate([
+            "name" => "required|string|max:255",
+            //"email" => "required|string|email|max:255|unique:lawyers,email," . $user->id,
+            //"password" => "nullable|string|min:8|confirmed"
+        ]);
+
+        // Update user details
+        $user->update([
+            "name" => $request->name,
+            //"email" => $request->email,
+            //"password" => $request->password ? bcrypt($request->password) : $user->password,
+        ]);
+
+        return response()->json([
+            "status" => true,
+            "message" => "name updated successfully.",
+            "data" => $user
+        ]);
+    }
+
+    // Update Account (PUT, Auth Token)
+    public function passwordUpdate(Request $request)
+    {
+        $user = $request->user();
+
+        // Validation
+        $request->validate([
+            //"name" => "required|string|max:255",
+            //"email" => "required|string|email|max:255|unique:lawyers,email," . $user->id,
+            "password" => "nullable|string|min:8|confirmed"
+        ]);
+
+        // Update user details
+        $user->update([
+            //"name" => $request->name,
+            //"email" => $request->email,
+            "password" => $request->password ? bcrypt($request->password) : $user->password,
+        ]);
+
+        return response()->json([
+            "status" => true,
+            "message" => "password updated successfully.",
+            "data" => $user
+        ]);
+    }
+
     // Delete Account
     public function destroy(Request $request)
     {

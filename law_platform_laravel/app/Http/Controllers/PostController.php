@@ -16,18 +16,33 @@ class PostController extends Controller
         // Get the number of posts per page from the query parameter, default to 10 if not provided
         $perPage = $request->query('per_page', 10);
 
-        // Paginate the posts
-        $posts = Post::paginate($perPage);
+        // Get the page number from the query parameter, default to 1 if not provided
+        $page = $request->query('page', 1);
+
+        // Paginate the posts, setting the current page and loading the lawyer relationship
+        $posts = Post::with('lawyer.profile')->paginate($perPage, ['*'], 'page', $page);
+
+        // Eager load the lawyer and their profile
+        //$posts = Post::with(['lawyer.profile'])->paginate($perPage);
 
         // Map through the paginated posts to include interaction data
         $postsData = $posts->map(function ($post) use ($user) {
             $interaction = $post->userInteraction($user->id, get_class($user))->first();
             return [
                 'id' => $post->id,
-                'lawyer_id' => $post->lawyer_id,
+                //'lawyer_id' => $post->lawyer_id,
                 'text' => $post->text,
                 'image' => $post->image,
                 'date' => $post->date,
+                'lawyer' => [
+                    'id' => $post->lawyer->id,
+                    'name' => $post->lawyer->name,
+                    'email' => $post->lawyer->email,
+                    'profile' => [
+                        'specialization' => $post->lawyer->profile->specialization ?? 'N/A',
+                        'image' => $post->lawyer->profile->image ? '/storage/' . $post->lawyer->profile->image : null,
+                    ],
+                ],
                 'likes_count' => $post->likes_count,
                 'dislikes_count' => $post->dislikes_count,
                 'comments_count' => $post->comments_count,
@@ -54,10 +69,26 @@ class PostController extends Controller
     // Create a new post (POST - text, image, date)
     public function store(Request $request)
     {
+//        $request->validate([
+//            'text' => 'required|string',
+//            'image' => 'nullable|image|max:2048',
+//        ]);
+
+        // Ensure that at least one of 'text' or 'image' is provided
         $request->validate([
-            'text' => 'required|string',
-            'image' => 'nullable|image|max:2048',
+            'text' => 'nullable|string',  // Make text optional
+            'image' => 'nullable|image|max:2048',  // Image is optional but must be a valid image if provided
+        ], [
+            'required_without' => 'Either text or image is required.',
         ]);
+
+        // Check if both text and image are missing
+        if (!$request->has('text') && !$request->hasFile('image')) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Either text or image must be provided.'
+            ], 422);
+        }
 
         $imagePath = $request->hasFile('image') ? $request->file('image')->store('post_images', 'public') : null;
 
@@ -77,7 +108,9 @@ class PostController extends Controller
     // Get a specific post by ID
     public function show($id)
     {
-        $post = Post::find($id);
+        //$post = Post::find($id);
+        // Eager load the lawyer and their profile
+        $post = Post::with(['lawyer.profile'])->find($id);
 
         if (!$post) {
             return response()->json([
@@ -93,10 +126,19 @@ class PostController extends Controller
             'status' => true,
             'data' => [
                 'id' => $post->id,
-                'lawyer_id' => $post->lawyer_id,
+                //'lawyer_id' => $post->lawyer_id,
                 'text' => $post->text,
                 'image' => $post->image,
                 'date' => $post->date,
+                'lawyer' => [
+                    'id' => $post->lawyer->id,
+                    'name' => $post->lawyer->name,
+                    'email' => $post->lawyer->email,
+                    'profile' => [
+                        'specialization' => $post->lawyer->profile->specialization ?? 'N/A',
+                        'image' => $post->lawyer->profile->image ? '/storage/' . $post->lawyer->profile->image : null,
+                    ],
+                ],
                 'likes_count' => $post->likes_count,
                 'dislikes_count' => $post->dislikes_count,
                 'comments_count' => $post->comments_count,
