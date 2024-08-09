@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:law_platform_flutter/features/profile/presentation/cubits/edit_profile_cubit/edit_profile_cubit.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:law_platform_flutter/utils/global_widgets/loading.dart';
@@ -17,6 +16,7 @@ import 'package:law_platform_flutter/features/profile/presentation/widgets/profi
 import 'package:law_platform_flutter/features/profile/presentation/widgets/sticky_header_delegate.dart';
 import 'package:law_platform_flutter/features/profile/presentation/widgets/sliver_to_box_adapter_widget.dart';
 import 'package:law_platform_flutter/features/profile/presentation/cubits/get_profile_cubit/get_profile_cubit.dart';
+import 'package:law_platform_flutter/features/profile/presentation/cubits/edit_profile_cubit/edit_profile_cubit.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -223,8 +223,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.of(context)
-                          .push(
+                      Navigator.of(context).pushReplacement(
                         PageTransition(
                           child: BlocProvider<EditProfileCubit>(
                             create: (context) => EditProfileCubit(),
@@ -235,12 +234,6 @@ class _ProfilePageState extends State<ProfilePage> {
                           type: PageTransitionType.rightToLeft,
                           duration: const Duration(milliseconds: 300),
                         ),
-                      )
-                          .then(
-                        (_) async {
-                          await BlocProvider.of<GetProfileCubit>(context)
-                              .getProfile();
-                        },
                       );
                     },
                     child: Icon(

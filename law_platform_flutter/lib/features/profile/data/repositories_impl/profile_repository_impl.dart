@@ -11,11 +11,11 @@ class ProfileRepositoryImpl extends ProfileRepository {
       ProfileRemoteDataSourceImpl();
 
   @override
-  Future<Either<Failure, Unit>> editProfile(String? specializationOrJob, String? imagePath, String? imageName) async {
+  Future<Either<Failure, Unit>> editProfile(String? name,String? specializationOrJob, String? imagePath, String? imageName) async {
     if (await internetConnectionChecker.hasConnection) {
       try {
 
-        profileRemoteDataSource.editProfile(specializationOrJob, imagePath, imageName);
+        profileRemoteDataSource.editProfile(name,specializationOrJob, imagePath, imageName);
 
         return const Right(unit);
       } on ServerException {

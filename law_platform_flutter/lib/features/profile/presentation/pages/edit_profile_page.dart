@@ -5,16 +5,17 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:law_platform_flutter/utils/global_widgets/show_dialog.dart';
+import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
 import 'package:law_platform_flutter/features/profile/domain/entities/profile.dart';
-import 'package:law_platform_flutter/utils/global_classes/check_authentication.dart';
 import 'package:law_platform_flutter/features/profile/domain/entities/lawyer_profile.dart';
 import 'package:law_platform_flutter/features/profile/domain/entities/member_profile.dart';
 import 'package:law_platform_flutter/features/profile/presentation/widgets/profile_picture_widget.dart';
 import 'package:law_platform_flutter/features/profile/presentation/cubits/edit_profile_cubit/edit_profile_cubit.dart';
-import 'package:law_platform_flutter/utils/global_widgets/show_dialog.dart';
 
 class EditProfilePage extends StatefulWidget {
-  const EditProfilePage({super.key, required this.profile});
+  const EditProfilePage(
+      {super.key, required this.profile});
 
   final Profile profile;
 
@@ -24,35 +25,21 @@ class EditProfilePage extends StatefulWidget {
 
 class _EditProfilePageState extends State<EditProfilePage> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _nameEditingController = TextEditingController();
-  final TextEditingController _professionEditingController =
-      TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  final CheckAuthentication _checkAuthentication = CheckAuthentication();
   String newName = '';
   String newProfession = '';
   File? _imageFile;
-
-  @override
-  void didChangeDependencies() {
-    _nameEditingController.text = widget.profile.name;
-    if (_checkAuthentication.getAccountType() == 'lawyer' &&
-        (widget.profile as LawyerProfile).specialization != null) {
-      _professionEditingController.text =
-          (widget.profile as LawyerProfile).specialization!;
-    } else if ((widget.profile as MemberProfile).job != null) {
-      _professionEditingController.text =
-          (widget.profile as MemberProfile).job!;
-    }
-
-    super.didChangeDependencies();
-  }
 
   void _submit() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       await BlocProvider.of<EditProfileCubit>(context).editProfile(
-        _professionEditingController.text,
+        newName.isEmpty ? widget.profile.name : newName,
+        newProfession.isEmpty
+            ? checkAuthentication.getAccountType() == 'member'
+                ? (widget.profile as MemberProfile).job
+                : (widget.profile as LawyerProfile).specialization
+            : newProfession,
         _imageFile?.path,
         _imageFile?.path.split('/').last,
       );
@@ -140,7 +127,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               ),
             );
           } else if (state is EditProfileDone) {
-            Navigator.of(context).pop();
+            Navigator.of(context).pushNamed('profile-page');
           }
         },
         builder: (context, state) {
@@ -249,7 +236,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: TextFormField(
-                        controller: _nameEditingController,
+                        // controller: _nameEditingController,
+                        initialValue: widget.profile.name,
                         decoration: InputDecoration(
                           hintTextDirection: TextDirection.rtl,
                           hintStyle: Theme.of(context).textTheme.labelLarge,
@@ -292,7 +280,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: TextFormField(
-                        controller: _professionEditingController,
+                        // controller: _professionEditingController,
+                        initialValue: checkAuthentication.getAccountType() ==
+                                'member'
+                            ? (widget.profile as MemberProfile).job
+                            : (widget.profile as LawyerProfile).specialization,
                         decoration: InputDecoration(
                           hintTextDirection: TextDirection.rtl,
                           hintStyle: Theme.of(context).textTheme.labelLarge,

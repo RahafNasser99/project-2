@@ -11,12 +11,12 @@ class EditProfileCubit extends Cubit<EditProfileState> {
 
   EditProfileCubit() : super(EditProfileInitial());
 
-  Future<void> editProfile(
-      String? specializationOrJob, String? imagePath, String? imageName) async {
+  Future<void> editProfile(String? name, String? specializationOrJob,
+      String? imagePath, String? imageName) async {
     emit(EditProfileLoading());
 
-    final either =
-        await editProfileUseCase(specializationOrJob, imagePath, imageName);
+    final either = await editProfileUseCase(
+        name, specializationOrJob, imagePath, imageName);
 
     either.fold(
       (failure) {

@@ -7,15 +7,15 @@ import 'package:law_platform_flutter/features/profile/data/models/member_profile
 import 'package:law_platform_flutter/features/profile/data/models/lawyer_profile_model.dart';
 
 abstract class ProfileRemoteDataSource {
-  Future<Unit> editProfile(
-      String? specializationOrJob, String? imagePath, String? imageName);
+  Future<Unit> editProfile(String? name, String? specializationOrJob,
+      String? imagePath, String? imageName);
   Future<ProfileModel> getProfile();
 }
 
 class ProfileRemoteDataSourceImpl extends ProfileRemoteDataSource {
   @override
-  Future<Unit> editProfile(
-      String? specializationOrJob, String? imagePath, String? imageName) async {
+  Future<Unit> editProfile(String? name, String? specializationOrJob,
+      String? imagePath, String? imageName) async {
     final url = checkAuthentication.getAccountType() == 'member'
         ? '/api/member/editProfile'
         : '/api/lawyer/editProfile';
@@ -41,7 +41,29 @@ class ProfileRemoteDataSourceImpl extends ProfileRemoteDataSource {
       data: formData,
     );
 
-    if (response.statusCode! >= 200 && response.statusCode! < 400) {
+    final editNameUrl = checkAuthentication.getAccountType() == 'member'
+        ? '/api/member/nameUpdate'
+        : '/api/lawyer/nameUpdate';
+
+    final nameData = {
+      'name': name,
+    };
+
+    final nameResponse = await dio.post(
+      editNameUrl,
+      options: Options(
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${checkAuthentication.getToken()}'
+        },
+      ),
+      data: nameData,
+    );
+
+    if (response.statusCode! >= 200 &&
+        response.statusCode! < 400 &&
+        nameResponse.statusCode! >= 200 &&
+        nameResponse.statusCode! < 400) {
       return Future.value(unit);
     } else {
       throw ServerException();
@@ -63,6 +85,8 @@ class ProfileRemoteDataSourceImpl extends ProfileRemoteDataSource {
         },
       ),
     );
+
+    print(response.data);
 
     if (response.statusCode! >= 200 && response.statusCode! < 400) {
       final decodedJson = response.data['data'];

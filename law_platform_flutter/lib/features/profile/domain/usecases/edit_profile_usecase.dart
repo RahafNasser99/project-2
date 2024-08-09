@@ -6,8 +6,7 @@ import 'package:law_platform_flutter/features/profile/data/repositories_impl/pro
 class EditProfileUseCase {
   ProfileRepository profileRepository = ProfileRepositoryImpl();
 
-  Future<Either<Failure, Unit>> call(String? specializationOrJob, String? imagePath, String? imageName) async {
-    print("edit profile usecase");
-    return await profileRepository.editProfile(specializationOrJob, imagePath, imageName);
+  Future<Either<Failure, Unit>> call(String? name,String? specializationOrJob, String? imagePath, String? imageName) async {
+    return await profileRepository.editProfile(name,specializationOrJob, imagePath, imageName);
   }
 }
