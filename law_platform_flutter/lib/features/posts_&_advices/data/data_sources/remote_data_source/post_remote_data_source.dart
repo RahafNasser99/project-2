@@ -21,8 +21,8 @@ class PostRemoteDataSourceImpl extends PostRemoteDataSource {
   Future<Map<String, dynamic>> getPosts(
       int pageNumber, bool postOrAdvice) async {
     final url = postOrAdvice
-        ? '/api/post/all?per_page=10&page$pageNumber'
-        : '/api/legalAdvice/all?per_page=10&page$pageNumber';
+        ? '/api/post/all?per_page=6&page=$pageNumber'
+        : '/api/legalAdvice/all?per_page=6&page=$pageNumber';
 
     final response = await dio.get(
       url,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:law_platform_flutter/features/profile/presentation/cubits/get_profile_cubit/get_profile_cubit.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:law_platform_flutter/home_page.dart';
 import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
@@ -69,7 +70,10 @@ class AppRouter {
 
       case 'profile-page':
         return _generateRoute(
-          const ProfilePage(),
+          BlocProvider(
+            create: (context) => GetProfileCubit(),
+            child: const ProfilePage(),
+          ),
           settings,
           PageTransitionType.rightToLeft,
         );

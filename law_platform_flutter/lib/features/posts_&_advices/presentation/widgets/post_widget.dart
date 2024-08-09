@@ -63,7 +63,8 @@ class PostWidget extends StatelessWidget {
               ),
             ),
           if (post.postImage != null)
-            Padding(
+            Container(
+              width: MediaQuery.of(context).size.width,
               padding: const EdgeInsets.only(top: 6.0),
               child: Image.network(
                 fit: BoxFit.cover,

@@ -22,14 +22,14 @@ class GetProfileCubit extends Cubit<GetProfileState> {
       (failure) {
         switch (failure.runtimeType) {
           case ServerException:
-            return const GetProfileError(errorMessage: SERVER_FAILURE_MESSAGE);
+            emit(const GetProfileError(errorMessage: SERVER_FAILURE_MESSAGE));
           case OfflineFailure:
-            return const GetProfileError(errorMessage: OFFLINE_SERVER_MESSAGE);
+            emit(const GetProfileError(errorMessage: OFFLINE_SERVER_MESSAGE));
           default:
-            return const GetProfileError(errorMessage: DEFAULT_FAILURE_MESSAGE);
+            emit(const GetProfileError(errorMessage: DEFAULT_FAILURE_MESSAGE));
         }
       },
-      (profile) => GetProfileDone(profile: profile),
+      (profile) => emit(GetProfileDone(profile: profile)),
     );
   }
 }

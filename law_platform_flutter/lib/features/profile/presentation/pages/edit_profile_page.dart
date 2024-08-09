@@ -2,12 +2,16 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:law_platform_flutter/features/profile/domain/entities/profile.dart';
 import 'package:law_platform_flutter/utils/global_classes/check_authentication.dart';
 import 'package:law_platform_flutter/features/profile/domain/entities/lawyer_profile.dart';
+import 'package:law_platform_flutter/features/profile/domain/entities/member_profile.dart';
 import 'package:law_platform_flutter/features/profile/presentation/widgets/profile_picture_widget.dart';
+import 'package:law_platform_flutter/features/profile/presentation/cubits/edit_profile_cubit/edit_profile_cubit.dart';
+import 'package:law_platform_flutter/utils/global_widgets/show_dialog.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key, required this.profile});
@@ -32,16 +36,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   void didChangeDependencies() {
     _nameEditingController.text = widget.profile.name;
-    _professionEditingController.text =
-        (widget.profile as LawyerProfile).specialization!;
-    // if (_checkAuthentication.getAccountType() == 'lawyer' &&
-    //     (widget.profile as LawyerProfile).specialization != null) {
-    //   _professionEditingController.text =
-    //       (widget.profile as LawyerProfile).specialization!;
-    // } else if ((widget.profile as MemberProfile).job != null) {
-    //   _professionEditingController.text =
-    //       (widget.profile as MemberProfile).job!;
-    // }
+    if (_checkAuthentication.getAccountType() == 'lawyer' &&
+        (widget.profile as LawyerProfile).specialization != null) {
+      _professionEditingController.text =
+          (widget.profile as LawyerProfile).specialization!;
+    } else if ((widget.profile as MemberProfile).job != null) {
+      _professionEditingController.text =
+          (widget.profile as MemberProfile).job!;
+    }
 
     super.didChangeDependencies();
   }
@@ -49,7 +51,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
   void _submit() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      // send request;
+      BlocProvider.of<EditProfileCubit>(context).editProfile(
+        _professionEditingController.text,
+        _imageFile?.path,
+        _imageFile?.path.split('/').last,
+      );
     }
   }
 
@@ -81,6 +87,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
@@ -99,163 +106,213 @@ class _EditProfilePageState extends State<EditProfilePage> {
               style: Theme.of(context).textTheme.titleLarge,
             ),
             GestureDetector(
-              onTap: _submit,
+              onTap:
+                  newName.isEmpty && newProfession.isEmpty && _imageFile == null
+                      ? null
+                      : _submit,
               child: Text(
                 'تم',
-                style: Theme.of(context).textTheme.titleLarge,
+                style: newName.isEmpty &&
+                        newProfession.isEmpty &&
+                        _imageFile == null
+                    ? const TextStyle(
+                        color: Colors.grey,
+                        fontFamily: 'Lateef',
+                        fontSize: 24,
+                      )
+                    : Theme.of(context).textTheme.titleLarge,
               ),
             ),
           ],
         ),
       ),
-      body: SingleChildScrollView(
-        controller: _scrollController,
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: <Widget>[
-              GestureDetector(
-                onTap: () {
-                  showModalBottomSheet(
-                    context: context,
-                    builder: (context) => Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0,
-                        vertical: 10.0,
-                      ),
-                      decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surface,
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(25.0),
-                            topRight: Radius.circular(25.0),
-                          )),
-                      width: double.infinity,
-                      child: Wrap(
-                        crossAxisAlignment: WrapCrossAlignment.end,
-                        direction: Axis.vertical,
-                        children: <Widget>[
-                          ElevatedButton.icon(
-                            onPressed: () {
-                              _pickImage(ImageSource.camera);
-                            },
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    Theme.of(context).colorScheme.surface,
-                                elevation: 0.0,
-                                fixedSize: Size.fromWidth(width - 32.0)),
-                            label: const Text('التقاط صورة'),
-                            icon: const Icon(Icons.camera_alt_rounded),
-                          ),
-                          ElevatedButton.icon(
-                            onPressed: () {
-                              _pickImage(ImageSource.gallery);
-                            },
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    Theme.of(context).colorScheme.surface,
-                                elevation: 0.0,
-                                fixedSize: Size.fromWidth(width - 32.0)),
-                            label: const Text('اختيار من الاستديو'),
-                            icon: const Icon(Icons.image_rounded),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
+      body: BlocConsumer<EditProfileCubit, EditProfileState>(
+        listener: (context, state) {
+          if (state is EditProfileError) {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) => ShowDialog(
+                dialogMessage: state.errorMessage,
+                onPressed: () {
+                  Navigator.of(context).pop();
                 },
-                child: ProfilePictureWidget(
-                  margin: EdgeInsets.only(
-                    top: 25.0,
-                    right: width * 0.3,
-                    left: width * 0.3,
-                  ),
-                  radius: width * 0.2,
-                ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(
-                  right: 12.0,
-                  left: 12.0,
-                  top: 25.0,
-                ),
-                child: Text(
-                  'اسم المستخدم',
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontFamily:
-                        Theme.of(context).textTheme.bodyLarge!.fontFamily,
-                    fontSize: Theme.of(context).textTheme.bodyLarge!.fontSize,
+            );
+          }
+        },
+        builder: (context, state) {
+          if (state is EditProfileDone) {
+            Navigator.of(context).pop();
+          }
+          return SingleChildScrollView(
+            controller: _scrollController,
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: <Widget>[
+                  GestureDetector(
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (context) => Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16.0,
+                            vertical: 10.0,
+                          ),
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.surface,
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(25.0),
+                                topRight: Radius.circular(25.0),
+                              )),
+                          width: double.infinity,
+                          child: Wrap(
+                            crossAxisAlignment: WrapCrossAlignment.end,
+                            direction: Axis.vertical,
+                            children: <Widget>[
+                              ElevatedButton.icon(
+                                onPressed: () {
+                                  _pickImage(ImageSource.camera);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        Theme.of(context).colorScheme.surface,
+                                    elevation: 0.0,
+                                    fixedSize: Size.fromWidth(width - 32.0)),
+                                label: const Text('التقاط صورة'),
+                                icon: const Icon(Icons.camera_alt_rounded),
+                              ),
+                              ElevatedButton.icon(
+                                onPressed: () {
+                                  _pickImage(ImageSource.gallery);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        Theme.of(context).colorScheme.surface,
+                                    elevation: 0.0,
+                                    fixedSize: Size.fromWidth(width - 32.0)),
+                                label: const Text('اختيار من الاستديو'),
+                                icon: const Icon(Icons.image_rounded),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                    child: widget.profile.profilePicture != null &&
+                            _imageFile == null
+                        ? ProfilePictureWidget(
+                            margin: EdgeInsets.only(
+                              top: 25.0,
+                              right: width * 0.3,
+                              left: width * 0.3,
+                            ),
+                            radius: width * 0.2,
+                            backgroundImage:
+                                NetworkImage(widget.profile.profilePicture!),
+                          )
+                        : _imageFile == null
+                            ? Icon(
+                                Icons.person_rounded,
+                                color: Theme.of(context).colorScheme.primary,
+                              )
+                            : ProfilePictureWidget(
+                                margin: EdgeInsets.only(
+                                  top: 25.0,
+                                  right: width * 0.3,
+                                  left: width * 0.3,
+                                ),
+                                radius: width * 0.2,
+                                backgroundImage: FileImage(_imageFile!),
+                              ),
                   ),
-                  // style: Theme.of(context).textTheme.bodyLarge,
-                ),
-              ),
-              Directionality(
-                textDirection: TextDirection.rtl,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: TextFormField(
-                    controller: _nameEditingController,
-                    decoration: InputDecoration(
-                      hintTextDirection: TextDirection.rtl,
-                      hintStyle: Theme.of(context).textTheme.labelLarge,
-                      prefixIcon: Icon(
-                        Icons.person_2_rounded,
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      right: 12.0,
+                      left: 12.0,
+                      top: 25.0,
+                    ),
+                    child: Text(
+                      'اسم المستخدم',
+                      style: TextStyle(
                         color: Theme.of(context).colorScheme.primary,
+                        fontFamily:
+                            Theme.of(context).textTheme.bodyLarge!.fontFamily,
+                        fontSize:
+                            Theme.of(context).textTheme.bodyLarge!.fontSize,
                       ),
                     ),
-                    validator: (value) {
-                      if (value != null && value.trim().isEmpty) {
-                        return 'يجب أن تدخل اسم المستخدم';
-                      }
-                      return null;
-                    },
-                    onChanged: (value) {
-                      newName = value;
-                    },
                   ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(
-                  right: 12.0,
-                  left: 12.0,
-                  top: 25.0,
-                ),
-                child: Text(
-                  'المهنة أو الاختصاص',
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontFamily:
-                        Theme.of(context).textTheme.bodyLarge!.fontFamily,
-                    fontSize: Theme.of(context).textTheme.bodyLarge!.fontSize,
-                  ),
-                  // style: Theme.of(context).textTheme.bodyLarge,
-                ),
-              ),
-              Directionality(
-                textDirection: TextDirection.rtl,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: TextFormField(
-                    controller: _professionEditingController,
-                    decoration: InputDecoration(
-                      hintTextDirection: TextDirection.rtl,
-                      hintStyle: Theme.of(context).textTheme.labelLarge,
-                      prefixIcon: Icon(
-                        Icons.work_rounded,
-                        color: Theme.of(context).colorScheme.primary,
+                  Directionality(
+                    textDirection: TextDirection.rtl,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: TextFormField(
+                        controller: _nameEditingController,
+                        decoration: InputDecoration(
+                          hintTextDirection: TextDirection.rtl,
+                          hintStyle: Theme.of(context).textTheme.labelLarge,
+                          prefixIcon: Icon(
+                            Icons.person_2_rounded,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value != null && value.trim().isEmpty) {
+                            return 'يجب أن تدخل اسم المستخدم';
+                          }
+                          return null;
+                        },
+                        onChanged: (value) {
+                          newName = value;
+                        },
                       ),
                     ),
-                    onChanged: (value) {
-                      newProfession = value;
-                    },
                   ),
-                ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      right: 12.0,
+                      left: 12.0,
+                      top: 25.0,
+                    ),
+                    child: Text(
+                      'المهنة أو الاختصاص',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                        fontFamily:
+                            Theme.of(context).textTheme.bodyLarge!.fontFamily,
+                        fontSize:
+                            Theme.of(context).textTheme.bodyLarge!.fontSize,
+                      ),
+                    ),
+                  ),
+                  Directionality(
+                    textDirection: TextDirection.rtl,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: TextFormField(
+                        controller: _professionEditingController,
+                        decoration: InputDecoration(
+                          hintTextDirection: TextDirection.rtl,
+                          hintStyle: Theme.of(context).textTheme.labelLarge,
+                          prefixIcon: Icon(
+                            Icons.work_rounded,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                        onChanged: (value) {
+                          newProfession = value;
+                        },
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }

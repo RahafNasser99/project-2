@@ -16,17 +16,18 @@ class LawyerProfileModel extends LawyerProfile implements ProfileModel {
         id: json['id'],
         name: json['name'],
         email: json['email'],
-        profilePicture: json['profile']['profilePicture'] != null
-            ? '$BASE_URL${json['profile']['profilePicture']}'
+        profilePicture: json['profile']['image'] != null
+            ? '$BASE_URL${json['profile']['image']}'
             : null,
         specialization: json['profile']['specialization'],
       );
 
+  @override
   Map<String, dynamic> toJson() => {
         "id": id,
         "name": name,
         "email": email,
-        "profilePicture": profilePicture,
+        "image": profilePicture,
         "specialization": specialization,
       };
 }

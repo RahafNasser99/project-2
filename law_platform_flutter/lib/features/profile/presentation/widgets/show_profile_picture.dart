@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 class ShowProfilePicture extends StatelessWidget {
-  final String image;
+  final String imageUrl;
   final String name;
 
   const ShowProfilePicture({
     super.key,
-    required this.image,
+    required this.imageUrl,
     required this.name,
   });
 
@@ -35,7 +35,7 @@ class ShowProfilePicture extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage(image),
+              image: NetworkImage(imageUrl),
               fit: BoxFit.contain,
             ),
           ),

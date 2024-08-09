@@ -1,11 +1,8 @@
 import 'package:dartz/dartz.dart';
-import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
 import 'package:law_platform_flutter/utils/error/failures.dart';
 import 'package:law_platform_flutter/utils/error/exceptions.dart';
+import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
 import 'package:law_platform_flutter/features/profile/domain/entities/profile.dart';
-import 'package:law_platform_flutter/features/profile/data/models/profile_model.dart';
-import 'package:law_platform_flutter/features/profile/domain/entities/member_profile.dart';
-import 'package:law_platform_flutter/features/profile/data/models/member_profile_model.dart';
 import 'package:law_platform_flutter/features/profile/domain/repositories/profile_repository.dart';
 import 'package:law_platform_flutter/features/profile/data/data_sources/remote_data_sources/profile_remote_data_source.dart';
 
@@ -14,19 +11,11 @@ class ProfileRepositoryImpl extends ProfileRepository {
       ProfileRemoteDataSourceImpl();
 
   @override
-  Future<Either<Failure, Unit>> editProfile(Profile profile) async {
+  Future<Either<Failure, Unit>> editProfile(String? specializationOrJob, String? imagePath, String? imageName) async {
     if (await internetConnectionChecker.hasConnection) {
       try {
-        // change depends on account type
-        ProfileModel profileModel = MemberProfileModel(
-          id: profile.id,
-          name: profile.name,
-          email: profile.email,
-          profilePicture: profile.profilePicture,
-          job: (profile as MemberProfile).job,
-        );
 
-        profileRemoteDataSource.editProfile(profileModel);
+        profileRemoteDataSource.editProfile(specializationOrJob, imagePath, imageName);
 
         return const Right(unit);
       } on ServerException {

@@ -5,10 +5,12 @@ class ProfilePictureWidget extends StatelessWidget {
     super.key,
     required this.margin,
     required this.radius,
+    required this.backgroundImage,
   });
 
   final double radius;
   final EdgeInsetsGeometry? margin;
+  final ImageProvider<Object>? backgroundImage;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,7 @@ class ProfilePictureWidget extends StatelessWidget {
         ),
         child: CircleAvatar(
           radius: radius,
-          backgroundImage: const AssetImage('assets/images/profile.png'),
+          backgroundImage: backgroundImage,
         ),
       ),
     );

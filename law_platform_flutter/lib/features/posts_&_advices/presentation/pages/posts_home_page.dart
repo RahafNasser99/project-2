@@ -10,7 +10,7 @@ import 'package:law_platform_flutter/features/posts_&_advices/presentation/cubit
 class PostsHomePage extends StatefulWidget {
   const PostsHomePage({super.key, required this.postPage});
 
-  final bool postPage;  // true for posts, false for advice
+  final bool postPage; // true for posts, false for advice
 
   @override
   State<PostsHomePage> createState() => _PostsHomePageState();
@@ -50,7 +50,7 @@ class _PostsHomePageState extends State<PostsHomePage> {
           return Center(
             child: Loading(
               evenColor: Theme.of(context).colorScheme.primary,
-              oddColor: Theme.of(context).colorScheme.primary,
+              oddColor: Theme.of(context).colorScheme.secondary,
             ),
           );
         } else if (state is GetPostIsEmpty) {

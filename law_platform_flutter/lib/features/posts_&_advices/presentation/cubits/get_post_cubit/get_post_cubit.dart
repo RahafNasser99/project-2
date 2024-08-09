@@ -13,7 +13,7 @@ class GetPostCubit extends Cubit<GetPostState> {
   ScrollController scrollController = ScrollController();
   bool isLoadingMore = false;
   bool postOrAdviceCubit = true;
-  int pageNumber = 0;
+  int pageNumber = 1;
   int pageCount = 0;
 
   GetPostCubit() : super(GetPostInitial()) {
@@ -24,7 +24,7 @@ class GetPostCubit extends Cubit<GetPostState> {
 
   Future<void> getPosts(bool postsOrAdvice) async {
     // true for posts, false for advice
-    pageNumber = 0;
+    pageNumber = 1;
     postOrAdviceCubit = postsOrAdvice;
 
     emit(GetPostLoading());
@@ -46,6 +46,7 @@ class GetPostCubit extends Cubit<GetPostState> {
         if ((returnedPosts['posts'] as List).isEmpty) {
           emit(GetPostIsEmpty());
         } else {
+          pageCount = returnedPosts['totalPages'];
           emit(GetPostDone(
               pageCount: returnedPosts['totalPages'],
               posts: returnedPosts['posts']));
@@ -57,7 +58,7 @@ class GetPostCubit extends Cubit<GetPostState> {
   Future<void> getMorePosts(bool postsOrAdvice) async {
     if (scrollController.position.pixels ==
             scrollController.position.maxScrollExtent &&
-        pageNumber < pageCount) {
+        pageNumber <= pageCount) {
       isLoadingMore = true;
       pageNumber++;
 
@@ -77,7 +78,10 @@ class GetPostCubit extends Cubit<GetPostState> {
         },
         (returnedPosts) => emit(GetPostDone(
             pageCount: returnedPosts['totalPages'],
-            posts: returnedPosts['posts'])),
+            posts: [
+              ...(state as GetPostDone).posts,
+              ...returnedPosts['posts']
+            ])),
       );
     }
   }
