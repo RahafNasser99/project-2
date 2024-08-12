@@ -28,7 +28,17 @@ class LawyerProfileController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Profile retrieved successfully',
-            'data' => $profile
+            'data' => [
+                'lawyer' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'profile' => [
+                        'specialization' => $profile->lawyer->profile->specialization ?? 'N/A',
+                        'image' => $profile->lawyer->profile->image ? '/storage/' . $profile->lawyer->profile->image : null,
+                    ],
+                ]
+            ]
         ]);
     }
 
@@ -123,7 +133,17 @@ class LawyerProfileController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Profile retrieved successfully',
-            'data' => $profile
+            'data' => [
+                'lawyer' => [
+                    'id' => $lawyer->id,
+                    'name' => $lawyer->name,
+                    'email' => $lawyer->email,
+                    'profile' => [
+                        'specialization' => $profile->lawyer->profile->specialization ?? 'N/A',
+                        'image' => $profile->lawyer->profile->image ? '/storage/' . $profile->lawyer->profile->image : null,
+                    ],
+                ]
+            ]
         ]);
     }
 }

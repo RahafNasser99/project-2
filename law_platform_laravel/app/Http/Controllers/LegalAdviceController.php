@@ -4,15 +4,28 @@ namespace App\Http\Controllers;
 
 use App\Models\AdviceType;
 use App\Models\LegalAdvice;
+use App\Models\Member;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class LegalAdviceController extends Controller
 {
-    // Get all legal advices
-    public function index()
+
+    public function getMyLegalAdvices(Request $request)
     {
-        $legalAdvices = LegalAdvice::with('adviceType')->get();
+        // Get the authenticated member
+        $member = Auth::user();
+
+        // Get the number of legal advices per page from the query parameter, default to 10 if not provided
+        $perPage = $request->query('per_page', 10);
+
+        // Get the page number from the query parameter, default to 1 if not provided
+        $page = $request->query('page', 1);
+
+        // Retrieve the member's legal advices with pagination
+        $legalAdvices = LegalAdvice::where('member_id', $member->id)
+            ->with('adviceType', 'member.profile')
+            ->paginate($perPage, ['*'], 'page', $page);
 
         $legalAdvicesData = $legalAdvices->map(function ($legalAdvice) {
             return [
@@ -23,13 +36,79 @@ class LegalAdviceController extends Controller
                 'text' => $legalAdvice->text,
                 'image' => $legalAdvice->image,
                 'date' => $legalAdvice->date,
+                'member' => [
+                    'id' => $legalAdvice->member->id,
+                    'name' => $legalAdvice->member->name,
+                    'email' => $legalAdvice->member->email,
+                    'profile' => [
+                        'work' => $legalAdvice->member->profile->work ?? 'N/A',
+                        'image' => $legalAdvice->member->profile->image ? '/storage/' . $legalAdvice->member->profile->image : null,
+                    ],
+                ],
                 'comments_count' => $legalAdvice->comments_count,
             ];
         });
 
         return response()->json([
             'status' => true,
-            'data' => $legalAdvicesData
+            'data' => $legalAdvicesData,
+            'pagination' => [
+                'current_page' => $legalAdvices->currentPage(),
+                'per_page' => $legalAdvices->perPage(),
+                'total_pages' => $legalAdvices->lastPage(),
+                'total_advices' => $legalAdvices->total(),
+            ]
+        ]);
+    }
+
+
+
+    // Get all legal advices
+    public function index(Request $request)
+    {
+        // Get the number of legal advices per page from the query parameter, default to 10 if not provided
+        $perPage = $request->query('per_page', 10);
+
+        // Get the page number from the query parameter, default to 1 if not provided
+        $page = $request->query('page', 1);
+
+        // Paginate the legal advices, setting the current page and loading the lawyer relationship
+        $legalAdvices = LegalAdvice::with('member.profile', 'adviceType')->paginate($perPage, ['*'], 'page', $page);
+
+        //$legalAdvices = LegalAdvice::with('adviceType')->get();
+
+        $legalAdvicesData = $legalAdvices->map(function ($legalAdvice) {
+            $profile = $legalAdvice->member->profile;
+            return [
+                'id' => $legalAdvice->id,
+                'member_id' => $legalAdvice->member_id,
+                'advice_type_id' => $legalAdvice->advice_type_id,
+                'type' => $legalAdvice->adviceType->name,
+                'text' => $legalAdvice->text,
+                'image' => $legalAdvice->image,
+                'date' => $legalAdvice->date,
+                'member' => [
+                    'id' => $legalAdvice->member->id,
+                    'name' => $legalAdvice->member->name,
+                    'email' => $legalAdvice->member->email,
+                    'profile' => [
+                        'work' => $profile ? $profile->work : 'N/A',
+                        'image' => $profile && $profile->image ? '/storage/' . $profile->image : null,
+                    ],
+                ],
+                'comments_count' => $legalAdvice->comments_count,
+            ];
+        });
+
+        return response()->json([
+            'status' => true,
+            'data' => $legalAdvicesData,
+            'pagination' => [
+                'current_page' => $legalAdvices->currentPage(),
+                'per_page' => $legalAdvices->perPage(),
+                'total_pages' => $legalAdvices->lastPage(),
+                'total_posts' => $legalAdvices->total(),
+            ]
         ]);
     }
 
@@ -57,6 +136,65 @@ class LegalAdviceController extends Controller
             'data' => $legalAdvicesData
         ]);
     }
+
+    public function getLegalAdvicesByMember($memberId, Request $request)
+    {
+        // Check if the member exists
+        $member = Member::find($memberId);
+
+        if (!$member) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Member not found'
+            ], 404);
+        }
+
+        // Get the number of legal advices per page from the query parameter, default to 10 if not provided
+        $perPage = $request->query('per_page', 10);
+
+        // Get the page number from the query parameter, default to 1 if not provided
+        $page = $request->query('page', 1);
+
+        // Retrieve the legal advices of the specific member with pagination
+        $legalAdvices = LegalAdvice::where('member_id', $member->id)
+            ->with('adviceType', 'member.profile')
+            ->paginate($perPage, ['*'], 'page', $page);
+
+        $legalAdvicesData = $legalAdvices->map(function ($legalAdvice) {
+            return [
+                'id' => $legalAdvice->id,
+                'member_id' => $legalAdvice->member_id,
+                'advice_type_id' => $legalAdvice->advice_type_id,
+                'type' => $legalAdvice->adviceType->name,
+                'text' => $legalAdvice->text,
+                'image' => $legalAdvice->image,
+                'date' => $legalAdvice->date,
+                'member' => [
+                    'id' => $legalAdvice->member->id,
+                    'name' => $legalAdvice->member->name,
+                    'email' => $legalAdvice->member->email,
+                    'profile' => [
+                        'work' => $legalAdvice->member->profile->work ?? 'N/A',
+                        'image' => $legalAdvice->member->profile->image ? '/storage/' . $legalAdvice->member->profile->image : null,
+                    ],
+                ],
+                'comments_count' => $legalAdvice->comments_count,
+            ];
+        });
+
+        return response()->json([
+            'status' => true,
+            'data' => $legalAdvicesData,
+            'pagination' => [
+                'current_page' => $legalAdvices->currentPage(),
+                'per_page' => $legalAdvices->perPage(),
+                'total_pages' => $legalAdvices->lastPage(),
+                'total_advices' => $legalAdvices->total(),
+            ]
+        ]);
+    }
+
+
 
     // Add a legal advice
     public function store(Request $request)
@@ -89,7 +227,7 @@ class LegalAdviceController extends Controller
     // Get specific legal advice by ID
     public function show($id)
     {
-        $legalAdvice = LegalAdvice::with(['adviceType', 'comments'])->findOrFail($id);
+        $legalAdvice = LegalAdvice::with(['member.profile', 'adviceType', 'comments'])->findOrFail($id);
 
         return response()->json([
             'status' => true,
@@ -101,6 +239,15 @@ class LegalAdviceController extends Controller
                 'text' => $legalAdvice->text,
                 'image' => $legalAdvice->image,
                 'date' => $legalAdvice->date,
+                'member' => [
+                    'id' => $legalAdvice->member->id,
+                    'name' => $legalAdvice->member->name,
+                    'email' => $legalAdvice->member->email,
+                    'profile' => [
+                        'work' => $legalAdvice->member->profile->work ?? 'N/A',
+                        'image' => $legalAdvice->member->profile->image ? '/storage/' . $legalAdvice->member->profile->image : null,
+                    ],
+                ],
                 'comments_count' => $legalAdvice->comments_count,
                 //'comments' => $legalAdvice->comments, // Optionally include comments if needed
             ]
