@@ -8,6 +8,63 @@ use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
+
+    public function myPosts(Request $request)
+    {
+        $user = Auth::user();
+
+        // Get the number of posts per page from the query parameter, default to 10 if not provided
+        $perPage = $request->query('per_page', 10);
+
+        // Get the page number from the query parameter, default to 1 if not provided
+        $page = $request->query('page', 1);
+
+        // Retrieve the posts that belong to the authenticated lawyer
+        $posts = Post::where('lawyer_id', $user->id)
+            ->with('lawyer.profile')
+            ->paginate($perPage, ['*'], 'page', $page);
+
+        // Map through the paginated posts to include interaction data
+        $postsData = $posts->map(function ($post) use ($user) {
+            $interaction = $post->userInteraction($user->id, get_class($user))->first();
+            return [
+                'id' => $post->id,
+                'text' => $post->text,
+                'image' => $post->image,
+                'date' => $post->date,
+                'lawyer' => [
+                    'id' => $post->lawyer->id,
+                    'name' => $post->lawyer->name,
+                    'email' => $post->lawyer->email,
+                    'profile' => [
+                        'specialization' => $post->lawyer->profile->specialization ?? 'N/A',
+                        'image' => $post->lawyer->profile->image ? '/storage/' . $post->lawyer->profile->image : null,
+                    ],
+                ],
+                'likes_count' => $post->likes_count,
+                'dislikes_count' => $post->dislikes_count,
+                'comments_count' => $post->comments_count,
+                'user_interaction' => [
+                    'liked' => $interaction ? $interaction->liked : false,
+                    'disliked' => $interaction ? $interaction->disliked : false,
+                ]
+            ];
+        });
+
+        // Include pagination information in the response
+        return response()->json([
+            'status' => true,
+            'data' => $postsData,
+            'pagination' => [
+                'current_page' => $posts->currentPage(),
+                'per_page' => $posts->perPage(),
+                'total_pages' => $posts->lastPage(),
+                'total_posts' => $posts->total(),
+            ]
+        ]);
+    }
+
+
     // Get all posts with pagination
     public function index(Request $request)
     {
@@ -65,6 +122,55 @@ class PostController extends Controller
             ]
         ]);
     }
+
+    public function getPostsByLawyer($lawyerId, Request $request)
+    {
+        // Get the number of posts per page from the query parameter, default to 10 if not provided
+        $perPage = $request->query('per_page', 10);
+
+        // Get the page number from the query parameter, default to 1 if not provided
+        $page = $request->query('page', 1);
+
+        // Retrieve the posts that belong to the specified lawyer
+        $posts = Post::where('lawyer_id', $lawyerId)
+            ->with('lawyer.profile')
+            ->paginate($perPage, ['*'], 'page', $page);
+
+        // Map through the paginated posts to include interaction data
+        $postsData = $posts->map(function ($post) {
+            return [
+                'id' => $post->id,
+                'text' => $post->text,
+                'image' => $post->image,
+                'date' => $post->date,
+                'lawyer' => [
+                    'id' => $post->lawyer->id,
+                    'name' => $post->lawyer->name,
+                    'email' => $post->lawyer->email,
+                    'profile' => [
+                        'specialization' => $post->lawyer->profile->specialization ?? 'N/A',
+                        'image' => $post->lawyer->profile->image ? '/storage/' . $post->lawyer->profile->image : null,
+                    ],
+                ],
+                'likes_count' => $post->likes_count,
+                'dislikes_count' => $post->dislikes_count,
+                'comments_count' => $post->comments_count,
+            ];
+        });
+
+        // Include pagination information in the response
+        return response()->json([
+            'status' => true,
+            'data' => $postsData,
+            'pagination' => [
+                'current_page' => $posts->currentPage(),
+                'per_page' => $posts->perPage(),
+                'total_pages' => $posts->lastPage(),
+                'total_posts' => $posts->total(),
+            ]
+        ]);
+    }
+
 
     // Create a new post (POST - text, image, date)
     public function store(Request $request)

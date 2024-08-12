@@ -37,6 +37,7 @@ Route::post("login", [MemberAuthController::class, "login"]);
     Route::post('editProfile', [MemberProfileController::class, 'editProfile']);
     Route::get('member-profile/{id}', [MemberProfileController::class, 'viewMemberProfile']);
     Route::get('lawyer-profile/{id}', [MemberProfileController::class, 'viewLawyerProfile']);
+    Route::get('my-legal-advices', [LegalAdviceController::class, 'getMyLegalAdvices']);
 });
 });
 
@@ -62,6 +63,7 @@ Route::post("login", [LawyerAuthController::class, "login"]);
     Route::post('editProfile', [LawyerProfileController::class, 'editProfile']);
     Route::get('member-profile/{id}', [LawyerProfileController::class, 'viewMemberProfile']);
     Route::get('lawyer-profile/{id}', [LawyerProfileController::class, 'viewLawyerProfile']);
+    Route::get('my-posts', [PostController::class, 'myPosts']);
 });
 });
 
@@ -78,6 +80,7 @@ Route::prefix('post')->group(function () {
     // Allow all authenticated users to view posts
     Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('all', [PostController::class, 'index']);
+    Route::get('lawyers/{lawyerId}/posts', [PostController::class, 'getPostsByLawyer']);
     Route::get('viewAPost/{id}', [PostController::class, 'show']);
     Route::post('{id}/like', [PostInteractionController::class, 'like']);
     Route::post('{id}/unlike', [PostInteractionController::class, 'unlike']);
@@ -110,6 +113,7 @@ Route::prefix('legalAdvice')->group(function () {
     // Allow all authenticated users to view legal advices
     Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('all', [LegalAdviceController::class, 'index']);
+    Route::get('members/{memberId}/legal-advices', [LegalAdviceController::class, 'getLegalAdvicesByMember']);
     Route::get('viewAnAdvice/{id}', [LegalAdviceController::class, 'show']);
     Route::get('adviceTypes/{adviceTypeId}', [LegalAdviceController::class, 'getByAdviceType']);
     Route::get('{legalAdviceId}/allComments', [LegalAdviceCommentController::class, 'index']);

@@ -43,6 +43,7 @@ class LawyerAuthController extends Controller
         return response()->json([
             "status" => true,
             "message" => "Lawyer registered successfully",
+            "id" => $lawyer->id,
             "token" => $token
         ]);
 
@@ -68,6 +69,7 @@ class LawyerAuthController extends Controller
             return response()->json([
                 "status" => true,
                 "message" => "Login successful",
+                "id" => $user->id,
                 "token" => $token
             ]);
         } else {

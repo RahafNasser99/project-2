@@ -42,6 +42,7 @@ class MemberAuthController extends Controller
         return response()->json([
             "status" => true,
             "message" => "User registered successfully",
+            "id" => $member->id,
             "token" => $token
         ]);
     }
@@ -67,6 +68,7 @@ class MemberAuthController extends Controller
             return response()->json([
                 "status" => true,
                 "message" => "Login successful",
+                "id" => $user->id,
                 "token" => $token
             ]);
         } else {
