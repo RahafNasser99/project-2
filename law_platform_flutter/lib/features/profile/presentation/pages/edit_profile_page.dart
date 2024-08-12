@@ -236,7 +236,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: TextFormField(
-                        // controller: _nameEditingController,
                         initialValue: widget.profile.name,
                         decoration: InputDecoration(
                           hintTextDirection: TextDirection.rtl,
@@ -280,7 +279,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: TextFormField(
-                        // controller: _professionEditingController,
                         initialValue: checkAuthentication.getAccountType() ==
                                 'member'
                             ? (widget.profile as MemberProfile).job
