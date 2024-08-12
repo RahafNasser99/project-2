@@ -1,29 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:law_platform_flutter/features/posts_&_advices/domain/entities/post.dart';
+import 'package:law_platform_flutter/features/posts_&_advices/presentation/cubits/get_post_cubit/get_post_cubit.dart';
+import 'package:law_platform_flutter/features/posts_&_advices/presentation/widgets/post_widget.dart';
+import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
 import 'package:law_platform_flutter/utils/global_widgets/loading.dart';
 import 'package:law_platform_flutter/utils/global_widgets/show_dialog.dart';
-import 'package:law_platform_flutter/features/posts_&_advices/domain/entities/post.dart';
-import 'package:law_platform_flutter/features/posts_&_advices/presentation/widgets/post_widget.dart';
-import 'package:law_platform_flutter/features/posts_&_advices/presentation/cubits/get_post_cubit/get_post_cubit.dart';
 
-class PostsHomePage extends StatefulWidget {
-  const PostsHomePage({super.key, required this.postPage});
-
-  final bool postPage; // true for posts, false for advice
+class ProfilePosts extends StatefulWidget {
+  const ProfilePosts({super.key});
 
   @override
-  State<PostsHomePage> createState() => _PostsHomePageState();
+  State<ProfilePosts> createState() => _ProfilePostsState();
 }
 
-class _PostsHomePageState extends State<PostsHomePage> {
+class _ProfilePostsState extends State<ProfilePosts> {
   bool _isInit = true;
 
   @override
   Future<void> didChangeDependencies() async {
     if (_isInit) {
-      await BlocProvider.of<GetPostCubit>(context)
-          .getPosts(widget.postPage, null);
+      await BlocProvider.of<GetPostCubit>(context).getPosts(
+        checkAuthentication.getAccountType() == 'member' ? false : true,
+        checkAuthentication.getId(),
+      );
     }
     _isInit = false;
     super.didChangeDependencies();

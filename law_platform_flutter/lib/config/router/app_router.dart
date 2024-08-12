@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:law_platform_flutter/features/messaging/presentation/pages/chats_page.dart';
 import 'package:law_platform_flutter/features/profile/presentation/cubits/get_profile_cubit/get_profile_cubit.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:law_platform_flutter/home_page.dart';
@@ -76,6 +77,11 @@ class AppRouter {
           ),
           settings,
           PageTransitionType.rightToLeft,
+        );
+
+      case 'chats-page':
+        return MaterialPageRoute(
+          builder: (context) => const ChatsPage(),
         );
 
       default:

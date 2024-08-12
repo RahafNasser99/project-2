@@ -9,10 +9,10 @@ class PostRepositoryImpl extends PostRepository {
   PostRemoteDataSource postRemoteDataSource = PostRemoteDataSourceImpl();
 
   @override
-  Future<Either<Failure, Map<String,dynamic>>> getPosts(int pageNumber, bool postOrAdvice) async {
+  Future<Either<Failure, Map<String,dynamic>>> getPosts(int pageNumber, bool postOrAdvice,int? userId) async {
     if (await internetConnectionChecker.hasConnection) {
       try {
-        final returnedPosts = await postRemoteDataSource.getPosts(pageNumber,postOrAdvice);
+        final returnedPosts = await postRemoteDataSource.getPosts(pageNumber,postOrAdvice,userId);
         return Right(returnedPosts);
       } on ServerException {
         return Left(ServerFailure());

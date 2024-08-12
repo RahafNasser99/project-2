@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
       title: 'Law Platform',
       debugShowCheckedModeBanner: false,
       theme: AppTheme().lightTheme,
-      initialRoute: 'comments-page',
+      initialRoute: isAuthenticated ? 'home-page' : 'signup-page',
       // isAuthenticated ? 'home-page' : 'signup-page',
       onGenerateRoute: (settings) => AppRouter().onGenerateRoute(settings),
     );

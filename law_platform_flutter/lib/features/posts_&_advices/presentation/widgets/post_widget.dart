@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:law_platform_flutter/utils/global_classes/data.dart';
+import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
 import 'package:law_platform_flutter/features/posts_&_advices/domain/entities/post.dart';
 import 'package:law_platform_flutter/features/interactions_&_comments/presentation/widgets/interaction_widget.dart';
+import 'package:law_platform_flutter/features/interactions_&_comments/presentation/widgets/delete_comment_alert_dialog.dart';
+import 'package:law_platform_flutter/features/posts_&_advices/presentation/cubits/add_update_delete_post_cubit/add_update_delete_post_cubit.dart';
 
 class PostWidget extends StatelessWidget {
   const PostWidget({super.key, required this.post});
@@ -10,6 +14,7 @@ class PostWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double width = MediaQuery.of(context).size.width;
     return Container(
       margin: const EdgeInsets.only(bottom: 6.0),
       decoration: BoxDecoration(
@@ -28,6 +33,73 @@ class PostWidget extends StatelessWidget {
           Directionality(
             textDirection: TextDirection.rtl,
             child: ListTile(
+              trailing: GestureDetector(
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (context) => Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                          vertical: 10.0,
+                        ),
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.surface,
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(25.0),
+                              topRight: Radius.circular(25.0),
+                            )),
+                        width: double.infinity,
+                        child: Wrap(
+                          crossAxisAlignment: WrapCrossAlignment.end,
+                          direction: Axis.vertical,
+                          children: <Widget>[
+                            ElevatedButton.icon(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      Theme.of(context).colorScheme.surface,
+                                  elevation: 0.0,
+                                  fixedSize: Size.fromWidth(width - 32.0)),
+                              label: const Text('تعديل'),
+                              icon: const Icon(Icons.edit_rounded),
+                            ),
+                            ElevatedButton.icon(
+                              onPressed: () {
+                                DeleteCommentAlertDialog(
+                                  alertTitle:
+                                      checkAuthentication.getAccountType() ==
+                                              'member'
+                                          ? 'حذف الاستشارة'
+                                          : 'حذف المنشور',
+                                  onPressed: () async {
+                                    BlocProvider.of<AddUpdateDeletePostCubit>(
+                                            context)
+                                        .deletePost(
+                                            post.postId,
+                                            checkAuthentication
+                                                        .getAccountType() ==
+                                                    'member'
+                                                ? false
+                                                : true);
+                                  },
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      Theme.of(context).colorScheme.surface,
+                                  elevation: 0.0,
+                                  fixedSize: Size.fromWidth(width - 32.0)),
+                              label: const Text('حذف'),
+                              icon: const Icon(Icons.delete_forever_rounded),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                  child: const Icon(Icons.more_vert_rounded)),
               contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
               leading: CircleAvatar(
                 backgroundImage: post.profile.profilePicture != null
@@ -71,7 +143,11 @@ class PostWidget extends StatelessWidget {
                 post.postImage!,
               ),
             ),
-          const InteractionWidget(),
+          InteractionWidget(
+            likes: post.likesCount,
+            dislikes: post.dislikesCount,
+            comments: post.commentsCount,
+          ),
         ],
       ),
     );

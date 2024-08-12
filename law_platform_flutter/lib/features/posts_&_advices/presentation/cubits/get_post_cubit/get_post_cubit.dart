@@ -13,23 +13,30 @@ class GetPostCubit extends Cubit<GetPostState> {
   ScrollController scrollController = ScrollController();
   bool isLoadingMore = false;
   bool postOrAdviceCubit = true;
+  int? userIdCubit;
   int pageNumber = 1;
   int pageCount = 0;
 
   GetPostCubit() : super(GetPostInitial()) {
     scrollController.addListener(() async {
-      await getMorePosts(postOrAdviceCubit).then((_) => isLoadingMore = false);
+      await getMorePosts(postOrAdviceCubit, userIdCubit)
+          .then((_) => isLoadingMore = false);
     });
   }
 
-  Future<void> getPosts(bool postsOrAdvice) async {
+  Future<void> getPosts(bool postsOrAdvice, int? userId) async {
     // true for posts, false for advice
     pageNumber = 1;
     postOrAdviceCubit = postsOrAdvice;
+    userIdCubit = userId;
 
     emit(GetPostLoading());
 
-    final either = await getPostsUseCase(pageNumber, postsOrAdvice);
+    final either = await getPostsUseCase(
+      pageNumber,
+      postsOrAdvice,
+      userId,
+    );
 
     either.fold(
       (failure) {
@@ -55,14 +62,18 @@ class GetPostCubit extends Cubit<GetPostState> {
     );
   }
 
-  Future<void> getMorePosts(bool postsOrAdvice) async {
+  Future<void> getMorePosts(bool postsOrAdvice, int? userId) async {
     if (scrollController.position.pixels ==
             scrollController.position.maxScrollExtent &&
         pageNumber <= pageCount) {
       isLoadingMore = true;
       pageNumber++;
 
-      final either = await getPostsUseCase(pageNumber, postsOrAdvice);
+      final either = await getPostsUseCase(
+        pageNumber,
+        postsOrAdvice,
+        userId,
+      );
 
       either.fold(
         (failure) {

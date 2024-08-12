@@ -56,12 +56,7 @@ class CommentWidget extends StatelessWidget {
                             children: <Widget>[
                               ElevatedButton.icon(
                                 onPressed: () {
-                                  // AddCommentWidget(comment: comment);
-                                  print('comment widget');
-                                  print(comment);
-                                  editComment(comment);
                                   Navigator.pop(context);
-                                  ///////////////////////
                                 },
                                 style: ElevatedButton.styleFrom(
                                     backgroundColor:
@@ -69,11 +64,14 @@ class CommentWidget extends StatelessWidget {
                                     elevation: 0.0,
                                     fixedSize: Size.fromWidth(width - 32.0)),
                                 label: const Text('تعديل'),
-                                icon: const Icon(Icons.camera_alt_rounded),
+                                icon: const Icon(Icons.edit_rounded),
                               ),
                               ElevatedButton.icon(
                                 onPressed: () {
-                                  const DeleteCommentAlertDialog();
+                                  DeleteCommentAlertDialog(
+                                    alertTitle: 'حذف التعليق',
+                                    onPressed: () {},
+                                  );
                                 },
                                 style: ElevatedButton.styleFrom(
                                     backgroundColor:
@@ -81,7 +79,7 @@ class CommentWidget extends StatelessWidget {
                                     elevation: 0.0,
                                     fixedSize: Size.fromWidth(width - 32.0)),
                                 label: const Text('حذف'),
-                                icon: const Icon(Icons.image_rounded),
+                                icon: const Icon(Icons.delete_forever_rounded),
                               ),
                             ],
                           ),

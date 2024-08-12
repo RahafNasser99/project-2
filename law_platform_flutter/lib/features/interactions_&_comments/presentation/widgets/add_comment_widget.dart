@@ -57,7 +57,6 @@ class _AddCommentWidgetState extends State<AddCommentWidget> {
    @override
   void didUpdateWidget(AddCommentWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // Update the controller's text if the comment changes
     if (widget.comment != oldWidget.comment) {
       _textEditingController.text = widget.comment ?? '';
     }
@@ -81,7 +80,6 @@ class _AddCommentWidgetState extends State<AddCommentWidget> {
           child: Form(
             key: _formKey,
             child: TextFormField(
-              // initialValue: widget.comment,
               maxLines: _lineCount > 4 ? 4 : null,
               textAlign: TextAlign.right,
               textDirection: TextDirection.rtl,

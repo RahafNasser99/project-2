@@ -184,37 +184,38 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ],
                 ),
-                if (state.profile.profilePicture != null)
-                  Hero(
-                    tag: 'profile-picture',
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ShowProfilePicture(
-                              imageUrl: state.profile.profilePicture!,
-                              name: state.profile.name,
-                            ),
-                          ),
-                        );
-                      },
-                      child: state.profile.profilePicture != null
-                          ? ProfilePictureWidget(
-                              radius: width * 0.15,
-                              margin: EdgeInsets.only(
-                                top: height * 0.07,
-                                right: 25,
+                Hero(
+                  tag: 'profile-picture',
+                  child: GestureDetector(
+                    onTap: state.profile.profilePicture != null
+                        ? () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ShowProfilePicture(
+                                  imageUrl: state.profile.profilePicture!,
+                                  name: state.profile.name,
+                                ),
                               ),
-                              backgroundImage:
-                                  NetworkImage(state.profile.profilePicture!),
-                            )
-                          : Icon(
-                              Icons.person_rounded,
-                              color: Theme.of(context).colorScheme.primary,
+                            );
+                          }
+                        : () {},
+                    child: state.profile.profilePicture != null
+                        ? ProfilePictureWidget(
+                            radius: width * 0.15,
+                            margin: EdgeInsets.only(
+                              top: height * 0.07,
+                              right: 25,
                             ),
-                    ),
+                            backgroundImage:
+                                NetworkImage(state.profile.profilePicture!),
+                          )
+                        : Icon(
+                            Icons.person_rounded,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
                   ),
+                ),
                 Container(
                   alignment: Alignment.topLeft,
                   margin: EdgeInsets.only(

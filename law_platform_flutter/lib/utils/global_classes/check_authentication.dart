@@ -7,7 +7,8 @@ class CheckAuthentication {
   }
 
   Future<void> storeAuthenticationValue(
-      String email, String token, String accountType) async {
+      int id, String email, String token, String accountType) async {
+    await prefs.setInt('id', id);
     await prefs.setString('token', token);
     await prefs.setString('email', email);
     await prefs.setString('accountType', accountType);
@@ -16,6 +17,10 @@ class CheckAuthentication {
 
   Future<void> destroyAuthenticationValue() async {
     await prefs.clear();
+  }
+
+  int getId() {
+    return prefs.getInt('id')!;
   }
 
   String getToken() {

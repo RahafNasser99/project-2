@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
 import 'package:law_platform_flutter/features/interactions_&_comments/presentation/widgets/comment_widget.dart';
@@ -16,11 +14,9 @@ class _CommentsPageState extends State<CommentsPage> {
   String _commentToBeEdited = '';
 
   void _editComment(String comment) {
-    print('comment page');
-    print(comment);
-    _commentToBeEdited = comment;
-    setState(() {});
-    print(_commentToBeEdited);
+    setState(() {
+      _commentToBeEdited = comment;
+    });
   }
 
   @override
@@ -91,9 +87,7 @@ class _CommentsPageState extends State<CommentsPage> {
               ),
               child: AddCommentWidget(
                 key: ValueKey(_commentToBeEdited),
-                comment: _commentToBeEdited.isEmpty
-                    ? null
-                    : _commentToBeEdited,
+                comment: _commentToBeEdited.isEmpty ? null : _commentToBeEdited,
               ),
             ),
         ],

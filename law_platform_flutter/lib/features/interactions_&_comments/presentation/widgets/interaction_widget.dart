@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:law_platform_flutter/utils/global_classes/check_authentication.dart';
 import 'package:like_button/like_button.dart';
+import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
 
 class InteractionWidget extends StatefulWidget {
-  const InteractionWidget({super.key});
+  const InteractionWidget({
+    super.key,
+    required this.likes,
+    required this.dislikes,
+    required this.comments,
+  });
+
+  final int likes;
+  final int dislikes;
+  final int comments;
 
   @override
   State<InteractionWidget> createState() => _InteractionWidgetState();
@@ -12,10 +21,17 @@ class InteractionWidget extends StatefulWidget {
 class _InteractionWidgetState extends State<InteractionWidget> {
   bool _like = false;
   bool _dislike = false;
-  int _numOfLike = 20;
-  int _numOfDislike = 20;
-  int _numOfComments = 30;
-  final CheckAuthentication _checkAuthentication = CheckAuthentication();
+  int _numOfLike = 0;
+  int _numOfDislike = 0;
+  int _numOfComments = 0;
+
+  @override
+  void didChangeDependencies() {
+    _numOfLike = widget.likes;
+    _numOfDislike = widget.dislikes;
+    _numOfComments = widget.comments;
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +79,7 @@ class _InteractionWidgetState extends State<InteractionWidget> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
-          if (_checkAuthentication.getAccountType() != 'member')
+          if (checkAuthentication.getAccountType() != 'member')
             LikeButton(
               isLiked: _like,
               onTap: onLikeButtonTapped,
@@ -83,7 +99,7 @@ class _InteractionWidgetState extends State<InteractionWidget> {
               ),
               likeCount: _numOfLike,
             ),
-          if (_checkAuthentication.getAccountType() != 'member')
+          if (checkAuthentication.getAccountType() != 'member')
             LikeButton(
               isLiked: _dislike,
               onTap: onDislikeButtonTapped,
