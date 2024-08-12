@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
 import 'package:law_platform_flutter/config/theme/app_theme.dart';
 import 'package:law_platform_flutter/config/router/app_router.dart';
+import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
 import 'package:law_platform_flutter/utils/global_classes/check_authentication.dart';
 
 void main() async {
@@ -32,9 +32,8 @@ class MyApp extends StatelessWidget {
       title: 'Law Platform',
       debugShowCheckedModeBanner: false,
       theme: AppTheme().lightTheme,
-      initialRoute: isAuthenticated ? 'home-page' : 'signup-page',
-      //isAuthenticated ? 'home-page' :
-      // initialRoute:  'profile-page',
+      initialRoute: 'comments-page',
+      // isAuthenticated ? 'home-page' : 'signup-page',
       onGenerateRoute: (settings) => AppRouter().onGenerateRoute(settings),
     );
   }

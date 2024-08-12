@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
 import 'package:law_platform_flutter/features/interactions_&_comments/presentation/widgets/comment_widget.dart';
@@ -11,6 +13,16 @@ class CommentsPage extends StatefulWidget {
 }
 
 class _CommentsPageState extends State<CommentsPage> {
+  String _commentToBeEdited = '';
+
+  void _editComment(String comment) {
+    print('comment page');
+    print(comment);
+    _commentToBeEdited = comment;
+    setState(() {});
+    print(_commentToBeEdited);
+  }
+
   @override
   Widget build(BuildContext context) {
     AppBar appBar = AppBar(
@@ -53,7 +65,11 @@ class _CommentsPageState extends State<CommentsPage> {
             child: ListView.separated(
               itemCount: 10,
               padding: const EdgeInsets.symmetric(vertical: 8.0),
-              itemBuilder: (context, index) => const CommentWidget(),
+              itemBuilder: (context, index) => CommentWidget(
+                comment:
+                    'الاستشارة القانونية هي الآلية التي تُحدد الوصف والتكييف القانوني للنازلة. حيث أن الغرض من طلب الاستشارة القانونية هو تبين وجهة نظر القانون في النزاع أو المسألة القانونية التي عُرضت على القضاء أو ستُعرض عليه مُستقبلًا. قصد ضمان الحق أو المركز المادي المتوخي من الخصومة.',
+                editComment: _editComment,
+              ),
               separatorBuilder: (context, index) => const SizedBox(
                 height: 16.0,
               ),
@@ -73,7 +89,12 @@ class _CommentsPageState extends State<CommentsPage> {
                   )
                 ],
               ),
-              child: const AddCommentWidget(),
+              child: AddCommentWidget(
+                key: ValueKey(_commentToBeEdited),
+                comment: _commentToBeEdited.isEmpty
+                    ? null
+                    : _commentToBeEdited,
+              ),
             ),
         ],
       ),

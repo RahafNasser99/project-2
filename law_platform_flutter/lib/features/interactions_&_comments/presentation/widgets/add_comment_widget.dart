@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class AddCommentWidget extends StatefulWidget {
-  const AddCommentWidget({super.key});
+  const AddCommentWidget({super.key, required this.comment});
+
+  final String? comment;
 
   @override
   State<AddCommentWidget> createState() => _AddCommentWidgetState();
@@ -15,7 +17,10 @@ class _AddCommentWidgetState extends State<AddCommentWidget> {
 
   @override
   void initState() {
+    _textEditingController.text = widget.comment ?? '';
     _textEditingController.addListener(_updateLineCount);
+    print('add comment widget');
+    print(widget.comment);
     super.initState();
   }
 
@@ -49,6 +54,15 @@ class _AddCommentWidgetState extends State<AddCommentWidget> {
     }
   }
 
+   @override
+  void didUpdateWidget(AddCommentWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Update the controller's text if the comment changes
+    if (widget.comment != oldWidget.comment) {
+      _textEditingController.text = widget.comment ?? '';
+    }
+  }
+
   @override
   void dispose() {
     _textEditingController.dispose();
@@ -66,7 +80,8 @@ class _AddCommentWidgetState extends State<AddCommentWidget> {
           width: width * 0.85,
           child: Form(
             key: _formKey,
-            child: TextField(
+            child: TextFormField(
+              // initialValue: widget.comment,
               maxLines: _lineCount > 4 ? 4 : null,
               textAlign: TextAlign.right,
               textDirection: TextDirection.rtl,
