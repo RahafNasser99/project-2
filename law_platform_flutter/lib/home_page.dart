@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:law_platform_flutter/app_drawer.dart';
-import 'package:law_platform_flutter/features/posts_&_advices/presentation/cubits/get_post_cubit/get_post_cubit.dart';
 import 'package:law_platform_flutter/features/posts_&_advices/presentation/pages/posts_home_page.dart';
+import 'package:law_platform_flutter/features/posts_&_advices/presentation/cubits/get_post_cubit/get_post_cubit.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,22 +13,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
-  static final List<Widget> _pages = <Widget>[
-    BlocProvider(
-      create: (context) => GetPostCubit(),
-      child: const PostsHomePage(postPage: true,),
-    ),
-    BlocProvider(
-      create: (context) => GetPostCubit(),
-      child: const PostsHomePage(postPage: false,),
-    ),
-    const Text(
-      'Index 2: add',
-    ),
-    const Text(
-      'Index 3: notifications',
-    ),
-  ];
 
   void _onItemTapped(int index) {
     if (index == 2) {
@@ -58,6 +42,27 @@ class _HomePageState extends State<HomePage> {
         ),
         label: label,
       );
+    }
+
+    Widget buildPage(int index) {
+      switch (index) {
+        case 0:
+          return BlocProvider(
+            key: UniqueKey(),
+            create: (context) => GetPostCubit(),
+            child: PostsHomePage(key: UniqueKey(), postPage: true),
+          );
+        case 1:
+          return BlocProvider(
+            key: UniqueKey(),
+            create: (context) => GetPostCubit(),
+            child: PostsHomePage(key: UniqueKey(), postPage: false),
+          );
+        case 3:
+          return const Text('Index 3: notifications');
+        default:
+          return const Text('Index 2: add');
+      }
     }
 
     return Scaffold(
@@ -156,7 +161,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             Expanded(
-              child: _pages.elementAt(_selectedIndex),
+              child: buildPage(_selectedIndex),
             ),
           ],
         ),

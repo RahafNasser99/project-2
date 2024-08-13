@@ -16,51 +16,53 @@ class AddEditDeleteCommentCubit extends Cubit<AddEditDeleteCommentState> {
 
   AddEditDeleteCommentCubit() : super(AddEditDeleteCommentInitial());
 
-  Future<void> addOrEditComment(String addOrEdit, Comment comment) async {
+  Future<void> addOrEditComment(
+      String addOrEdit, Comment comment, bool postOrAdvice, int postId) async {
     emit(AddEditDeleteCommentLoading());
 
     final either = addOrEdit == 'add'
-        ? await addCommentUseCase(comment)
-        : await editCommentUseCase(comment);
+        ? await addCommentUseCase(comment, postOrAdvice, postId)
+        : await editCommentUseCase(comment, postOrAdvice, postId);
 
     either.fold(
       (failure) {
         switch (failure.runtimeType) {
           case ServerFailure:
-            return const AddEditDeleteCommentError(
-                errorMessage: SERVER_FAILURE_MESSAGE);
+            emit(const AddEditDeleteCommentError(
+                errorMessage: SERVER_FAILURE_MESSAGE));
           case OfflineFailure:
-            return const AddEditDeleteCommentError(
-                errorMessage: OFFLINE_SERVER_MESSAGE);
+            emit(const AddEditDeleteCommentError(
+                errorMessage: OFFLINE_SERVER_MESSAGE));
           default:
-            return const AddEditDeleteCommentError(
-                errorMessage: DEFAULT_FAILURE_MESSAGE);
+            emit(const AddEditDeleteCommentError(
+                errorMessage: DEFAULT_FAILURE_MESSAGE));
         }
       },
-      (_) => AddEditDeleteCommentDone(),
+      (_) => emit(AddEditDeleteCommentDone()),
     );
   }
 
-  Future<void> deleteComment(int commentId) async {
+  Future<void> deleteComment(
+      int commentId, bool postOrAdvice, int postId) async {
     emit(AddEditDeleteCommentLoading());
 
-    final either = await deleteCommentUseCase(commentId);
+    final either = await deleteCommentUseCase(commentId, postOrAdvice, postId);
 
     either.fold(
       (failure) {
         switch (failure.runtimeType) {
           case ServerFailure:
-            return const AddEditDeleteCommentError(
-                errorMessage: SERVER_FAILURE_MESSAGE);
+            emit(const AddEditDeleteCommentError(
+                errorMessage: SERVER_FAILURE_MESSAGE));
           case OfflineFailure:
-            return const AddEditDeleteCommentError(
-                errorMessage: OFFLINE_SERVER_MESSAGE);
+            emit(const AddEditDeleteCommentError(
+                errorMessage: OFFLINE_SERVER_MESSAGE));
           default:
-            return const AddEditDeleteCommentError(
-                errorMessage: DEFAULT_FAILURE_MESSAGE);
+            emit(const AddEditDeleteCommentError(
+                errorMessage: DEFAULT_FAILURE_MESSAGE));
         }
       },
-      (_) => AddEditDeleteCommentDone(),
+      (_) => emit(AddEditDeleteCommentDone()),
     );
   }
 }

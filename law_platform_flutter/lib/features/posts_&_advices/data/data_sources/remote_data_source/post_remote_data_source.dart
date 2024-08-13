@@ -38,8 +38,6 @@ class PostRemoteDataSourceImpl extends PostRemoteDataSource {
       ),
     );
 
-    print(response.data);
-
     if (response.statusCode! >= 200 && response.statusCode! < 400) {
       final totalPages = response.data['pagination']['total_pages'];
       final List decodedJson = response.data['data'] as List;

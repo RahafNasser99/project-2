@@ -167,6 +167,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                             ),
                           ),
+                          
                           // SliverToBoxAdapter(
                           //   child: PostWidget(
                           //     post: PostModel(

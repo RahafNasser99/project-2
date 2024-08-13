@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
-import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
 
 class InteractionWidget extends StatefulWidget {
   const InteractionWidget({
     super.key,
+    required this.postPage,
+    required this.postId,
     required this.likes,
     required this.dislikes,
     required this.comments,
   });
 
+  final bool postPage;
+  final int postId;
   final int likes;
   final int dislikes;
   final int comments;
@@ -79,7 +82,7 @@ class _InteractionWidgetState extends State<InteractionWidget> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
-          if (checkAuthentication.getAccountType() != 'member')
+          if (widget.postPage)
             LikeButton(
               isLiked: _like,
               onTap: onLikeButtonTapped,
@@ -99,7 +102,7 @@ class _InteractionWidgetState extends State<InteractionWidget> {
               ),
               likeCount: _numOfLike,
             ),
-          if (checkAuthentication.getAccountType() != 'member')
+          if (widget.postPage)
             LikeButton(
               isLiked: _dislike,
               onTap: onDislikeButtonTapped,
@@ -121,7 +124,10 @@ class _InteractionWidgetState extends State<InteractionWidget> {
             ),
           TextButton.icon(
             onPressed: () {
-              Navigator.of(context).pushNamed('comments-page');
+              Navigator.of(context).pushNamed('comments-page', arguments: {
+                'postOrAdvice': widget.postPage,
+                'postId': widget.postId,
+              });
             },
             label: Text(
               _numOfComments.toString(),

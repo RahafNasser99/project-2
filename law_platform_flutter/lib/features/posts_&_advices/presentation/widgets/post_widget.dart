@@ -8,9 +8,10 @@ import 'package:law_platform_flutter/features/interactions_&_comments/presentati
 import 'package:law_platform_flutter/features/posts_&_advices/presentation/cubits/add_update_delete_post_cubit/add_update_delete_post_cubit.dart';
 
 class PostWidget extends StatelessWidget {
-  const PostWidget({super.key, required this.post});
+  const PostWidget({super.key, required this.post, required this.postPage});
 
   final Post post;
+  final bool postPage;
 
   @override
   Widget build(BuildContext context) {
@@ -144,6 +145,8 @@ class PostWidget extends StatelessWidget {
               ),
             ),
           InteractionWidget(
+            postPage: postPage,
+            postId: post.postId,
             likes: post.likesCount,
             dislikes: post.dislikesCount,
             comments: post.commentsCount,

@@ -1,9 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:law_platform_flutter/features/interactions_&_comments/data/models/comment_model.dart';
+import 'package:law_platform_flutter/features/interactions_&_comments/presentation/cubits/add_update_delete_comment_cubit/add_edit_delete_comment_cubit.dart';
 
 class AddCommentWidget extends StatefulWidget {
-  const AddCommentWidget({super.key, required this.comment});
+  const AddCommentWidget({
+    super.key,
+    required this.comment,
+    required this.postOrAdvice,
+    required this.postId,
+  });
 
   final String? comment;
+  final bool postOrAdvice;
+  final int postId;
 
   @override
   State<AddCommentWidget> createState() => _AddCommentWidgetState();
@@ -51,10 +61,21 @@ class _AddCommentWidgetState extends State<AddCommentWidget> {
   Future<void> _submit() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
+      CommentModel commentModel = CommentModel(
+        text: _enteredComment,
+        commentDate: DateTime.now(),
+      );
+      await BlocProvider.of<AddEditDeleteCommentCubit>(context)
+          .addOrEditComment(
+        widget.comment != null ? 'edit' : 'add',
+        commentModel,
+        widget.postOrAdvice,
+        widget.postId,
+      );
     }
   }
 
-   @override
+  @override
   void didUpdateWidget(AddCommentWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.comment != oldWidget.comment) {
@@ -71,45 +92,64 @@ class _AddCommentWidgetState extends State<AddCommentWidget> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width - 16;
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        SizedBox(
-          width: width * 0.85,
-          child: Form(
-            key: _formKey,
-            child: TextFormField(
-              maxLines: _lineCount > 4 ? 4 : null,
-              textAlign: TextAlign.right,
-              textDirection: TextDirection.rtl,
-              textInputAction: TextInputAction.newline,
-              controller: _textEditingController,
-              style: Theme.of(context).textTheme.bodyLarge,
-              cursorHeight: Theme.of(context).textTheme.bodyLarge!.fontSize,
-              textCapitalization: TextCapitalization.sentences,
-              autocorrect: true,
-              enableSuggestions: true,
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: 'أضف تعليقك',
-                hintTextDirection: TextDirection.rtl,
-                hintStyle: Theme.of(context).textTheme.labelLarge,
+    return BlocConsumer<AddEditDeleteCommentCubit, AddEditDeleteCommentState>(
+      listener: (context, state) {
+        if (state is AddEditDeleteCommentDone) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            setState(() {
+              _textEditingController.clear();
+              _enteredComment = '';
+              _lineCount = 1;
+            });
+          });
+          // setState(() {
+          //   _enteredComment = '';
+          //   _lineCount = 1;
+          // });
+        }
+      },
+      builder: (context, state) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            SizedBox(
+              width: width * 0.85,
+              child: Form(
+                key: _formKey,
+                child: TextFormField(
+                  maxLines: _lineCount > 4 ? 4 : null,
+                  textAlign: TextAlign.right,
+                  textDirection: TextDirection.rtl,
+                  textInputAction: TextInputAction.newline,
+                  controller: _textEditingController,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                  cursorHeight: Theme.of(context).textTheme.bodyLarge!.fontSize,
+                  textCapitalization: TextCapitalization.sentences,
+                  autocorrect: true,
+                  enableSuggestions: true,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: 'أضف تعليقك',
+                    hintTextDirection: TextDirection.rtl,
+                    hintStyle: Theme.of(context).textTheme.labelLarge,
+                  ),
+                  onChanged: (value) {
+                    _enteredComment = value;
+                  },
+                ),
               ),
-              onChanged: (value) {
-                _enteredComment = value;
-              },
             ),
-          ),
-        ),
-        SizedBox(
-          width: width * 0.1,
-          child: IconButton(
-            onPressed: _enteredComment.trim().isEmpty ? null : _submit,
-            icon: const Icon(Icons.reply_rounded),
-          ),
-        )
-      ],
+            SizedBox(
+              width: width * 0.1,
+              child: IconButton(
+                onPressed: _enteredComment.trim().isEmpty ? null : _submit,
+                icon: const Icon(Icons.reply_rounded),
+              ),
+            )
+          ],
+        );
+      },
     );
   }
 }

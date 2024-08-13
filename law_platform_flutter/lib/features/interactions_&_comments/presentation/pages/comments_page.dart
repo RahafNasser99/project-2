@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:law_platform_flutter/features/interactions_&_comments/presentation/cubits/add_update_delete_comment_cubit/add_edit_delete_comment_cubit.dart';
+import 'package:law_platform_flutter/features/interactions_&_comments/presentation/cubits/comment_cubit/get_comments_cubit.dart';
 import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
 import 'package:law_platform_flutter/features/interactions_&_comments/presentation/widgets/comment_widget.dart';
 import 'package:law_platform_flutter/features/interactions_&_comments/presentation/widgets/add_comment_widget.dart';
+import 'package:law_platform_flutter/utils/global_widgets/show_dialog.dart';
 
 class CommentsPage extends StatefulWidget {
   const CommentsPage({super.key});
@@ -12,6 +16,23 @@ class CommentsPage extends StatefulWidget {
 
 class _CommentsPageState extends State<CommentsPage> {
   String _commentToBeEdited = '';
+  bool _isInit = true;
+  bool postOrAdvice = true;
+  int postId = 0;
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      final settingsData =
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+      postOrAdvice = settingsData['postOrAdvice'];
+      postId = settingsData['postId'];
+      BlocProvider.of<GetCommentsCubit>(context)
+          .getAllComments(postOrAdvice, postId);
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
 
   void _editComment(String comment) {
     setState(() {
@@ -56,22 +77,64 @@ class _CommentsPageState extends State<CommentsPage> {
       appBar: appBar,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Expanded(
-            child: ListView.separated(
-              itemCount: 10,
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              itemBuilder: (context, index) => CommentWidget(
-                comment:
-                    'الاستشارة القانونية هي الآلية التي تُحدد الوصف والتكييف القانوني للنازلة. حيث أن الغرض من طلب الاستشارة القانونية هو تبين وجهة نظر القانون في النزاع أو المسألة القانونية التي عُرضت على القضاء أو ستُعرض عليه مُستقبلًا. قصد ضمان الحق أو المركز المادي المتوخي من الخصومة.',
-                editComment: _editComment,
-              ),
-              separatorBuilder: (context, index) => const SizedBox(
-                height: 16.0,
-              ),
-            ),
+        children: [
+          BlocConsumer<GetCommentsCubit, GetCommentsState>(
+            listener: (context, state) {
+              if (state is GetCommentsError) {
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (context) => ShowDialog(
+                    dialogMessage: state.errorMessage,
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                );
+              }
+            },
+            builder: (context, state) {
+              if (state is GetCommentsLoading) {
+                return Expanded(
+                  child: Center(
+                    child: Icon(
+                      Icons.forum_rounded,
+                      size: 60,
+                      color: Theme.of(context).colorScheme.surface,
+                    ),
+                  ),
+                );
+              } else if (state is GetCommentsIsEmpty) {
+                return Expanded(
+                  child: Center(
+                    child: Text(
+                      'لا يوجد تعليقات لعرضها',
+                      style: Theme.of(context).textTheme.labelLarge,
+                    ),
+                  ),
+                );
+              } else if (state is GetCommentsDone) {
+                return Expanded(
+                  child: ListView.separated(
+                    itemCount: state.comments.length,
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    itemBuilder: (context, index) => CommentWidget(
+                      comment: state.comments[index].text,
+                      editComment: _editComment,
+                    ),
+                    separatorBuilder: (context, index) => const SizedBox(
+                      height: 16.0,
+                    ),
+                  ),
+                );
+              } else {
+                return Container();
+              }
+            },
           ),
-          if (checkAuthentication.getAccountType() != 'member')
+          if ((checkAuthentication.getAccountType() != 'member' &&
+                  !postOrAdvice) ||
+              postOrAdvice)
             Container(
               padding:
                   const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
@@ -85,9 +148,33 @@ class _CommentsPageState extends State<CommentsPage> {
                   )
                 ],
               ),
-              child: AddCommentWidget(
-                key: ValueKey(_commentToBeEdited),
-                comment: _commentToBeEdited.isEmpty ? null : _commentToBeEdited,
+              child: BlocConsumer<AddEditDeleteCommentCubit,
+                  AddEditDeleteCommentState>(
+                listener: (context, state) {
+                  if (state is AddEditDeleteCommentError) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          state.errorMessage,
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      ),
+                    );
+                  }
+                },
+                builder: (context, state) {
+                  return BlocProvider(
+                    create: (context) => AddEditDeleteCommentCubit(),
+                    child: AddCommentWidget(
+                      key: ValueKey(_commentToBeEdited),
+                      postOrAdvice: postOrAdvice,
+                      postId: postId,
+                      comment: _commentToBeEdited.isEmpty
+                          ? null
+                          : _commentToBeEdited,
+                    ),
+                  );
+                },
               ),
             ),
         ],
@@ -95,3 +182,49 @@ class _CommentsPageState extends State<CommentsPage> {
     );
   }
 }
+
+
+// if ((checkAuthentication.getAccountType() != 'member' &&
+                //         !postOrAdvice) ||
+                //     postOrAdvice)
+                //   Container(
+                //     padding: const EdgeInsets.symmetric(
+                //         horizontal: 8.0, vertical: 8.0),
+                //     decoration: BoxDecoration(
+                //       color: Theme.of(context).colorScheme.inversePrimary,
+                //       boxShadow: [
+                //         BoxShadow(
+                //           spreadRadius: 2.0,
+                //           blurRadius: 2.0,
+                //           color: Theme.of(context).colorScheme.surface,
+                //         )
+                //       ],
+                //     ),
+                //     child: BlocConsumer<AddEditDeleteCommentCubit,
+                //         AddEditDeleteCommentState>(
+                //       listener: (context, state) {
+                //         if (state is AddEditDeleteCommentError) {
+                //           ScaffoldMessenger.of(context).showSnackBar(
+                //             SnackBar(
+                //               content: Text(
+                //                 state.errorMessage,
+                //                 style: Theme.of(context).textTheme.bodyLarge,
+                //               ),
+                //             ),
+                //           );
+                //         }
+                //       },
+                //       builder: (context, state) {
+                //         return BlocProvider.value(
+                //           value: BlocProvider.of<AddEditDeleteCommentCubit>(
+                //               context),
+                //           child: AddCommentWidget(
+                //             key: ValueKey(_commentToBeEdited),
+                //             comment: _commentToBeEdited.isEmpty
+                //                 ? null
+                //                 : _commentToBeEdited,
+                //           ),
+                //         );
+                //       },
+                //     ),
+                //   ),

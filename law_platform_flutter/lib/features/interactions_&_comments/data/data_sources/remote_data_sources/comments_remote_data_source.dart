@@ -1,26 +1,40 @@
-import 'dart:convert';
-
+import 'package:dio/dio.dart';
 import 'package:dartz/dartz.dart';
-import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
 import 'package:law_platform_flutter/utils/error/exceptions.dart';
+import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
 import 'package:law_platform_flutter/features/interactions_&_comments/data/models/comment_model.dart';
 
 abstract class CommentRemoteDataSource {
-  Future<List<CommentModel>> getComments();
-  Future<Unit> addComment(CommentModel commentModel);
-  Future<Unit> editComment(CommentModel commentModel);
-  Future<Unit> deleteComment(int commentId);
+  Future<List<CommentModel>> getComments(bool postOrAdvice, int postId);
+  Future<Unit> addComment(
+      CommentModel commentModel, bool postOrAdvice, int postId);
+  Future<Unit> editComment(
+      CommentModel commentModel, bool postOrAdvice, int postId);
+  Future<Unit> deleteComment(int commentId, bool postOrAdvice, int postId);
 }
 
 class CommentRemoteDataSourceImpl extends CommentRemoteDataSource {
   @override
-  Future<List<CommentModel>> getComments() async {
-    const url = '';
+  Future<List<CommentModel>> getComments(bool postOrAdvice, int postId) async {
+    final url = postOrAdvice
+        ? '/api/post/$postId/allComments'
+        : '/api/legalAdvice/$postId/allComments';
 
-    final response = await dio.get(url);
+    final response = await dio.get(
+      url,
+      options: Options(
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${checkAuthentication.getToken()}'
+        },
+      ),
+    );
+
+    print(response.data);
+    print(response.data['data']);
 
     if (response.statusCode! >= 200 && response.statusCode! < 400) {
-      final List decodedJson = json.decode(response.data) as List;
+      final List decodedJson = response.data['data'] as List;
       final List<CommentModel> commentModels = decodedJson
           .map((jsonCommentModel) => CommentModel.fromJson(jsonCommentModel))
           .toList();
@@ -32,15 +46,31 @@ class CommentRemoteDataSourceImpl extends CommentRemoteDataSource {
   }
 
   @override
-  Future<Unit> addComment(CommentModel commentModel) async {
-    const url = '';
+  Future<Unit> addComment(
+      CommentModel commentModel, bool postOrAdvice, int postId) async {
+    print(commentModel.text);
 
-    final data = commentModel.toJson();
+    final url = postOrAdvice
+        ? '/api/post/$postId/createComment'
+        : '/api/legalAdvice/$postId/createComment';
+
+    final data = {
+      'content': commentModel.text,
+    };
 
     final response = await dio.post(
       url,
+      options: Options(
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${checkAuthentication.getToken()}'
+        },
+      ),
       data: data,
     );
+
+    print(response.data);
+
     if (response.statusCode! >= 200 && response.statusCode! < 400) {
       return Future.value(unit);
     } else {
@@ -49,13 +79,20 @@ class CommentRemoteDataSourceImpl extends CommentRemoteDataSource {
   }
 
   @override
-  Future<Unit> deleteComment(int commentId) async {
+  Future<Unit> deleteComment(
+      int commentId, bool postOrAdvice, int postId) async {
     const url = '';
 
     final data = {'commentId': commentId};
 
     final response = await dio.post(
       url,
+      options: Options(
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${checkAuthentication.getToken()}'
+        },
+      ),
       data: data,
     );
 
@@ -67,13 +104,20 @@ class CommentRemoteDataSourceImpl extends CommentRemoteDataSource {
   }
 
   @override
-  Future<Unit> editComment(CommentModel commentModel) async {
+  Future<Unit> editComment(
+      CommentModel commentModel, bool postOrAdvice, int postId) async {
     const url = '';
 
     final data = commentModel.toJson();
 
     final response = await dio.post(
       url,
+      options: Options(
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${checkAuthentication.getToken()}'
+        },
+      ),
       data: data,
     );
     if (response.statusCode! >= 200 && response.statusCode! < 400) {

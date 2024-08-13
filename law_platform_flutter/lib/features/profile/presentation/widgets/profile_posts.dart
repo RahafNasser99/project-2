@@ -81,6 +81,9 @@ class _ProfilePostsState extends State<ProfilePosts> {
               } else {
                 return PostWidget(
                   post: posts[index],
+                  postPage: (checkAuthentication.getAccountType() == ' member'
+                      ? false
+                      : true),
                 );
               }
             },

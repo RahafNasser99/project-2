@@ -15,8 +15,8 @@ class MemberProfileModel extends MemberProfile implements ProfileModel {
         id: json['id'],
         name: json['name'],
         email: json['email'],
-        profilePicture: json['profilePicture'],
-        job: json['job'],
+        profilePicture: json['profile']['image'],
+        job: json['profile']['work'],
       );
 
   Map<String, dynamic> toJson() => {

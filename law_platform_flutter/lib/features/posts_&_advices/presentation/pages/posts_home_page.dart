@@ -29,65 +29,77 @@ class _PostsHomePageState extends State<PostsHomePage> {
     super.didChangeDependencies();
   }
 
+  Future<void> _refreshPage() async {
+    await BlocProvider.of<GetPostCubit>(context)
+        .getPosts(widget.postPage, null);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<GetPostCubit, GetPostState>(
-      listener: (context, state) {
-        if (state is GetPostError) {
-          showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (context) => ShowDialog(
-              dialogMessage: state.errorMessage,
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          );
-        }
-      },
-      builder: (context, state) {
-        if (state is GetPostLoading) {
-          return Center(
-            child: Loading(
-              evenColor: Theme.of(context).colorScheme.primary,
-              oddColor: Theme.of(context).colorScheme.secondary,
-            ),
-          );
-        } else if (state is GetPostIsEmpty) {
-          return const Center(
-            child: Text('لا يوجد مناشير لعرضها'),
-          );
-        } else if (state is GetPostDone) {
-          List<Post> posts = state.posts;
-          return ListView.builder(
-            controller: context.read<GetPostCubit>().scrollController,
-            padding: EdgeInsets.zero,
-            itemCount: context.read<GetPostCubit>().isLoadingMore
-                ? posts.length + 1
-                : posts.length,
-            itemBuilder: (context, index) {
-              if (index >= posts.length) {
-                return SpinKitThreeInOut(
-                    itemBuilder: (BuildContext context, int index) {
-                  return DecoratedBox(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: index.isEven ? Colors.blue : Colors.grey,
-                    ),
+    return RefreshIndicator(
+      onRefresh: _refreshPage,
+      child: BlocConsumer<GetPostCubit, GetPostState>(
+        listener: (context, state) {
+          if (state is GetPostError) {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) => ShowDialog(
+                dialogMessage: state.errorMessage,
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            );
+          }
+        },
+        builder: (context, state) {
+          if (state is GetPostLoading) {
+            return Center(
+              child: Loading(
+                evenColor: Theme.of(context).colorScheme.primary,
+                oddColor: Theme.of(context).colorScheme.secondary,
+              ),
+            );
+          } else if (state is GetPostIsEmpty) {
+            return Center(
+              child: Text(
+                'لا يوجد مناشير لعرضها',
+                style: Theme.of(context).textTheme.labelLarge,
+              ),
+            );
+          } else if (state is GetPostDone) {
+            List<Post> posts = state.posts;
+            return ListView.builder(
+              controller: context.read<GetPostCubit>().scrollController,
+              padding: EdgeInsets.zero,
+              itemCount: context.read<GetPostCubit>().isLoadingMore
+                  ? posts.length + 1
+                  : posts.length,
+              itemBuilder: (context, index) {
+                if (index >= posts.length) {
+                  return SpinKitThreeInOut(
+                      itemBuilder: (BuildContext context, int index) {
+                    return DecoratedBox(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: index.isEven ? Colors.blue : Colors.grey,
+                      ),
+                    );
+                  });
+                } else {
+                  return PostWidget(
+                    post: posts[index],
+                    postPage: widget.postPage,
                   );
-                });
-              } else {
-                return PostWidget(
-                  post: posts[index],
-                );
-              }
-            },
-          );
-        } else {
-          return Container();
-        }
-      },
+                }
+              },
+            );
+          } else {
+            return Container();
+          }
+        },
+      ),
     );
   }
 }
