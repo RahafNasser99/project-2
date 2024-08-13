@@ -30,15 +30,18 @@ class CommentsRepositoryImpl extends CommentsRepository {
   }
 
   @override
-  Future<Either<Failure, Unit>> addComment(Comment comment, bool postOrAdvice, int postId) async {
+  Future<Either<Failure, Unit>> addComment(
+      Comment comment, bool postOrAdvice, int postId) async {
     if (await internetConnectionChecker.hasConnection) {
       print('has connection');
       try {
         final commentModel = CommentModel(
+          commentId: comment.commentId,
           text: comment.text,
           commentDate: comment.commentDate,
         );
-        await commentsRemoteDataSource.addComment(commentModel,  postOrAdvice,  postId);
+        await commentsRemoteDataSource.addComment(
+            commentModel, postOrAdvice, postId);
         return const Right(unit);
       } on ServerException {
         return Left(ServerFailure());
@@ -49,15 +52,17 @@ class CommentsRepositoryImpl extends CommentsRepository {
   }
 
   @override
-  Future<Either<Failure, Unit>> editComments(Comment comment, bool postOrAdvice, int postId) async {
+  Future<Either<Failure, Unit>> editComments(
+      Comment comment, bool postOrAdvice) async {
     if (await internetConnectionChecker.hasConnection) {
       print('has connection');
       try {
         final commentModel = CommentModel(
+          commentId: comment.commentId,
           text: comment.text,
           commentDate: comment.commentDate,
         );
-        await commentsRemoteDataSource.editComment(commentModel,  postOrAdvice,  postId);
+        await commentsRemoteDataSource.editComment(commentModel, postOrAdvice);
         return const Right(unit);
       } on ServerException {
         return Left(ServerFailure());
@@ -68,11 +73,12 @@ class CommentsRepositoryImpl extends CommentsRepository {
   }
 
   @override
-  Future<Either<Failure, Unit>> deleteComments(int commentId, bool postOrAdvice, int postId) async {
+  Future<Either<Failure, Unit>> deleteComments(
+      int commentId, bool postOrAdvice) async {
     if (await internetConnectionChecker.hasConnection) {
       print('has connection');
       try {
-        await commentsRemoteDataSource.deleteComment(commentId,postOrAdvice, postId);
+        await commentsRemoteDataSource.deleteComment(commentId, postOrAdvice);
         return const Right(unit);
       } on ServerException {
         return Left(ServerFailure());

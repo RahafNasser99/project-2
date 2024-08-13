@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:law_platform_flutter/features/interactions_&_comments/presentation/cubits/add_update_delete_comment_cubit/add_edit_delete_comment_cubit.dart';
-import 'package:law_platform_flutter/features/interactions_&_comments/presentation/cubits/comment_cubit/get_comments_cubit.dart';
+import 'package:law_platform_flutter/utils/global_widgets/show_dialog.dart';
 import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
+import 'package:law_platform_flutter/features/interactions_&_comments/domain/entities/comment.dart';
 import 'package:law_platform_flutter/features/interactions_&_comments/presentation/widgets/comment_widget.dart';
 import 'package:law_platform_flutter/features/interactions_&_comments/presentation/widgets/add_comment_widget.dart';
-import 'package:law_platform_flutter/utils/global_widgets/show_dialog.dart';
+import 'package:law_platform_flutter/features/interactions_&_comments/presentation/cubits/comment_cubit/get_comments_cubit.dart';
+import 'package:law_platform_flutter/features/interactions_&_comments/presentation/cubits/add_update_delete_comment_cubit/add_edit_delete_comment_cubit.dart';
 
 class CommentsPage extends StatefulWidget {
   const CommentsPage({super.key});
@@ -16,27 +17,29 @@ class CommentsPage extends StatefulWidget {
 
 class _CommentsPageState extends State<CommentsPage> {
   String _commentToBeEdited = '';
+  int _commentId = 0;
   bool _isInit = true;
-  bool postOrAdvice = true;
-  int postId = 0;
+  bool _postOrAdvice = true;
+  int _postId = 0;
 
   @override
   void didChangeDependencies() {
     if (_isInit) {
       final settingsData =
           ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
-      postOrAdvice = settingsData['postOrAdvice'];
-      postId = settingsData['postId'];
+      _postOrAdvice = settingsData['postOrAdvice'];
+      _postId = settingsData['postId'];
       BlocProvider.of<GetCommentsCubit>(context)
-          .getAllComments(postOrAdvice, postId);
+          .getAllComments(_postOrAdvice, _postId);
     }
     _isInit = false;
     super.didChangeDependencies();
   }
 
-  void _editComment(String comment) {
+  void _editComment(Comment comment) {
     setState(() {
-      _commentToBeEdited = comment;
+      _commentId = comment.commentId;
+      _commentToBeEdited = comment.text;
     });
   }
 
@@ -118,9 +121,14 @@ class _CommentsPageState extends State<CommentsPage> {
                   child: ListView.separated(
                     itemCount: state.comments.length,
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    itemBuilder: (context, index) => CommentWidget(
-                      comment: state.comments[index].text,
-                      editComment: _editComment,
+                    itemBuilder: (context, index) =>
+                        BlocProvider<AddEditDeleteCommentCubit>(
+                      create: (context) => AddEditDeleteCommentCubit(),
+                      child: CommentWidget(
+                        comment: state.comments[index],
+                        postOrAdvice: _postOrAdvice,
+                        editComment: _editComment,
+                      ),
                     ),
                     separatorBuilder: (context, index) => const SizedBox(
                       height: 16.0,
@@ -133,8 +141,8 @@ class _CommentsPageState extends State<CommentsPage> {
             },
           ),
           if ((checkAuthentication.getAccountType() != 'member' &&
-                  !postOrAdvice) ||
-              postOrAdvice)
+                  !_postOrAdvice) ||
+              _postOrAdvice)
             Container(
               padding:
                   const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
@@ -167,8 +175,10 @@ class _CommentsPageState extends State<CommentsPage> {
                     create: (context) => AddEditDeleteCommentCubit(),
                     child: AddCommentWidget(
                       key: ValueKey(_commentToBeEdited),
-                      postOrAdvice: postOrAdvice,
-                      postId: postId,
+                      // refresh: _refreshComments(),
+                      postOrAdvice: _postOrAdvice,
+                      commentId: _commentId,
+                      postId: _postId,
                       comment: _commentToBeEdited.isEmpty
                           ? null
                           : _commentToBeEdited,
@@ -182,49 +192,3 @@ class _CommentsPageState extends State<CommentsPage> {
     );
   }
 }
-
-
-// if ((checkAuthentication.getAccountType() != 'member' &&
-                //         !postOrAdvice) ||
-                //     postOrAdvice)
-                //   Container(
-                //     padding: const EdgeInsets.symmetric(
-                //         horizontal: 8.0, vertical: 8.0),
-                //     decoration: BoxDecoration(
-                //       color: Theme.of(context).colorScheme.inversePrimary,
-                //       boxShadow: [
-                //         BoxShadow(
-                //           spreadRadius: 2.0,
-                //           blurRadius: 2.0,
-                //           color: Theme.of(context).colorScheme.surface,
-                //         )
-                //       ],
-                //     ),
-                //     child: BlocConsumer<AddEditDeleteCommentCubit,
-                //         AddEditDeleteCommentState>(
-                //       listener: (context, state) {
-                //         if (state is AddEditDeleteCommentError) {
-                //           ScaffoldMessenger.of(context).showSnackBar(
-                //             SnackBar(
-                //               content: Text(
-                //                 state.errorMessage,
-                //                 style: Theme.of(context).textTheme.bodyLarge,
-                //               ),
-                //             ),
-                //           );
-                //         }
-                //       },
-                //       builder: (context, state) {
-                //         return BlocProvider.value(
-                //           value: BlocProvider.of<AddEditDeleteCommentCubit>(
-                //               context),
-                //           child: AddCommentWidget(
-                //             key: ValueKey(_commentToBeEdited),
-                //             comment: _commentToBeEdited.isEmpty
-                //                 ? null
-                //                 : _commentToBeEdited,
-                //           ),
-                //         );
-                //       },
-                //     ),
-                //   ),

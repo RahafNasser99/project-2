@@ -7,12 +7,16 @@ class AddCommentWidget extends StatefulWidget {
   const AddCommentWidget({
     super.key,
     required this.comment,
+    // required this.refresh,
     required this.postOrAdvice,
+    required this.commentId,
     required this.postId,
   });
 
   final String? comment;
+  // final Future<void> refresh;
   final bool postOrAdvice;
+  final int? commentId;
   final int postId;
 
   @override
@@ -28,6 +32,7 @@ class _AddCommentWidgetState extends State<AddCommentWidget> {
   @override
   void initState() {
     _textEditingController.text = widget.comment ?? '';
+    _enteredComment = widget.comment ?? '';
     _textEditingController.addListener(_updateLineCount);
     print('add comment widget');
     print(widget.comment);
@@ -62,6 +67,7 @@ class _AddCommentWidgetState extends State<AddCommentWidget> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       CommentModel commentModel = CommentModel(
+        commentId: widget.commentId ?? 0,
         text: _enteredComment,
         commentDate: DateTime.now(),
       );
@@ -80,6 +86,7 @@ class _AddCommentWidgetState extends State<AddCommentWidget> {
     super.didUpdateWidget(oldWidget);
     if (widget.comment != oldWidget.comment) {
       _textEditingController.text = widget.comment ?? '';
+      _enteredComment = widget.comment ?? '';
     }
   }
 
@@ -102,10 +109,7 @@ class _AddCommentWidgetState extends State<AddCommentWidget> {
               _lineCount = 1;
             });
           });
-          // setState(() {
-          //   _enteredComment = '';
-          //   _lineCount = 1;
-          // });
+          // widget.refresh;
         }
       },
       builder: (context, state) {

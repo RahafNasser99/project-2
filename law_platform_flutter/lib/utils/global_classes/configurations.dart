@@ -12,7 +12,8 @@ CheckAuthentication checkAuthentication = CheckAuthentication();
 
 late SharedPreferences prefs;
 
-const BASE_URL = 'http://192.168.10.146:8000';
+const BASE_URL = 'http://192.168.43.59:8000';
+// 'http://192.168.10.146:8000'
 //'http://192.168.43.59:8000'
 //'http://192.168.43.149:8000'
 

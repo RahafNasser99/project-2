@@ -20,9 +20,11 @@ class AddEditDeleteCommentCubit extends Cubit<AddEditDeleteCommentState> {
       String addOrEdit, Comment comment, bool postOrAdvice, int postId) async {
     emit(AddEditDeleteCommentLoading());
 
+    print(addOrEdit);
+
     final either = addOrEdit == 'add'
         ? await addCommentUseCase(comment, postOrAdvice, postId)
-        : await editCommentUseCase(comment, postOrAdvice, postId);
+        : await editCommentUseCase(comment, postOrAdvice);
 
     either.fold(
       (failure) {
@@ -42,11 +44,10 @@ class AddEditDeleteCommentCubit extends Cubit<AddEditDeleteCommentState> {
     );
   }
 
-  Future<void> deleteComment(
-      int commentId, bool postOrAdvice, int postId) async {
+  Future<void> deleteComment(int commentId, bool postOrAdvice) async {
     emit(AddEditDeleteCommentLoading());
 
-    final either = await deleteCommentUseCase(commentId, postOrAdvice, postId);
+    final either = await deleteCommentUseCase(commentId, postOrAdvice);
 
     either.fold(
       (failure) {
@@ -64,5 +65,12 @@ class AddEditDeleteCommentCubit extends Cubit<AddEditDeleteCommentState> {
       },
       (_) => emit(AddEditDeleteCommentDone()),
     );
+  }
+
+  @override
+  void onChange(Change<AddEditDeleteCommentState> change) {
+    print(change.currentState);
+    print(change.nextState);
+    super.onChange(change);
   }
 }

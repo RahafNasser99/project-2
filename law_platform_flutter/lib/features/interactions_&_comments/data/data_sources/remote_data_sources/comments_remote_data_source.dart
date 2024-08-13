@@ -8,9 +8,8 @@ abstract class CommentRemoteDataSource {
   Future<List<CommentModel>> getComments(bool postOrAdvice, int postId);
   Future<Unit> addComment(
       CommentModel commentModel, bool postOrAdvice, int postId);
-  Future<Unit> editComment(
-      CommentModel commentModel, bool postOrAdvice, int postId);
-  Future<Unit> deleteComment(int commentId, bool postOrAdvice, int postId);
+  Future<Unit> editComment(CommentModel commentModel, bool postOrAdvice);
+  Future<Unit> deleteComment(int commentId, bool postOrAdvice);
 }
 
 class CommentRemoteDataSourceImpl extends CommentRemoteDataSource {
@@ -31,7 +30,6 @@ class CommentRemoteDataSourceImpl extends CommentRemoteDataSource {
     );
 
     print(response.data);
-    print(response.data['data']);
 
     if (response.statusCode! >= 200 && response.statusCode! < 400) {
       final List decodedJson = response.data['data'] as List;
@@ -48,8 +46,6 @@ class CommentRemoteDataSourceImpl extends CommentRemoteDataSource {
   @override
   Future<Unit> addComment(
       CommentModel commentModel, bool postOrAdvice, int postId) async {
-    print(commentModel.text);
-
     final url = postOrAdvice
         ? '/api/post/$postId/createComment'
         : '/api/legalAdvice/$postId/createComment';
@@ -69,8 +65,6 @@ class CommentRemoteDataSourceImpl extends CommentRemoteDataSource {
       data: data,
     );
 
-    print(response.data);
-
     if (response.statusCode! >= 200 && response.statusCode! < 400) {
       return Future.value(unit);
     } else {
@@ -79,13 +73,14 @@ class CommentRemoteDataSourceImpl extends CommentRemoteDataSource {
   }
 
   @override
-  Future<Unit> deleteComment(
-      int commentId, bool postOrAdvice, int postId) async {
-    const url = '';
+  Future<Unit> deleteComment(int commentId, bool postOrAdvice) async {
+    final url = postOrAdvice
+        ? '/api/post/deleteComment/$commentId'
+        : '/api/legalAdvice/deleteComment/$commentId';
 
     final data = {'commentId': commentId};
 
-    final response = await dio.post(
+    final response = await dio.delete(
       url,
       options: Options(
         headers: {
@@ -104,11 +99,14 @@ class CommentRemoteDataSourceImpl extends CommentRemoteDataSource {
   }
 
   @override
-  Future<Unit> editComment(
-      CommentModel commentModel, bool postOrAdvice, int postId) async {
-    const url = '';
+  Future<Unit> editComment(CommentModel commentModel, bool postOrAdvice) async {
+    final url = postOrAdvice
+        ? '/api/post/updateComment/${commentModel.commentId}'
+        : '/api/legalAdvice/updateComment/${commentModel.commentId}';
 
-    final data = commentModel.toJson();
+    final data = {
+      'content': commentModel.text,
+    };
 
     final response = await dio.post(
       url,

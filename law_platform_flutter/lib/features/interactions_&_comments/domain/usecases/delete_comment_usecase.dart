@@ -6,8 +6,8 @@ import 'package:law_platform_flutter/features/interactions_&_comments/data/repos
 class DeleteCommentUseCase {
   CommentsRepository commentsRepository = CommentsRepositoryImpl();
 
-  Future<Either<Failure, Unit>> call(int commentId, bool postOrAdvice, int postId) async {
+  Future<Either<Failure, Unit>> call(int commentId, bool postOrAdvice) async {
     print('delete comment use case');
-    return await commentsRepository.deleteComments(commentId,  postOrAdvice,  postId);
+    return await commentsRepository.deleteComments(commentId,  postOrAdvice);
   }
 }

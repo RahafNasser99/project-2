@@ -1,16 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:law_platform_flutter/features/interactions_&_comments/domain/entities/comment.dart';
+import 'package:law_platform_flutter/features/interactions_&_comments/presentation/cubits/add_update_delete_comment_cubit/add_edit_delete_comment_cubit.dart';
 import 'package:law_platform_flutter/features/interactions_&_comments/presentation/widgets/delete_comment_alert_dialog.dart';
 
 class CommentWidget extends StatelessWidget {
-  const CommentWidget(
-      {super.key, required this.comment, required this.editComment});
+  const CommentWidget({
+    super.key,
+    required this.comment,
+    required this.editComment,
+    required this.postOrAdvice,
+  });
 
-  final String comment;
+  final Comment comment;
+  final bool postOrAdvice;
   final Function editComment;
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+
+    Future<void> _deleteComment() async {
+      BlocProvider.of<AddEditDeleteCommentCubit>(context)
+          .deleteComment(comment.commentId, postOrAdvice);
+    }
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -57,6 +70,7 @@ class CommentWidget extends StatelessWidget {
                               ElevatedButton.icon(
                                 onPressed: () {
                                   Navigator.pop(context);
+                                  editComment(comment);
                                 },
                                 style: ElevatedButton.styleFrom(
                                     backgroundColor:
@@ -87,7 +101,7 @@ class CommentWidget extends StatelessWidget {
                       );
                     },
                     child: Text(
-                      comment,
+                      comment.text,
                       textAlign: TextAlign.right,
                       textDirection: TextDirection.rtl,
                       style: Theme.of(context).textTheme.bodyLarge,
