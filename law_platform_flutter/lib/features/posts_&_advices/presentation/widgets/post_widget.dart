@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:law_platform_flutter/features/interactions_&_comments/presentation/cubits/interaction_cubit/interaction_cubit.dart';
 import 'package:law_platform_flutter/utils/global_classes/data.dart';
 import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
 import 'package:law_platform_flutter/utils/global_widgets/alert_dialog_widget.dart';
@@ -145,12 +146,16 @@ class PostWidget extends StatelessWidget {
                 post.postImage!,
               ),
             ),
-          InteractionWidget(
-            postPage: postPage,
-            postId: post.postId,
-            likes: post.likesCount,
-            dislikes: post.dislikesCount,
-            comments: post.commentsCount,
+          BlocProvider<InteractionCubit>(
+            create: (context) => InteractionCubit(),
+            child: InteractionWidget(
+              postPage: postPage,
+              postId: post.postId,
+              likes: post.likesCount,
+              dislikes: post.dislikesCount,
+              comments: post.commentsCount,
+              userInteraction: post.userInteraction,
+            ),
           ),
         ],
       ),

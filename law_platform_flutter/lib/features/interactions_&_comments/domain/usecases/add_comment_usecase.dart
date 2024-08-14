@@ -8,7 +8,6 @@ class AddCommentUseCase {
   CommentsRepository commentsRepository = CommentsRepositoryImpl();
 
   Future<Either<Failure, Unit>> call(Comment comment, bool postOrAdvice, int postId) async {
-    print('add comment use case');
     return await commentsRepository.addComment(comment,  postOrAdvice,postId);
   }
 }

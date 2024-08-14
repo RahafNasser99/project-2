@@ -6,8 +6,7 @@ import 'package:law_platform_flutter/features/interactions_&_comments/data/repos
 class AddInteractionUseCase {
   InteractionsRepository interactionsRepository = InteractionsRepositoryImpl();
 
-  Future<Either<Failure, Unit>> call(bool interaction) async {
-    print('add interaction use case');
-    return await interactionsRepository.addInteraction(interaction);
+  Future<Either<Failure, Unit>> call(bool interaction,int postId) async {
+    return await interactionsRepository.addInteraction( interaction, postId);
   }
 }

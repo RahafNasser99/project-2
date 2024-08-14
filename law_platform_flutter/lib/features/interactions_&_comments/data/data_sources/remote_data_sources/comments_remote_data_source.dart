@@ -15,6 +15,8 @@ abstract class CommentRemoteDataSource {
 class CommentRemoteDataSourceImpl extends CommentRemoteDataSource {
   @override
   Future<List<CommentModel>> getComments(bool postOrAdvice, int postId) async {
+    print(postOrAdvice);
+    print(postId);
     final url = postOrAdvice
         ? '/api/post/$postId/allComments'
         : '/api/legalAdvice/$postId/allComments';
@@ -28,8 +30,6 @@ class CommentRemoteDataSourceImpl extends CommentRemoteDataSource {
         },
       ),
     );
-
-    print(response.data);
 
     if (response.statusCode! >= 200 && response.statusCode! < 400) {
       final List decodedJson = response.data['data'] as List;
@@ -50,9 +50,9 @@ class CommentRemoteDataSourceImpl extends CommentRemoteDataSource {
         ? '/api/post/$postId/createComment'
         : '/api/legalAdvice/$postId/createComment';
 
-    final data = {
-      'content': commentModel.text,
-    };
+    final data = postOrAdvice
+        ? {'content': commentModel.text}
+        : {'comment': commentModel.text};
 
     final response = await dio.post(
       url,
@@ -104,9 +104,9 @@ class CommentRemoteDataSourceImpl extends CommentRemoteDataSource {
         ? '/api/post/updateComment/${commentModel.commentId}'
         : '/api/legalAdvice/updateComment/${commentModel.commentId}';
 
-    final data = {
-      'content': commentModel.text,
-    };
+    final data = postOrAdvice
+        ? {'content': commentModel.text}
+        : {'comment': commentModel.text};
 
     final response = await dio.post(
       url,

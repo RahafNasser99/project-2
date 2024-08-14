@@ -10,10 +10,10 @@ class InteractionsRepositoryImpl extends InteractionsRepository {
       InteractionsRemoteDataSourceImpl();
 
   @override
-  Future<Either<Failure, Unit>> addInteraction(bool interaction) async {
+  Future<Either<Failure, Unit>> addInteraction(bool interaction,int postId) async {
     if (await internetConnectionChecker.hasConnection) {
       try {
-        await interactionsRemoteDataSource.addInteraction(interaction);
+        await interactionsRemoteDataSource.addInteraction( interaction, postId);
         return const Right(unit);
       } on ServerException {
         return Left(ServerFailure());
@@ -24,10 +24,10 @@ class InteractionsRepositoryImpl extends InteractionsRepository {
   }
 
   @override
-  Future<Either<Failure, Unit>> removeInteraction() async {
+  Future<Either<Failure, Unit>> removeInteraction(bool interaction,int postId) async {
     if (await internetConnectionChecker.hasConnection) {
       try {
-        await interactionsRemoteDataSource.removeInteraction();
+        await interactionsRemoteDataSource.removeInteraction( interaction, postId);
 
         return const Right(unit);
 

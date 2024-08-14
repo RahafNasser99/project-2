@@ -13,9 +13,9 @@ class CommentModel extends Comment {
     final String commentData = (json['created_at'] as String)
         .substring(0, (json['created_at'] as String).indexOf('T'));
     return CommentModel(
-      userId: json['user_id'],
+      userId: json['user_id'] ?? json['lawyer_id'],
       commentId: json['id'],
-      text: json['content'],
+      text: json['content'] ?? json['comment'],
       commentDate: Date(comingDate: commentData).handleDate(),
     );
   }
