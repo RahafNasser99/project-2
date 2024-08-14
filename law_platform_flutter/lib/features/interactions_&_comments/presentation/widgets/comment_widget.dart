@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:law_platform_flutter/utils/global_widgets/alert_dialog_widget.dart';
 import 'package:law_platform_flutter/features/interactions_&_comments/domain/entities/comment.dart';
 import 'package:law_platform_flutter/features/interactions_&_comments/presentation/cubits/add_update_delete_comment_cubit/add_edit_delete_comment_cubit.dart';
-import 'package:law_platform_flutter/features/interactions_&_comments/presentation/widgets/delete_comment_alert_dialog.dart';
 
 class CommentWidget extends StatelessWidget {
   const CommentWidget({
@@ -20,7 +20,7 @@ class CommentWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
 
-    Future<void> _deleteComment() async {
+    Future<void> deleteComment() async {
       BlocProvider.of<AddEditDeleteCommentCubit>(context)
           .deleteComment(comment.commentId, postOrAdvice);
     }
@@ -82,9 +82,17 @@ class CommentWidget extends StatelessWidget {
                               ),
                               ElevatedButton.icon(
                                 onPressed: () {
-                                  DeleteCommentAlertDialog(
-                                    alertTitle: 'حذف التعليق',
-                                    onPressed: () {},
+                                  Navigator.pop(context);
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialogWidget(
+                                      alertTitle: 'حذف التعليق',
+                                      alertContent: 'تأكيد الحذف',
+                                      onPressed: () async {
+                                        Navigator.pop(context);
+                                        deleteComment();
+                                      },
+                                    ),
                                   );
                                 },
                                 style: ElevatedButton.styleFrom(

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:law_platform_flutter/utils/global_classes/data.dart';
 import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
+import 'package:law_platform_flutter/utils/global_widgets/alert_dialog_widget.dart';
 import 'package:law_platform_flutter/features/posts_&_advices/domain/entities/post.dart';
 import 'package:law_platform_flutter/features/interactions_&_comments/presentation/widgets/interaction_widget.dart';
-import 'package:law_platform_flutter/features/interactions_&_comments/presentation/widgets/delete_comment_alert_dialog.dart';
 import 'package:law_platform_flutter/features/posts_&_advices/presentation/cubits/add_update_delete_post_cubit/add_update_delete_post_cubit.dart';
 
 class PostWidget extends StatelessWidget {
@@ -68,12 +68,13 @@ class PostWidget extends StatelessWidget {
                             ),
                             ElevatedButton.icon(
                               onPressed: () {
-                                DeleteCommentAlertDialog(
+                                AlertDialogWidget(
                                   alertTitle:
                                       checkAuthentication.getAccountType() ==
                                               'member'
                                           ? 'حذف الاستشارة'
                                           : 'حذف المنشور',
+                                  alertContent: 'تأكيد الحذف',
                                   onPressed: () async {
                                     BlocProvider.of<AddUpdateDeletePostCubit>(
                                             context)
