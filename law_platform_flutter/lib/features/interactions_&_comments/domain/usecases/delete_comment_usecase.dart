@@ -7,7 +7,6 @@ class DeleteCommentUseCase {
   CommentsRepository commentsRepository = CommentsRepositoryImpl();
 
   Future<Either<Failure, Unit>> call(int commentId, bool postOrAdvice) async {
-    print('delete comment use case');
     return await commentsRepository.deleteComments(commentId,  postOrAdvice);
   }
 }

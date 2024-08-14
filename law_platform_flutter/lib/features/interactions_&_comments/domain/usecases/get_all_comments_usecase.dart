@@ -9,7 +9,6 @@ class GetAllCommentsUseCase {
 
   Future<Either<Failure, List<Comment>>> call(
       bool postOrAdvice, int postId) async {
-    print('get comment use case');
     return await commentsRepository.getComments(postOrAdvice, postId);
   }
 }

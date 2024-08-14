@@ -15,8 +15,6 @@ abstract class CommentRemoteDataSource {
 class CommentRemoteDataSourceImpl extends CommentRemoteDataSource {
   @override
   Future<List<CommentModel>> getComments(bool postOrAdvice, int postId) async {
-    print(postOrAdvice);
-    print(postId);
     final url = postOrAdvice
         ? '/api/post/$postId/allComments'
         : '/api/legalAdvice/$postId/allComments';

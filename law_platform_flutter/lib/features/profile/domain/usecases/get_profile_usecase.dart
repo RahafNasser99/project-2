@@ -8,7 +8,6 @@ class GetProfileUseCase {
   ProfileRepository profileRepository = ProfileRepositoryImpl();
 
   Future<Either<Failure, Profile>> call() async {
-    print('get profile usecase');
     return await profileRepository.getProfile();
   }
 }

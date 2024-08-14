@@ -7,7 +7,6 @@ class RemoveInteractionUseCase {
   InteractionsRepository interactionsRepository = InteractionsRepositoryImpl();
 
   Future<Either<Failure, Unit>> call(bool interaction,int postId) async {
-    print("remove interaction usecase");
     return await interactionsRepository.removeInteraction( interaction, postId);
   }
 }

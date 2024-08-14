@@ -29,8 +29,6 @@ class InteractionsRemoteDataSourceImpl extends InteractionsRemoteDataSource {
       data: data,
     );
 
-    print(response.data);
-
     if (response.statusCode! >= 200 && response.statusCode! < 400) {
       return Future.value(unit);
     } else {
@@ -57,7 +55,6 @@ class InteractionsRemoteDataSourceImpl extends InteractionsRemoteDataSource {
       data: data,
     );
 
-    print(response.data);
 
     if (response.statusCode! >= 200 && response.statusCode! < 400) {
       return Future.value(unit);

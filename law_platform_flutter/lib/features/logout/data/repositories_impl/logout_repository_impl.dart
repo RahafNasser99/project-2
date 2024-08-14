@@ -10,8 +10,6 @@ class LogoutRepositoryImpl extends LogoutRepository {
   @override
   Future<Either<Failure, Unit>> logout() async {
     if (await internetConnectionChecker.hasConnection) {
-      print('has connection');
-
       try {
         await logoutRemoteDataSource.logout();
         return const Right(unit);

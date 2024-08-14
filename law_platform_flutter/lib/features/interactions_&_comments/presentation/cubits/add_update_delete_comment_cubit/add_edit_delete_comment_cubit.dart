@@ -20,8 +20,6 @@ class AddEditDeleteCommentCubit extends Cubit<AddEditDeleteCommentState> {
       String addOrEdit, Comment comment, bool postOrAdvice, int postId) async {
     emit(AddEditDeleteCommentLoading());
 
-    print(addOrEdit);
-
     final either = addOrEdit == 'add'
         ? await addCommentUseCase(comment, postOrAdvice, postId)
         : await editCommentUseCase(comment, postOrAdvice);
@@ -65,12 +63,5 @@ class AddEditDeleteCommentCubit extends Cubit<AddEditDeleteCommentState> {
       },
       (_) => emit(AddEditDeleteCommentDone()),
     );
-  }
-
-  @override
-  void onChange(Change<AddEditDeleteCommentState> change) {
-    print(change.currentState);
-    print(change.nextState);
-    super.onChange(change);
   }
 }

@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class Loading extends StatelessWidget {
-  const Loading({Key? key, required this.evenColor, required this.oddColor})
-      : super(key: key);
+  const Loading({super.key, required this.evenColor, required this.oddColor});
 
   final Color evenColor;
   final Color oddColor;

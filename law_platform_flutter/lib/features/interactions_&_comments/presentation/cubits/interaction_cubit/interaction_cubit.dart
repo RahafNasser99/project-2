@@ -37,11 +37,4 @@ class InteractionCubit extends Cubit<InteractionState> {
       (_) => emit(InteractionDone()),
     );
   }
-
-  @override
-  void onChange(Change<InteractionState> change) {
-    print(change.currentState);
-    print(change.nextState);
-    super.onChange(change);
-  }
 }
