@@ -3,6 +3,7 @@ import 'package:law_platform_flutter/utils/global_classes/data.dart';
 
 class CommentModel extends Comment {
   CommentModel({
+    required super.userId,
     required super.commentId,
     required super.text,
     required super.commentDate,
@@ -12,6 +13,7 @@ class CommentModel extends Comment {
     final String commentData = (json['created_at'] as String)
         .substring(0, (json['created_at'] as String).indexOf('T'));
     return CommentModel(
+      userId: json['user_id'],
       commentId: json['id'],
       text: json['content'],
       commentDate: Date(comingDate: commentData).handleDate(),

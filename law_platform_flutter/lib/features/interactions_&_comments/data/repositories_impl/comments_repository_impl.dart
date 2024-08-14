@@ -15,8 +15,6 @@ class CommentsRepositoryImpl extends CommentsRepository {
   Future<Either<Failure, List<Comment>>> getComments(
       bool postOrAdvice, int postId) async {
     if (await internetConnectionChecker.hasConnection) {
-      print('has connection');
-
       try {
         final comments =
             await commentsRemoteDataSource.getComments(postOrAdvice, postId);
@@ -33,9 +31,9 @@ class CommentsRepositoryImpl extends CommentsRepository {
   Future<Either<Failure, Unit>> addComment(
       Comment comment, bool postOrAdvice, int postId) async {
     if (await internetConnectionChecker.hasConnection) {
-      print('has connection');
       try {
         final commentModel = CommentModel(
+          userId: null,
           commentId: comment.commentId,
           text: comment.text,
           commentDate: comment.commentDate,
@@ -55,9 +53,9 @@ class CommentsRepositoryImpl extends CommentsRepository {
   Future<Either<Failure, Unit>> editComments(
       Comment comment, bool postOrAdvice) async {
     if (await internetConnectionChecker.hasConnection) {
-      print('has connection');
       try {
         final commentModel = CommentModel(
+          userId: null,
           commentId: comment.commentId,
           text: comment.text,
           commentDate: comment.commentDate,
@@ -76,7 +74,6 @@ class CommentsRepositoryImpl extends CommentsRepository {
   Future<Either<Failure, Unit>> deleteComments(
       int commentId, bool postOrAdvice) async {
     if (await internetConnectionChecker.hasConnection) {
-      print('has connection');
       try {
         await commentsRemoteDataSource.deleteComment(commentId, postOrAdvice);
         return const Right(unit);

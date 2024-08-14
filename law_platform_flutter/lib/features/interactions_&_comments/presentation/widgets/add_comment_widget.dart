@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:law_platform_flutter/features/interactions_&_comments/data/models/comment_model.dart';
+import 'package:law_platform_flutter/features/interactions_&_comments/domain/entities/comment.dart';
 import 'package:law_platform_flutter/features/interactions_&_comments/presentation/cubits/add_update_delete_comment_cubit/add_edit_delete_comment_cubit.dart';
 
 class AddCommentWidget extends StatefulWidget {
   const AddCommentWidget({
     super.key,
     required this.comment,
-    // required this.refresh,
+    required this.refreshComment,
     required this.postOrAdvice,
-    required this.commentId,
     required this.postId,
   });
 
-  final String? comment;
-  // final Future<void> refresh;
+  final Future<void> Function() refreshComment;
+  final Comment? comment;
   final bool postOrAdvice;
-  final int? commentId;
   final int postId;
 
   @override
@@ -31,11 +30,15 @@ class _AddCommentWidgetState extends State<AddCommentWidget> {
 
   @override
   void initState() {
-    _textEditingController.text = widget.comment ?? '';
-    _enteredComment = widget.comment ?? '';
+    _textEditingController.text =
+        widget.comment?.text != null && widget.comment!.text.isNotEmpty
+            ? widget.comment!.text
+            : '';
+    _enteredComment =
+        widget.comment?.text != null && widget.comment!.text.isNotEmpty
+            ? widget.comment!.text
+            : '';
     _textEditingController.addListener(_updateLineCount);
-    print('add comment widget');
-    print(widget.comment);
     super.initState();
   }
 
@@ -67,17 +70,21 @@ class _AddCommentWidgetState extends State<AddCommentWidget> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       CommentModel commentModel = CommentModel(
-        commentId: widget.commentId ?? 0,
+        userId: widget.comment?.userId,
+        commentId: widget.comment?.commentId ?? 0,
         text: _enteredComment,
         commentDate: DateTime.now(),
       );
       await BlocProvider.of<AddEditDeleteCommentCubit>(context)
           .addOrEditComment(
-        widget.comment != null ? 'edit' : 'add',
+        widget.comment?.text != null && widget.comment!.text.isNotEmpty
+            ? 'edit'
+            : 'add',
         commentModel,
         widget.postOrAdvice,
         widget.postId,
       );
+      await widget.refreshComment();
     }
   }
 
@@ -85,8 +92,8 @@ class _AddCommentWidgetState extends State<AddCommentWidget> {
   void didUpdateWidget(AddCommentWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.comment != oldWidget.comment) {
-      _textEditingController.text = widget.comment ?? '';
-      _enteredComment = widget.comment ?? '';
+      _textEditingController.text = widget.comment?.text ?? '';
+      _enteredComment = widget.comment?.text ?? '';
     }
   }
 
