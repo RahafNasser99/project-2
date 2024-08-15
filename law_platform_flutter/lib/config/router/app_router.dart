@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:law_platform_flutter/features/posts_&_advices/presentation/cubits/get_post_cubit/get_post_cubit.dart';
 import 'package:law_platform_flutter/home_page.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
@@ -83,8 +84,18 @@ class AppRouter {
 
       case 'profile-page':
         return _generateRoute(
-          BlocProvider(
-            create: (context) => GetProfileCubit(),
+          MultiBlocProvider(
+            providers: [
+              BlocProvider<GetProfileCubit>(
+                create: (context) => GetProfileCubit(),
+              ),
+              BlocProvider<GetPostCubit>(
+                create: (context) => GetPostCubit(),
+              ),
+              BlocProvider<AddUpdateDeletePostCubit>(
+                create: (context) => AddUpdateDeletePostCubit(),
+              ),
+            ],
             child: const ProfilePage(),
           ),
           settings,

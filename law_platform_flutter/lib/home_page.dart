@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:law_platform_flutter/app_drawer.dart';
+import 'package:law_platform_flutter/features/posts_&_advices/presentation/cubits/add_update_delete_post_cubit/add_update_delete_post_cubit.dart';
 import 'package:law_platform_flutter/features/posts_&_advices/presentation/pages/posts_home_page.dart';
 import 'package:law_platform_flutter/features/posts_&_advices/presentation/cubits/get_post_cubit/get_post_cubit.dart';
 
@@ -47,9 +48,16 @@ class _HomePageState extends State<HomePage> {
     Widget buildPage(int index) {
       switch (index) {
         case 0:
-          return BlocProvider(
-            key: UniqueKey(),
-            create: (context) => GetPostCubit(),
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider<GetPostCubit>(
+                key: UniqueKey(),
+                create: (context) => GetPostCubit(),
+              ),
+              BlocProvider<AddUpdateDeletePostCubit>(
+                create: (context) => AddUpdateDeletePostCubit(),
+              ),
+            ],
             child: PostsHomePage(key: UniqueKey(), postPage: true),
           );
         case 1:

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:law_platform_flutter/features/posts_&_advices/presentation/cubits/add_update_delete_post_cubit/add_update_delete_post_cubit.dart';
 import 'package:law_platform_flutter/utils/global_widgets/loading.dart';
 import 'package:law_platform_flutter/utils/global_widgets/show_dialog.dart';
 import 'package:law_platform_flutter/features/posts_&_advices/domain/entities/post.dart';
@@ -27,6 +28,11 @@ class _PostsHomePageState extends State<PostsHomePage> {
     }
     _isInit = false;
     super.didChangeDependencies();
+  }
+
+  Future<void> _deletePost(int postId, bool postOrAdvice) async {
+    BlocProvider.of<AddUpdateDeletePostCubit>(context)
+        .deletePost(postId, postOrAdvice);
   }
 
   Future<void> _refreshPage() async {
@@ -88,10 +94,28 @@ class _PostsHomePageState extends State<PostsHomePage> {
                     );
                   });
                 } else {
-                  return PostWidget(
-                    post: posts[index],
-                    postPage: widget.postPage,
-                  );
+                  return BlocConsumer<AddUpdateDeletePostCubit,
+                      AddUpdateDeletePostState>(listener: (context, state) {
+                    if (state is AddUpdateDeletePostError) {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (context) => ShowDialog(
+                          dialogMessage: state.errorMessage,
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      );
+                    }
+                  }, builder: (context, state) {
+                    return PostWidget(
+                      post: posts[index],
+                      postPage: widget.postPage,
+                      deletePost: _deletePost,
+                      refreshPosts: _refreshPage,
+                    );
+                  });
                 }
               },
             );

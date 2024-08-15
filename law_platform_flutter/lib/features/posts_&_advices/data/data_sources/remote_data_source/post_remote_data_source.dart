@@ -113,17 +113,22 @@ class PostRemoteDataSourceImpl extends PostRemoteDataSource {
 
   @override
   Future<Unit> deletePost(int postId, bool postOrAdvice) async {
-    final url = postOrAdvice ? '' : '';
+    final url = postOrAdvice
+        ? '/api/post/delete/$postId'
+        : '/api/legalAdvice/delete/$postId';
     print('delete post');
 
-    final data = {
-      'id': postId,
-    };
-
-    final response = await dio.post(
+    final response = await dio.delete(
       url,
-      data: data,
+      options: Options(
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${checkAuthentication.getToken()}'
+        },
+      ),
     );
+
+    print(response.data);
 
     if (response.statusCode! >= 200 && response.statusCode! < 400) {
       return Future.value(unit);
