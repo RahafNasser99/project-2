@@ -2,6 +2,10 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:law_platform_flutter/features/rate/data/models/rate_model.dart';
+import 'package:law_platform_flutter/features/rate/presentation/cubits/rate_cubit.dart';
+import 'package:law_platform_flutter/features/rate/presentation/widgets/rate_widget.dart';
+import 'package:law_platform_flutter/features/search/presentation/cubit/search_cubit.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:law_platform_flutter/utils/global_widgets/loading.dart';
@@ -28,14 +32,31 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   bool _isInit = true;
+  int? _userId;
+  String? _accountType;
 
   @override
   Future<void> didChangeDependencies() async {
     if (_isInit) {
-      await BlocProvider.of<GetProfileCubit>(context).getProfile();
+      final settingsData =
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+      // _userId = settingsData['userId'];
+      _userId = checkAuthentication.getId();
+      _accountType = settingsData['accountType'];
+      // if (_userId == null) {
+      await BlocProvider.of<GetProfileCubit>(context).getMyProfile();
+      // } else {
+      //   await BlocProvider.of<GetProfileCubit>(context)
+      //       .getAnotherUserProfile(_accountType!, _userId!);
+      // }
     }
     _isInit = false;
     super.didChangeDependencies();
+  }
+
+  Future<void> _addRate(double rating) async {
+    final rate = RateModel(rateValue: rating);
+    BlocProvider.of<RateCubit>(context).addRate(rate, _userId!);
   }
 
   @override
@@ -57,6 +78,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 },
               ),
             );
+          } else if (state is GetProfileDone) {
+            RateWidget(userId: _userId!,addRate: _addRate).showRateModelBottomSheet(context);
           }
         },
         builder: (context, state) {

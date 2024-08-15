@@ -6,6 +6,7 @@ class MemberProfileModel extends MemberProfile implements ProfileModel {
     required super.id,
     required super.name,
     required super.email,
+    required super.accountType,
     required super.profilePicture,
     required super.job,
   });
@@ -15,6 +16,7 @@ class MemberProfileModel extends MemberProfile implements ProfileModel {
         id: json['id'],
         name: json['name'],
         email: json['email'],
+        accountType: 'member',
         profilePicture: json['profile']['image'],
         job: json['profile']['work'],
       );

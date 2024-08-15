@@ -14,9 +14,6 @@ class SearchRemoteDataSourceImpl extends SearchRemoteDataSource {
   Future<List<ProfileModel>> search(String searchQuery) async {
     final url = '/api/search/users?query=$searchQuery';
 
-    print('----------------------------------');
-    print(searchQuery);
-
     final response = await dio.get(
       url,
       options: Options(

@@ -4,5 +4,6 @@ import 'package:law_platform_flutter/features/profile/domain/entities/profile.da
 
 abstract class ProfileRepository {
   Future<Either<Failure, Unit>> editProfile(String? name,String? specializationOrJob, String? imagePath, String? imageName);
-  Future<Either<Failure, Profile>> getProfile();
+  Future<Either<Failure, Profile>> getMyProfile();
+  Future<Either<Failure, Profile>> getAnotherUserProfile(String accountType,int userId);
 }

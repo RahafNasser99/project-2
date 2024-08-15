@@ -101,7 +101,15 @@ class _SearchPageState extends State<SearchPage> {
                     itemCount: state.profiles.length,
                     itemBuilder: (context, index) => ListTileWidget(
                       profile: state.profiles[index],
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context).pushNamed(
+                          'profile-page',
+                          arguments: {
+                            'userId': state.profiles[index].id,
+                            'accountType': state.profiles[index].accountType,
+                          },
+                        );
+                      },
                     ),
                   );
                 } else {

@@ -7,6 +7,7 @@ class LawyerProfileModel extends LawyerProfile implements ProfileModel {
     required super.id,
     required super.name,
     required super.email,
+    required super.accountType,
     required super.profilePicture,
     required super.specialization,
   });
@@ -16,6 +17,7 @@ class LawyerProfileModel extends LawyerProfile implements ProfileModel {
         id: json['id'],
         name: json['name'],
         email: json['email'],
+        accountType: 'lawyer',
         profilePicture: json['profile']['image'] != null
             ? '$BASE_URL${json['profile']['image']}'
             : null,

@@ -8,6 +8,6 @@ class RateModel extends Rate {
       );
 
   Map<String, dynamic> toJson() => {
-        'rate': rateValue,
+        'rating': rateValue,
       };
 }

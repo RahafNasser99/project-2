@@ -27,41 +27,43 @@ class GetPostCubit extends Cubit<GetPostState> {
   }
 
   Future<void> getPosts(bool postsOrAdvice, int? userId) async {
-    // true for posts, false for advice
-    pageNumber = 1;
-    postOrAdviceCubit = postsOrAdvice;
-    userIdCubit = userId;
+    if (!isClosed) {
+      // true for posts, false for advice
+      pageNumber = 1;
+      postOrAdviceCubit = postsOrAdvice;
+      userIdCubit = userId;
 
-    emit(GetPostLoading());
+      emit(GetPostLoading());
 
-    final either = await getPostsUseCase(
-      pageNumber,
-      postsOrAdvice,
-      userId,
-    );
+      final either = await getPostsUseCase(
+        pageNumber,
+        postsOrAdvice,
+        userId,
+      );
 
-    either.fold(
-      (failure) {
-        switch (failure.runtimeType) {
-          case ServerFailure:
-            emit(const GetPostError(errorMessage: SERVER_FAILURE_MESSAGE));
-          case OfflineFailure:
-            emit(const GetPostError(errorMessage: OFFLINE_SERVER_MESSAGE));
-          default:
-            emit(const GetPostError(errorMessage: DEFAULT_FAILURE_MESSAGE));
-        }
-      },
-      (returnedPosts) {
-        if ((returnedPosts['posts'] as List).isEmpty) {
-          emit(GetPostIsEmpty());
-        } else {
-          pageCount = returnedPosts['totalPages'];
-          emit(GetPostDone(
-              pageCount: returnedPosts['totalPages'],
-              posts: returnedPosts['posts']));
-        }
-      },
-    );
+      either.fold(
+        (failure) {
+          switch (failure.runtimeType) {
+            case ServerFailure:
+              emit(const GetPostError(errorMessage: SERVER_FAILURE_MESSAGE));
+            case OfflineFailure:
+              emit(const GetPostError(errorMessage: OFFLINE_SERVER_MESSAGE));
+            default:
+              emit(const GetPostError(errorMessage: DEFAULT_FAILURE_MESSAGE));
+          }
+        },
+        (returnedPosts) {
+          if ((returnedPosts['posts'] as List).isEmpty) {
+            emit(GetPostIsEmpty());
+          } else {
+            pageCount = returnedPosts['totalPages'];
+            emit(GetPostDone(
+                pageCount: returnedPosts['totalPages'],
+                posts: returnedPosts['posts']));
+          }
+        },
+      );
+    }
   }
 
   Future<void> getMorePosts(bool postsOrAdvice, int? userId) async {
