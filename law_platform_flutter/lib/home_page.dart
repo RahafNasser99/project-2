@@ -61,9 +61,17 @@ class _HomePageState extends State<HomePage> {
             child: PostsHomePage(key: UniqueKey(), postPage: true),
           );
         case 1:
-          return BlocProvider(
-            key: UniqueKey(),
-            create: (context) => GetPostCubit(),
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                key: UniqueKey(),
+                create: (context) => GetPostCubit(),
+              ),
+              BlocProvider<AddUpdateDeletePostCubit>(
+                key: UniqueKey(),
+                create: (context) => AddUpdateDeletePostCubit(),
+              ),
+            ],
             child: PostsHomePage(key: UniqueKey(), postPage: false),
           );
         case 3:

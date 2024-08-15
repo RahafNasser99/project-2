@@ -33,7 +33,6 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme().lightTheme,
       initialRoute: isAuthenticated ? 'home-page' : 'signup-page',
-      // isAuthenticated ? 'home-page' : 'signup-page',
       onGenerateRoute: (settings) => AppRouter().onGenerateRoute(settings),
     );
   }

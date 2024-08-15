@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:law_platform_flutter/features/profile/domain/entities/profile.dart';
 import 'package:law_platform_flutter/utils/global_widgets/show_dialog.dart';
 import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
 import 'package:law_platform_flutter/features/interactions_&_comments/domain/entities/comment.dart';
@@ -19,7 +20,7 @@ class CommentsPage extends StatefulWidget {
 class _CommentsPageState extends State<CommentsPage> {
   bool _isInit = true;
   bool _postOrAdvice = true;
-  int? _userId;
+  Profile? _profile;
   int _postId = 0;
   int _commentId = 0;
   String _commentToBeEdited = '';
@@ -46,7 +47,7 @@ class _CommentsPageState extends State<CommentsPage> {
 
   void _editComment(Comment comment) {
     setState(() {
-      _userId = comment.userId;
+      _profile = comment.profile;
       _commentId = comment.commentId;
       _commentToBeEdited = comment.text;
       _commentDate = comment.commentDate;
@@ -196,7 +197,7 @@ class _CommentsPageState extends State<CommentsPage> {
                         postOrAdvice: _postOrAdvice,
                         postId: _postId,
                         comment: CommentModel(
-                          userId: _userId,
+                          profile: _profile,
                           commentId: _commentId,
                           text: _commentToBeEdited.isEmpty
                               ? ''

@@ -2,24 +2,22 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:law_platform_flutter/features/posts_&_advices/presentation/cubits/add_update_delete_post_cubit/add_update_delete_post_cubit.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:law_platform_flutter/utils/global_widgets/loading.dart';
 import 'package:law_platform_flutter/utils/global_widgets/show_dialog.dart';
 import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
-import 'package:law_platform_flutter/features/posts_&_advices/domain/entities/post.dart';
 import 'package:law_platform_flutter/features/profile/domain/entities/lawyer_profile.dart';
 import 'package:law_platform_flutter/features/profile/domain/entities/member_profile.dart';
+import 'package:law_platform_flutter/features/profile/presentation/widgets/profile_posts.dart';
 import 'package:law_platform_flutter/features/profile/presentation/pages/edit_profile_page.dart';
-import 'package:law_platform_flutter/features/posts_&_advices/presentation/widgets/post_widget.dart';
 import 'package:law_platform_flutter/features/profile/presentation/widgets/profile_info_widget.dart';
 import 'package:law_platform_flutter/features/profile/presentation/widgets/show_profile_picture.dart';
 import 'package:law_platform_flutter/features/profile/presentation/widgets/profile_picture_widget.dart';
 import 'package:law_platform_flutter/features/profile/presentation/cubits/get_profile_cubit/get_profile_cubit.dart';
 import 'package:law_platform_flutter/features/posts_&_advices/presentation/cubits/get_post_cubit/get_post_cubit.dart';
 import 'package:law_platform_flutter/features/profile/presentation/cubits/edit_profile_cubit/edit_profile_cubit.dart';
+import 'package:law_platform_flutter/features/posts_&_advices/presentation/cubits/add_update_delete_post_cubit/add_update_delete_post_cubit.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -34,29 +32,10 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Future<void> didChangeDependencies() async {
     if (_isInit) {
-      await BlocProvider.of<GetProfileCubit>(context).getProfile().whenComplete(
-        () async {
-          BlocProvider.of<GetPostCubit>(context).getPosts(
-            checkAuthentication.getAccountType() == 'member' ? false : true,
-            checkAuthentication.getId(),
-          );
-        },
-      );
+      await BlocProvider.of<GetProfileCubit>(context).getProfile();
     }
     _isInit = false;
     super.didChangeDependencies();
-  }
-
-  Future<void> _refreshPage() async {
-    await BlocProvider.of<GetPostCubit>(context).getPosts(
-      checkAuthentication.getAccountType() == 'member' ? false : true,
-      checkAuthentication.getId(),
-    );
-  }
-
-  Future<void> _deletePost(int postId, bool postOrAdvice) async {
-    BlocProvider.of<AddUpdateDeletePostCubit>(context)
-        .deletePost(postId, postOrAdvice);
   }
 
   @override
@@ -183,94 +162,19 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                             ),
                             SizedBox(
-                              height: height * 0.79,
-                              child: BlocConsumer<GetPostCubit, GetPostState>(
-                                listener: (context, state) {
-                                  if (state is GetPostError) {
-                                    showDialog(
-                                      context: context,
-                                      barrierDismissible: false,
-                                      builder: (context) => ShowDialog(
-                                        dialogMessage: state.errorMessage,
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                    );
-                                  }
-                                },
-                                builder: (context, state) {
-                                  if (state is GetPostLoading) {
-                                    return Center(
-                                      child: Loading(
-                                        evenColor: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                        oddColor: Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
-                                      ),
-                                    );
-                                  } else if (state is GetPostIsEmpty) {
-                                    return Center(
-                                      child: Text(
-                                        'لا يوجد مناشير لعرضها',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .labelLarge,
-                                      ),
-                                    );
-                                  } else if (state is GetPostDone) {
-                                    List<Post> posts = state.posts;
-                                    return ListView.builder(
-                                      controller: context
-                                          .read<GetPostCubit>()
-                                          .scrollController,
-                                      padding: EdgeInsets.zero,
-                                      itemCount: context
-                                              .read<GetPostCubit>()
-                                              .isLoadingMore
-                                          ? posts.length + 1
-                                          : posts.length,
-                                      itemBuilder: (context, index) {
-                                        if (index >= posts.length) {
-                                          return SpinKitThreeInOut(itemBuilder:
-                                              (BuildContext context,
-                                                  int index) {
-                                            return DecoratedBox(
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: index.isEven
-                                                    ? Colors.blue
-                                                    : Colors.grey,
-                                              ),
-                                            );
-                                          });
-                                        } else {
-                                          return BlocProvider<
-                                              AddUpdateDeletePostCubit>(
-                                            create: (context) =>
-                                                AddUpdateDeletePostCubit(),
-                                            child: PostWidget(
-                                              post: posts[index],
-                                              postPage: checkAuthentication
-                                                          .getAccountType() ==
-                                                      'member'
-                                                  ? false
-                                                  : true,
-                                              deletePost: _deletePost,
-                                              refreshPosts: _refreshPage,
-                                            ),
-                                          );
-                                        }
-                                      },
-                                    );
-                                  } else {
-                                    return Container();
-                                  }
-                                },
-                              ),
-                            )
+                                height: height * 0.79,
+                                child: MultiBlocProvider(
+                                  providers: [
+                                    BlocProvider<GetPostCubit>(
+                                      create: (context) => GetPostCubit(),
+                                    ),
+                                    BlocProvider<AddUpdateDeletePostCubit>(
+                                      create: (context) =>
+                                          AddUpdateDeletePostCubit(),
+                                    ),
+                                  ],
+                                  child: const ProfilePosts(),
+                                ))
                           ],
                         ),
                       ),
@@ -343,92 +247,3 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 }
-
-
-// child: CustomScrollView(
-                      //   slivers: [
-                      //     SliverToBoxAdapterWidget(
-                      //       rightPadding: 12.0,
-                      //       leftPadding: 12.0,
-                      //       bottomPadding: 10.0,
-                      //       child:
-                      // Hero(
-                      //         tag: 'profile-name',
-                      //         child: ProfileInfoWidget(
-                      //           width: width,
-                      //           text: state.profile.name,
-                      //           icon: Icons.person_2_rounded,
-                      //         ),
-                      //       ),
-                      //     ),
-                      //     SliverToBoxAdapterWidget(
-                      //       rightPadding: 12.0,
-                      //       leftPadding: 12.0,
-                      //       bottomPadding: 10.0,
-                      //       child:
-                      // ProfileInfoWidget(
-                      //         width: width,
-                      //         text: state.profile.email,
-                      //         icon: Icons.alternate_email_rounded,
-                      //       ),
-                      //     ),
-                      //     if ((checkAuthentication.getAccountType() ==
-                      //                 'member' &&
-                      //             (state.profile as MemberProfile).job !=
-                      //                 null) ||
-                      //         (checkAuthentication.getAccountType() ==
-                      //                 'lawyer' &&
-                      //             (state.profile as LawyerProfile)
-                      //                     .specialization !=
-                      //                 null))
-                      //       SliverToBoxAdapterWidget(
-                      //         rightPadding: 12.0,
-                      //         leftPadding: 12.0,
-                      //         bottomPadding: 30.0,
-                      //         child:
-                      // ProfileInfoWidget(
-                      //           width: width,
-                      //           text: checkAuthentication.getAccountType() ==
-                      //                   'member'
-                      //               ? (state.profile as MemberProfile).job!
-                      //               : (state.profile as LawyerProfile)
-                      //                   .specialization!,
-                      //           icon: Icons.work_rounded,
-                      //         ),
-                      //       ),
-                      //     Directionality(
-                      //       textDirection: TextDirection.rtl,
-                      //       child: SliverPersistentHeader(
-                      //         pinned: true,
-                      //         floating: true,
-                      //         delegate: StickyHeaderDelegate(
-                      //           child: Container(
-                      //             color: Colors.grey[100],
-                      //             height: 30.0,
-                      //             child: Padding(
-                      //               padding: const EdgeInsets.only(right: 6.0),
-                      //               child: Text(
-                      //                 'المنشورات',
-                      //                 style:
-                      //                     Theme.of(context).textTheme.bodyLarge,
-                      //               ),
-                      //             ),
-                      //           ),
-                      //         ),
-                      //       ),
-                      //     ),
-
-                      //     // SliverToBoxAdapter(
-                      //     //   child: PostWidget(
-                      //     //     post: PostModel(
-                      //     //       postId: 1,
-                      //     //       postBody: 'postBody',
-                      //     //       postDate: DateTime.now(),
-                      //     //       commentsCount: 20,
-                      //     //       likesCount: 30,
-                      //     //       dislikesCount: 60,
-                      //     //     ),
-                      //     //   ),
-                      //     // ),
-                      //   ],
-                      // ),

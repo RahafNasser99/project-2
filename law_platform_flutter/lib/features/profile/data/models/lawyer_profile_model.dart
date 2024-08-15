@@ -1,6 +1,6 @@
+import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
 import 'package:law_platform_flutter/features/profile/data/models/profile_model.dart';
 import 'package:law_platform_flutter/features/profile/domain/entities/lawyer_profile.dart';
-import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
 
 class LawyerProfileModel extends LawyerProfile implements ProfileModel {
   LawyerProfileModel({
@@ -21,6 +21,7 @@ class LawyerProfileModel extends LawyerProfile implements ProfileModel {
             : null,
         specialization: json['profile']['specialization'],
       );
+
 
   @override
   Map<String, dynamic> toJson() => {

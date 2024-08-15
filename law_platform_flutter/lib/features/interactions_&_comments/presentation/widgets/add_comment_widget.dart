@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:law_platform_flutter/features/interactions_&_comments/data/models/comment_model.dart';
 import 'package:law_platform_flutter/features/interactions_&_comments/domain/entities/comment.dart';
+import 'package:law_platform_flutter/features/interactions_&_comments/data/models/comment_model.dart';
 import 'package:law_platform_flutter/features/interactions_&_comments/presentation/cubits/add_update_delete_comment_cubit/add_edit_delete_comment_cubit.dart';
 
 class AddCommentWidget extends StatefulWidget {
@@ -70,7 +70,7 @@ class _AddCommentWidgetState extends State<AddCommentWidget> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       CommentModel commentModel = CommentModel(
-        userId: widget.comment?.userId,
+        profile: widget.comment?.profile,
         commentId: widget.comment?.commentId ?? 0,
         text: _enteredComment,
         commentDate: DateTime.now(),

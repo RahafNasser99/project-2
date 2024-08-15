@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:law_platform_flutter/features/posts_&_advices/domain/entities/post.dart';
-import 'package:law_platform_flutter/features/posts_&_advices/presentation/cubits/get_post_cubit/get_post_cubit.dart';
-import 'package:law_platform_flutter/features/posts_&_advices/presentation/widgets/post_widget.dart';
-import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
 import 'package:law_platform_flutter/utils/global_widgets/loading.dart';
 import 'package:law_platform_flutter/utils/global_widgets/show_dialog.dart';
+import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
+import 'package:law_platform_flutter/features/posts_&_advices/domain/entities/post.dart';
+import 'package:law_platform_flutter/features/posts_&_advices/presentation/widgets/post_widget.dart';
+import 'package:law_platform_flutter/features/posts_&_advices/presentation/cubits/get_post_cubit/get_post_cubit.dart';
+import 'package:law_platform_flutter/features/posts_&_advices/presentation/cubits/add_update_delete_post_cubit/add_update_delete_post_cubit.dart';
 
 class ProfilePosts extends StatefulWidget {
   const ProfilePosts({super.key});
@@ -21,13 +22,25 @@ class _ProfilePostsState extends State<ProfilePosts> {
   @override
   Future<void> didChangeDependencies() async {
     if (_isInit) {
-      await BlocProvider.of<GetPostCubit>(context).getPosts(
+      BlocProvider.of<GetPostCubit>(context).getPosts(
         checkAuthentication.getAccountType() == 'member' ? false : true,
         checkAuthentication.getId(),
       );
     }
     _isInit = false;
     super.didChangeDependencies();
+  }
+
+  Future<void> _deletePost(int postId, bool postOrAdvice) async {
+    BlocProvider.of<AddUpdateDeletePostCubit>(context)
+        .deletePost(postId, postOrAdvice);
+  }
+
+  Future<void> _refreshPage() async {
+    await BlocProvider.of<GetPostCubit>(context).getPosts(
+      checkAuthentication.getAccountType() == 'member' ? false : true,
+      checkAuthentication.getId(),
+    );
   }
 
   @override
@@ -56,8 +69,11 @@ class _ProfilePostsState extends State<ProfilePosts> {
             ),
           );
         } else if (state is GetPostIsEmpty) {
-          return const Center(
-            child: Text('لا يوجد مناشير لعرضها'),
+          return Center(
+            child: Text(
+              'لا يوجد مناشير لعرضها',
+              style: Theme.of(context).textTheme.labelLarge,
+            ),
           );
         } else if (state is GetPostDone) {
           List<Post> posts = state.posts;
@@ -79,11 +95,16 @@ class _ProfilePostsState extends State<ProfilePosts> {
                   );
                 });
               } else {
-                return PostWidget(
-                  post: posts[index],
-                  postPage: (checkAuthentication.getAccountType() == ' member'
-                      ? false
-                      : true),
+                return BlocProvider<AddUpdateDeletePostCubit>(
+                  create: (context) => AddUpdateDeletePostCubit(),
+                  child: PostWidget(
+                    post: posts[index],
+                    postPage: checkAuthentication.getAccountType() == 'member'
+                        ? false
+                        : true,
+                    deletePost: _deletePost,
+                    refreshPosts: _refreshPage,
+                  ),
                 );
               }
             },

@@ -86,8 +86,6 @@ class ProfileRemoteDataSourceImpl extends ProfileRemoteDataSource {
       ),
     );
 
-    print(response.data);
-
     if (response.statusCode! >= 200 && response.statusCode! < 400) {
       final decodedJson = response.data['data'];
 

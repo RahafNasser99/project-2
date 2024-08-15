@@ -6,8 +6,8 @@ import 'package:law_platform_flutter/utils/global_widgets/alert_dialog_widget.da
 import 'package:law_platform_flutter/features/posts_&_advices/domain/entities/post.dart';
 import 'package:law_platform_flutter/features/interactions_&_comments/presentation/widgets/interaction_widget.dart';
 import 'package:law_platform_flutter/features/interactions_&_comments/presentation/cubits/interaction_cubit/interaction_cubit.dart';
-import 'package:law_platform_flutter/features/posts_&_advices/presentation/cubits/add_update_delete_post_cubit/add_update_delete_post_cubit.dart';
 
+// ignore: must_be_immutable
 class PostWidget extends StatelessWidget {
   PostWidget({
     super.key,
@@ -24,10 +24,6 @@ class PostWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Future<void> deletePost() async {
-    //   BlocProvider.of<AddUpdateDeletePostCubit>(context).deletePost(post.postId,
-    //       checkAuthentication.getAccountType() == 'member' ? false : true);
-    // }
 
     final double width = MediaQuery.of(context).size.width;
     return Container(

@@ -33,7 +33,7 @@ class CommentsRepositoryImpl extends CommentsRepository {
     if (await internetConnectionChecker.hasConnection) {
       try {
         final commentModel = CommentModel(
-          userId: null,
+          profile: null,
           commentId: comment.commentId,
           text: comment.text,
           commentDate: comment.commentDate,
@@ -55,7 +55,7 @@ class CommentsRepositoryImpl extends CommentsRepository {
     if (await internetConnectionChecker.hasConnection) {
       try {
         final commentModel = CommentModel(
-          userId: null,
+          profile: null,
           commentId: comment.commentId,
           text: comment.text,
           commentDate: comment.commentDate,

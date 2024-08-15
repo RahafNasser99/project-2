@@ -42,11 +42,12 @@ class CommentWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
                   Text(
-                    'رهف نصر',
+                    comment.profile?.name ?? 'مستخدم',
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   GestureDetector(
-                    onLongPress: comment.userId == checkAuthentication.getId()
+                    onLongPress: comment.profile?.id ==
+                            checkAuthentication.getId()
                         ? () {
                             showModalBottomSheet(
                               context: context,
@@ -135,10 +136,15 @@ class CommentWidget extends StatelessWidget {
             margin: const EdgeInsets.only(top: 16.0),
             width: (width - 32.0) * 0.15,
             child: CircleAvatar(
-              child: Icon(
-                Icons.person_rounded,
-                color: Theme.of(context).colorScheme.primary,
-              ),
+              backgroundImage: comment.profile?.profilePicture != null
+                  ? NetworkImage((comment.profile?.profilePicture)!)
+                  : null,
+              child: comment.profile?.profilePicture == null
+                  ? Icon(
+                      Icons.person_rounded,
+                      color: Theme.of(context).colorScheme.primary,
+                    )
+                  : null,
             ),
           ),
         ],

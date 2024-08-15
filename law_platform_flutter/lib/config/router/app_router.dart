@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:law_platform_flutter/features/posts_&_advices/presentation/cubits/get_post_cubit/get_post_cubit.dart';
 import 'package:law_platform_flutter/home_page.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
 import 'package:law_platform_flutter/features/search/presentation/pages/search_page.dart';
-import 'package:law_platform_flutter/features/messaging/presentation/pages/chats_page.dart';
+import 'package:law_platform_flutter/features/search/presentation/cubit/search_cubit.dart';
 import 'package:law_platform_flutter/features/profile/presentation/pages/profile_page.dart';
+import 'package:law_platform_flutter/features/messaging/presentation/pages/chats_page.dart';
 import 'package:law_platform_flutter/features/login_&_signup/presentation/pages/login_page.dart';
 import 'package:law_platform_flutter/features/login_&_signup/presentation/pages/signup_page.dart';
 import 'package:law_platform_flutter/features/posts_&_advices/presentation/pages/add_post_page.dart';
@@ -79,23 +79,16 @@ class AppRouter {
 
       case 'search-page':
         return MaterialPageRoute(
-          builder: (context) => const SearchPage(),
+          builder: (context) => BlocProvider<SearchCubit>(
+            create: (context) => SearchCubit(),
+            child: const SearchPage(),
+          ),
         );
 
       case 'profile-page':
         return _generateRoute(
-          MultiBlocProvider(
-            providers: [
-              BlocProvider<GetProfileCubit>(
-                create: (context) => GetProfileCubit(),
-              ),
-              BlocProvider<GetPostCubit>(
-                create: (context) => GetPostCubit(),
-              ),
-              BlocProvider<AddUpdateDeletePostCubit>(
-                create: (context) => AddUpdateDeletePostCubit(),
-              ),
-            ],
+          BlocProvider<GetProfileCubit>(
+            create: (context) => GetProfileCubit(),
             child: const ProfilePage(),
           ),
           settings,
