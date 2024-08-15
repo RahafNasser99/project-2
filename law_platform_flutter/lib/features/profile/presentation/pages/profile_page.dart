@@ -167,7 +167,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                             ),
                           ),
-                          
+
                           // SliverToBoxAdapter(
                           //   child: PostWidget(
                           //     post: PostModel(
@@ -201,20 +201,17 @@ class _ProfilePageState extends State<ProfilePage> {
                             );
                           }
                         : () {},
-                    child: state.profile.profilePicture != null
-                        ? ProfilePictureWidget(
-                            radius: width * 0.15,
-                            margin: EdgeInsets.only(
-                              top: height * 0.07,
-                              right: 25,
-                            ),
-                            backgroundImage:
-                                NetworkImage(state.profile.profilePicture!),
-                          )
-                        : Icon(
-                            Icons.person_rounded,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
+                    child: ProfilePictureWidget(
+                      radius: width * 0.15,
+                      margin: EdgeInsets.only(
+                        top: height * 0.07,
+                        right: 25,
+                      ),
+                      backgroundImage: state.profile.profilePicture != null
+                          ? NetworkImage(state.profile.profilePicture!)
+                          : const AssetImage(
+                              'assets/images/default-profile-picture.jpg'),
+                    ),
                   ),
                 ),
                 Container(
