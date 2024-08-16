@@ -142,14 +142,13 @@ class MemberProfileController extends Controller
             'status' => true,
             'message' => 'Profile retrieved successfully',
             'data' => [
-                'lawyer' => [
-                    'id' => $lawyer->id,
-                    'name' => $lawyer->name,
-                    'email' => $lawyer->email,
-                    'profile' => [
-                        'specialization' => $profile->lawyer->profile->specialization ?? 'N/A',
-                        'image' => $profile->lawyer->profile->image ? '/storage/' . $profile->lawyer->profile->image : null,
-                    ],
+
+                'id' => $lawyer->id,
+                'name' => $lawyer->name,
+                'email' => $lawyer->email,
+                'profile' => [
+                    'specialization' => $profile->lawyer->profile->specialization ?? 'N/A',
+                    'image' => $profile->lawyer->profile->image ? '/storage/' . $profile->lawyer->profile->image : null,
                 ]
             ]
         ]);
