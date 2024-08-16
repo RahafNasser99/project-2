@@ -5,6 +5,7 @@ use App\Http\Controllers\LawyerProfileController;
 use App\Http\Controllers\LegalAdviceCommentController;
 use App\Http\Controllers\LegalAdviceController;
 use App\Http\Controllers\MemberProfileController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\PostInteractionController;
 use App\Http\Controllers\UserSearchController;
@@ -81,6 +82,22 @@ Route::prefix('post')->group(function () {
 
     // Allow all authenticated users to view posts
     Route::middleware(['auth:sanctum'])->group(function () {
+<<<<<<< HEAD
+    Route::get('all', [PostController::class, 'index']);
+    Route::get('lawyers/{lawyerId}/posts', [PostController::class, 'getPostsByLawyer']);
+    Route::get('viewAPost/{id}', [PostController::class, 'show']);
+    Route::post('{id}/like', [PostInteractionController::class, 'like']);
+    Route::post('{id}/unlike', [PostInteractionController::class, 'unlike']);
+    Route::post('{id}/dislike', [PostInteractionController::class, 'dislike']);
+    Route::post('{id}/undislike', [PostInteractionController::class, 'undislike']);
+    Route::get('{id}/interactions', [PostInteractionController::class, 'getInteractions']);
+    Route::get('{id}/getLikes', [PostInteractionController::class, 'getLikes']);
+    Route::get('{id}/getDislikes', [PostInteractionController::class, 'getDislikes']);
+    Route::get('{postId}/allComments', [CommentController::class, 'index']);
+    Route::post('{postId}/createComment', [CommentController::class, 'store']);
+    Route::post('updateComment/{commentId}', [CommentController::class, 'update']);
+    Route::delete('deleteComment/{commentId}', [CommentController::class, 'destroy']);
+=======
         Route::get('all', [PostController::class, 'index']);
         Route::get('lawyers/{lawyerId}/posts', [PostController::class, 'getPostsByLawyer']);
         Route::get('viewAPost/{id}', [PostController::class, 'show']);
@@ -93,6 +110,7 @@ Route::prefix('post')->group(function () {
         Route::post('{postId}/createComment', [CommentController::class, 'store']);
         Route::post('updateComment/{commentId}', [CommentController::class, 'update']);
         Route::delete('deleteComment/{commentId}', [CommentController::class, 'destroy']);
+>>>>>>> fbc098416843d9e6016a791f9a5948cdbbea3787
     });
 });
 
@@ -139,4 +157,17 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Get the final rating of a lawyer
     Route::get('lawyers/{lawyerId}/Getrating', [RatingController::class, 'getLawyerRating']);
+<<<<<<< HEAD
+
+    //Route::get('getNotifications', [NotificationController::class, 'getNotifications']);
 });
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/notifications', [NotificationController::class, 'getNotifications']);
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
+});
+
+=======
+});
+>>>>>>> fbc098416843d9e6016a791f9a5948cdbbea3787

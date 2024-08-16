@@ -17,6 +17,11 @@ class Post extends Model
         'date',
     ];
 
+    public function user()
+    {
+        return $this->belongsTo(Lawyer::class, 'lawyer_id');  // Assuming posts are created by lawyers
+    }
+
     public function lawyer(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Lawyer::class);

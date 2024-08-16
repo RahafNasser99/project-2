@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\LegalAdvice;
 use App\Models\LegalAdviceComment;
+use App\Notifications\CommentNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,6 +24,11 @@ class LegalAdviceCommentController extends Controller
             'lawyer_id' => Auth::id(),
             'comment' => $request->comment,
         ]);
+
+        // Notify the owner of the legal advice
+        if ($legalAdvice->user) {
+            $legalAdvice->user->notify(new CommentNotification(Auth::user(), $legalAdvice));
+        }
 
         return response()->json([
             'status' => true,
@@ -81,11 +87,35 @@ class LegalAdviceCommentController extends Controller
     // View all comments for a specific legal advice
     public function index($legalAdviceId)
     {
-        $comments = LegalAdviceComment::where('legal_advice_id', $legalAdviceId)->get();
+        // Load comments along with the lawyer who made each comment and their profile
+        $comments = LegalAdviceComment::where('legal_advice_id', $legalAdviceId)
+            ->with('lawyer.profile')
+            ->get();
+
+        // Format the response to include the commenter information
+        $commentsData = $comments->map(function ($comment) {
+            return [
+                'id' => $comment->id,
+                'comment' => $comment->comment,
+                'created_at' => $comment->created_at,
+                'updated_at' => $comment->updated_at,
+                'lawyer' => [
+                    'id' => $comment->lawyer->id,
+                    'name' => $comment->lawyer->name,
+                    'email' => $comment->lawyer->email,
+                    'profile' => [
+                        'image' => $comment->lawyer->profile->image
+                            ? '/storage/' . $comment->lawyer->profile->image
+                            : null,
+                        'specialization' => $comment->lawyer->profile->specialization ?? 'N/A',
+                    ]
+                ],
+            ];
+        });
 
         return response()->json([
             'status' => true,
-            'data' => $comments,
+            'data' => $commentsData,
         ]);
     }
 }

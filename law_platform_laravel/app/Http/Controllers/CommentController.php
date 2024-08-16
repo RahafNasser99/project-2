@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use App\Models\Post;
+use App\Notifications\CommentNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,11 +14,42 @@ class CommentController extends Controller
     public function index($postId)
     {
         $post = Post::findOrFail($postId);
-        $comments = $post->comments;
+        //$comments = $post->comments;
+        // Load comments along with the user who made each comment
+        $comments = $post->comments()->with('user.profile')->get();
+
+        // Format the response to include the commenter information
+        $commentsData = $comments->map(function ($comment) {
+            // Determine if the user is a Lawyer or a Member
+            $accountType = class_basename($comment->user);
+            return [
+                'id' => $comment->id,
+                'content' => $comment->content,
+                'created_at' => $comment->created_at,
+                'updated_at' => $comment->updated_at,
+                'user' => [
+                    'id' => $comment->user->id,
+                    'name' => $comment->user->name,
+                    'email' => $comment->user->email,
+                    'account_type' => class_basename($comment->user), // Member or Lawyer
+                    'profile' => [
+                        'specialization' => $accountType === 'Lawyer'
+                            ? $comment->user->profile->specialization ?? 'N/A'
+                            : null,
+                        'work' => $accountType === 'Member'
+                            ? $comment->user->profile->work ?? 'N/A'
+                            : null,
+                        'image' => $comment->user->profile->image
+                        ? '/storage/' . $comment->user->profile->image
+                        : null,
+                        ]
+                ],
+            ];
+        });
 
         return response()->json([
             'status' => true,
-            'data' => $comments
+            'data' => $commentsData,
         ]);
     }
 
@@ -37,6 +69,11 @@ class CommentController extends Controller
             'user_type' => get_class($user),
             'content' => $request->input('content'),
         ]);
+
+        // Send notification to the owner of the post
+        if ($post->user) {
+            $post->user->notify(new CommentNotification(Auth::user(), $post));
+        }
 
         return response()->json([
             'status' => true,

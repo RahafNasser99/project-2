@@ -28,7 +28,17 @@ class MemberProfileController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Profile retrieved successfully',
-            'data' => $profile
+            'data' => [
+                'member' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'profile' => [
+                        'work' => $profile->member->profile->work ?? 'N/A',
+                        'image' => $profile->member->profile->image ? '/storage/' . $profile->member->profile->image : null,
+                    ],
+                ]
+            ]
         ]);
     }
 
@@ -95,7 +105,15 @@ class MemberProfileController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Profile retrieved successfully',
-            'data' => $profile
+            'data' => [
+                'id' => $member->id,
+                'name' => $member->name,
+                'email' => $member->email,
+                'profile' => [
+                    'work' => $profile->work ?? 'N/A',
+                    'image' => $profile->image ? '/storage/' . $profile->image : null,
+                ],
+            ]
         ]);
     }
 
@@ -123,7 +141,17 @@ class MemberProfileController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Profile retrieved successfully',
-            'data' => $profile
+            'data' => [
+                'lawyer' => [
+                    'id' => $lawyer->id,
+                    'name' => $lawyer->name,
+                    'email' => $lawyer->email,
+                    'profile' => [
+                        'specialization' => $profile->lawyer->profile->specialization ?? 'N/A',
+                        'image' => $profile->lawyer->profile->image ? '/storage/' . $profile->lawyer->profile->image : null,
+                    ],
+                ]
+            ]
         ]);
     }
 

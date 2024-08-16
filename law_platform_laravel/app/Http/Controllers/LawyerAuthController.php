@@ -29,7 +29,7 @@ class LawyerAuthController extends Controller
         ]);
 
         // Create a LawyerProfile for the newly created lawyer
-        LawyerProfile::create([
+        $profile = LawyerProfile::create([
             'lawyer_id' => $lawyer->id,
             'specialization' => 'Default specialization',
             'biography' => 'Default Biography',
@@ -44,7 +44,10 @@ class LawyerAuthController extends Controller
             "status" => true,
             "message" => "Lawyer registered successfully",
             "id" => $lawyer->id,
-            "token" => $token
+            "token" => $token,
+            "name" => $lawyer -> name,
+            "email" => $lawyer -> email,
+            "profileImage" => $profile -> image
         ]);
 
     }
@@ -66,11 +69,18 @@ class LawyerAuthController extends Controller
             // Login is ok
             $token = $user->createToken("authToken")->plainTextToken;
 
+            //$lawyer = $user->Lawyer
+            // Load the profile
+            $profile = $user->profile;
+
             return response()->json([
                 "status" => true,
                 "message" => "Login successful",
                 "id" => $user->id,
-                "token" => $token
+                "token" => $token,
+                "name" => $user -> name,
+                "email" => $user -> email,
+                "profileImage" => $profile -> image
             ]);
         } else {
             return response()->json([
