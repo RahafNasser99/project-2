@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:law_platform_flutter/features/messaging/presentation/pages/chats_page.dart';
-import 'package:law_platform_flutter/features/profile/presentation/cubits/get_profile_cubit/get_profile_cubit.dart';
-import 'package:page_transition/page_transition.dart';
+import 'package:law_platform_flutter/features/rate/presentation/cubits/rate_cubit.dart';
 import 'package:law_platform_flutter/home_page.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
 import 'package:law_platform_flutter/features/search/presentation/pages/search_page.dart';
+import 'package:law_platform_flutter/features/search/presentation/cubit/search_cubit.dart';
 import 'package:law_platform_flutter/features/profile/presentation/pages/profile_page.dart';
+import 'package:law_platform_flutter/features/messaging/presentation/pages/chats_page.dart';
 import 'package:law_platform_flutter/features/login_&_signup/presentation/pages/login_page.dart';
 import 'package:law_platform_flutter/features/login_&_signup/presentation/pages/signup_page.dart';
 import 'package:law_platform_flutter/features/posts_&_advices/presentation/pages/add_post_page.dart';
 import 'package:law_platform_flutter/features/interactions_&_comments/presentation/pages/comments_page.dart';
+import 'package:law_platform_flutter/features/profile/presentation/cubits/get_profile_cubit/get_profile_cubit.dart';
 import 'package:law_platform_flutter/features/login_&_signup/presentation/cubits/login_cubits/cubit/login_cubit.dart';
 import 'package:law_platform_flutter/features/login_&_signup/presentation/cubits/signup_cubits/cubit/signup_cubit.dart';
+import 'package:law_platform_flutter/features/interactions_&_comments/presentation/cubits/comment_cubit/get_comments_cubit.dart';
 import 'package:law_platform_flutter/features/posts_&_advices/presentation/cubits/add_update_delete_post_cubit/add_update_delete_post_cubit.dart';
+import 'package:law_platform_flutter/features/interactions_&_comments/presentation/cubits/add_update_delete_comment_cubit/add_edit_delete_comment_cubit.dart';
 
 class AppRouter {
   Route onGenerateRoute(RouteSettings settings) {
@@ -59,20 +63,40 @@ class AppRouter {
 
       case 'comments-page':
         return _generateRoute(
-          const CommentsPage(),
+          MultiBlocProvider(
+            providers: [
+              BlocProvider<GetCommentsCubit>(
+                create: (context) => GetCommentsCubit(),
+              ),
+              BlocProvider<AddEditDeleteCommentCubit>(
+                create: (context) => AddEditDeleteCommentCubit(),
+              ),
+            ],
+            child: const CommentsPage(),
+          ),
           settings,
           PageTransitionType.bottomToTop,
         );
 
       case 'search-page':
         return MaterialPageRoute(
-          builder: (context) => const SearchPage(),
+          builder: (context) => BlocProvider<SearchCubit>(
+            create: (context) => SearchCubit(),
+            child: const SearchPage(),
+          ),
         );
 
       case 'profile-page':
         return _generateRoute(
-          BlocProvider(
-            create: (context) => GetProfileCubit(),
+          MultiBlocProvider(
+            providers: [
+              BlocProvider<GetProfileCubit>(
+                create: (context) => GetProfileCubit(),
+              ),
+              BlocProvider<RateCubit>(
+                create: (context) => RateCubit(),
+              ),
+            ],
             child: const ProfilePage(),
           ),
           settings,

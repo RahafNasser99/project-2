@@ -7,6 +7,7 @@ abstract class LawyerProfile extends Profile {
     required super.id,
     required super.name,
     required super.email,
+    required super.accountType,
     required super.profilePicture,
     required this.specialization,
   });

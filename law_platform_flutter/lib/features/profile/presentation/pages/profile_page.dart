@@ -2,6 +2,10 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:law_platform_flutter/features/rate/data/models/rate_model.dart';
+import 'package:law_platform_flutter/features/rate/presentation/cubits/rate_cubit.dart';
+import 'package:law_platform_flutter/features/rate/presentation/widgets/rate_widget.dart';
+import 'package:law_platform_flutter/features/search/presentation/cubit/search_cubit.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:law_platform_flutter/utils/global_widgets/loading.dart';
@@ -9,14 +13,15 @@ import 'package:law_platform_flutter/utils/global_widgets/show_dialog.dart';
 import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
 import 'package:law_platform_flutter/features/profile/domain/entities/lawyer_profile.dart';
 import 'package:law_platform_flutter/features/profile/domain/entities/member_profile.dart';
+import 'package:law_platform_flutter/features/profile/presentation/widgets/profile_posts.dart';
 import 'package:law_platform_flutter/features/profile/presentation/pages/edit_profile_page.dart';
 import 'package:law_platform_flutter/features/profile/presentation/widgets/profile_info_widget.dart';
 import 'package:law_platform_flutter/features/profile/presentation/widgets/show_profile_picture.dart';
 import 'package:law_platform_flutter/features/profile/presentation/widgets/profile_picture_widget.dart';
-import 'package:law_platform_flutter/features/profile/presentation/widgets/sticky_header_delegate.dart';
-import 'package:law_platform_flutter/features/profile/presentation/widgets/sliver_to_box_adapter_widget.dart';
 import 'package:law_platform_flutter/features/profile/presentation/cubits/get_profile_cubit/get_profile_cubit.dart';
+import 'package:law_platform_flutter/features/posts_&_advices/presentation/cubits/get_post_cubit/get_post_cubit.dart';
 import 'package:law_platform_flutter/features/profile/presentation/cubits/edit_profile_cubit/edit_profile_cubit.dart';
+import 'package:law_platform_flutter/features/posts_&_advices/presentation/cubits/add_update_delete_post_cubit/add_update_delete_post_cubit.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -27,14 +32,31 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   bool _isInit = true;
+  int? _userId;
+  String? _accountType;
 
   @override
   Future<void> didChangeDependencies() async {
     if (_isInit) {
-      await BlocProvider.of<GetProfileCubit>(context).getProfile();
+      final settingsData =
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+      // _userId = settingsData['userId'];
+      _userId = checkAuthentication.getId();
+      _accountType = settingsData['accountType'];
+      // if (_userId == null) {
+      await BlocProvider.of<GetProfileCubit>(context).getMyProfile();
+      // } else {
+      //   await BlocProvider.of<GetProfileCubit>(context)
+      //       .getAnotherUserProfile(_accountType!, _userId!);
+      // }
     }
     _isInit = false;
     super.didChangeDependencies();
+  }
+
+  Future<void> _addRate(double rating) async {
+    final rate = RateModel(rateValue: rating);
+    BlocProvider.of<RateCubit>(context).addRate(rate, _userId!);
   }
 
   @override
@@ -56,6 +78,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 },
               ),
             );
+          } else if (state is GetProfileDone) {
+            RateWidget(userId: _userId!,addRate: _addRate).showRateModelBottomSheet(context);
           }
         },
         builder: (context, state) {
@@ -98,88 +122,84 @@ class _ProfilePageState extends State<ProfilePage> {
                       color: Theme.of(context).colorScheme.inversePrimary,
                       height: height * 0.79,
                       padding: const EdgeInsets.only(top: 30),
-                      child: CustomScrollView(
-                        slivers: [
-                          SliverToBoxAdapterWidget(
-                            rightPadding: 12.0,
-                            leftPadding: 12.0,
-                            bottomPadding: 10.0,
-                            child: Hero(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: <Widget>[
+                            Hero(
                               tag: 'profile-name',
-                              child: ProfileInfoWidget(
-                                width: width,
-                                text: state.profile.name,
-                                icon: Icons.person_2_rounded,
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    right: 12.0, left: 12.0, bottom: 10.0),
+                                child: ProfileInfoWidget(
+                                  width: width,
+                                  text: state.profile.name,
+                                  icon: Icons.person_2_rounded,
+                                ),
                               ),
                             ),
-                          ),
-                          SliverToBoxAdapterWidget(
-                            rightPadding: 12.0,
-                            leftPadding: 12.0,
-                            bottomPadding: 10.0,
-                            child: ProfileInfoWidget(
-                              width: width,
-                              text: state.profile.email,
-                              icon: Icons.alternate_email_rounded,
-                            ),
-                          ),
-                          if ((checkAuthentication.getAccountType() ==
-                                      'member' &&
-                                  (state.profile as MemberProfile).job !=
-                                      null) ||
-                              (checkAuthentication.getAccountType() ==
-                                      'lawyer' &&
-                                  (state.profile as LawyerProfile)
-                                          .specialization !=
-                                      null))
-                            SliverToBoxAdapterWidget(
-                              rightPadding: 12.0,
-                              leftPadding: 12.0,
-                              bottomPadding: 30.0,
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  right: 12.0, left: 12.0, bottom: 10.0),
                               child: ProfileInfoWidget(
                                 width: width,
-                                text: checkAuthentication.getAccountType() ==
-                                        'member'
-                                    ? (state.profile as MemberProfile).job!
-                                    : (state.profile as LawyerProfile)
-                                        .specialization!,
-                                icon: Icons.work_rounded,
+                                text: state.profile.email,
+                                icon: Icons.alternate_email_rounded,
                               ),
                             ),
-                          Directionality(
-                            textDirection: TextDirection.rtl,
-                            child: SliverPersistentHeader(
-                              pinned: true,
-                              floating: true,
-                              delegate: StickyHeaderDelegate(
-                                child: Container(
-                                  color: Colors.grey[100],
-                                  height: 30.0,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(right: 6.0),
-                                    child: Text(
-                                      'المنشورات',
-                                      style:
-                                          Theme.of(context).textTheme.bodyLarge,
-                                    ),
+                            if ((checkAuthentication.getAccountType() ==
+                                        'member' &&
+                                    (state.profile as MemberProfile).job !=
+                                        null) ||
+                                (checkAuthentication.getAccountType() ==
+                                        'lawyer' &&
+                                    (state.profile as LawyerProfile)
+                                            .specialization !=
+                                        null))
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    right: 12.0, left: 12.0, bottom: 10.0),
+                                child: ProfileInfoWidget(
+                                  width: width,
+                                  text: checkAuthentication.getAccountType() ==
+                                          'member'
+                                      ? (state.profile as MemberProfile).job!
+                                      : (state.profile as LawyerProfile)
+                                          .specialization!,
+                                  icon: Icons.work_rounded,
+                                ),
+                              ),
+                            Directionality(
+                              textDirection: TextDirection.rtl,
+                              child: Container(
+                                width: double.infinity,
+                                color: Colors.grey[100],
+                                height: 30.0,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: Text(
+                                    'المنشورات',
+                                    style:
+                                        Theme.of(context).textTheme.bodyLarge,
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                          // SliverToBoxAdapter(
-                          //   child: PostWidget(
-                          //     post: PostModel(
-                          //       postId: 1,
-                          //       postBody: 'postBody',
-                          //       postDate: DateTime.now(),
-                          //       commentsCount: 20,
-                          //       likesCount: 30,
-                          //       dislikesCount: 60,
-                          //     ),
-                          //   ),
-                          // ),
-                        ],
+                            SizedBox(
+                                height: height * 0.79,
+                                child: MultiBlocProvider(
+                                  providers: [
+                                    BlocProvider<GetPostCubit>(
+                                      create: (context) => GetPostCubit(),
+                                    ),
+                                    BlocProvider<AddUpdateDeletePostCubit>(
+                                      create: (context) =>
+                                          AddUpdateDeletePostCubit(),
+                                    ),
+                                  ],
+                                  child: const ProfilePosts(),
+                                ))
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -200,20 +220,17 @@ class _ProfilePageState extends State<ProfilePage> {
                             );
                           }
                         : () {},
-                    child: state.profile.profilePicture != null
-                        ? ProfilePictureWidget(
-                            radius: width * 0.15,
-                            margin: EdgeInsets.only(
-                              top: height * 0.07,
-                              right: 25,
-                            ),
-                            backgroundImage:
-                                NetworkImage(state.profile.profilePicture!),
-                          )
-                        : Icon(
-                            Icons.person_rounded,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
+                    child: ProfilePictureWidget(
+                      radius: width * 0.15,
+                      margin: EdgeInsets.only(
+                        top: height * 0.07,
+                        right: 25,
+                      ),
+                      backgroundImage: state.profile.profilePicture != null
+                          ? NetworkImage(state.profile.profilePicture!)
+                          : const AssetImage(
+                              'assets/images/default-profile-picture.jpg'),
+                    ),
                   ),
                 ),
                 Container(

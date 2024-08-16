@@ -14,8 +14,7 @@ import 'package:law_platform_flutter/features/profile/presentation/widgets/profi
 import 'package:law_platform_flutter/features/profile/presentation/cubits/edit_profile_cubit/edit_profile_cubit.dart';
 
 class EditProfilePage extends StatefulWidget {
-  const EditProfilePage(
-      {super.key, required this.profile});
+  const EditProfilePage({super.key, required this.profile});
 
   final Profile profile;
 
@@ -200,9 +199,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 NetworkImage(widget.profile.profilePicture!),
                           )
                         : _imageFile == null
-                            ? Icon(
-                                Icons.person_rounded,
-                                color: Theme.of(context).colorScheme.primary,
+                            ? ProfilePictureWidget(
+                                margin: EdgeInsets.only(
+                                  top: 25.0,
+                                  right: width * 0.3,
+                                  left: width * 0.3,
+                                ),
+                                radius: width * 0.2,
+                                backgroundImage: const AssetImage(
+                                    'assets/images/default-profile-picture.jpg'),
                               )
                             : ProfilePictureWidget(
                                 margin: EdgeInsets.only(

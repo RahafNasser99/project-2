@@ -11,6 +11,8 @@ final class SearchInitial extends SearchState {}
 
 final class SearchLoading extends SearchState {}
 
+final class SearchEmpty extends SearchState {}
+
 final class SearchDone extends SearchState {
   final List<Profile> profiles;
 

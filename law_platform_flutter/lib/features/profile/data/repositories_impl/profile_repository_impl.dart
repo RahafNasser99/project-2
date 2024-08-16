@@ -27,10 +27,25 @@ class ProfileRepositoryImpl extends ProfileRepository {
   }
 
   @override
-  Future<Either<Failure, Profile>> getProfile() async {
+  Future<Either<Failure, Profile>> getMyProfile() async {
     if (await internetConnectionChecker.hasConnection) {
       try {
-        final profile = await profileRemoteDataSource.getProfile();
+        final profile = await profileRemoteDataSource.getMyProfile();
+
+        return Right(profile);
+      } on ServerException {
+        return Left(ServerFailure());
+      }
+    } else {
+      return Left(OfflineFailure());
+    }
+  }
+  
+  @override
+  Future<Either<Failure, Profile>> getAnotherUserProfile(String accountType,int userId) async {
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+        final profile = await profileRemoteDataSource.getAnotherUserProfile( accountType, userId);
 
         return Right(profile);
       } on ServerException {

@@ -9,7 +9,8 @@ import 'package:law_platform_flutter/features/profile/data/models/lawyer_profile
 abstract class ProfileRemoteDataSource {
   Future<Unit> editProfile(String? name, String? specializationOrJob,
       String? imagePath, String? imageName);
-  Future<ProfileModel> getProfile();
+  Future<ProfileModel> getMyProfile();
+  Future<ProfileModel> getAnotherUserProfile(String accountType, int userId);
 }
 
 class ProfileRemoteDataSourceImpl extends ProfileRemoteDataSource {
@@ -71,7 +72,7 @@ class ProfileRemoteDataSourceImpl extends ProfileRemoteDataSource {
   }
 
   @override
-  Future<ProfileModel> getProfile() async {
+  Future<ProfileModel> getMyProfile() async {
     final url = checkAuthentication.getAccountType() == 'member'
         ? '/api/member/viewProfile'
         : '/api/lawyer/viewProfile';
@@ -86,7 +87,35 @@ class ProfileRemoteDataSourceImpl extends ProfileRemoteDataSource {
       ),
     );
 
-    print(response.data);
+    if (response.statusCode! >= 200 && response.statusCode! < 400) {
+      final decodedJson = response.data['data'];
+
+      final profileModel = checkAuthentication.getAccountType() == 'member'
+          ? MemberProfileModel.fromJson(decodedJson)
+          : LawyerProfileModel.fromJson(decodedJson['lawyer']);
+
+      return profileModel;
+    } else {
+      throw ServerException();
+    }
+  }
+
+  @override
+  Future<ProfileModel> getAnotherUserProfile(
+      String accountType, int userId) async {
+    final url = accountType == 'member'
+        ? '/api/member/users/$userId'
+        : '/api/lawyer/users/$userId';
+
+    final response = await dio.get(
+      url,
+      options: Options(
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${checkAuthentication.getToken()}'
+        },
+      ),
+    );
 
     if (response.statusCode! >= 200 && response.statusCode! < 400) {
       final decodedJson = response.data['data'];

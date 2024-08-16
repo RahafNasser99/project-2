@@ -1,9 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:law_platform_flutter/features/interactions_&_comments/domain/entities/comment.dart';
+import 'package:law_platform_flutter/features/interactions_&_comments/data/models/comment_model.dart';
+import 'package:law_platform_flutter/features/interactions_&_comments/presentation/cubits/add_update_delete_comment_cubit/add_edit_delete_comment_cubit.dart';
 
 class AddCommentWidget extends StatefulWidget {
-  const AddCommentWidget({super.key, required this.comment});
+  const AddCommentWidget({
+    super.key,
+    required this.comment,
+    required this.refreshComment,
+    required this.postOrAdvice,
+    required this.postId,
+  });
 
-  final String? comment;
+  final Future<void> Function() refreshComment;
+  final Comment? comment;
+  final bool postOrAdvice;
+  final int postId;
 
   @override
   State<AddCommentWidget> createState() => _AddCommentWidgetState();
@@ -17,10 +30,15 @@ class _AddCommentWidgetState extends State<AddCommentWidget> {
 
   @override
   void initState() {
-    _textEditingController.text = widget.comment ?? '';
+    _textEditingController.text =
+        widget.comment?.text != null && widget.comment!.text.isNotEmpty
+            ? widget.comment!.text
+            : '';
+    _enteredComment =
+        widget.comment?.text != null && widget.comment!.text.isNotEmpty
+            ? widget.comment!.text
+            : '';
     _textEditingController.addListener(_updateLineCount);
-    print('add comment widget');
-    print(widget.comment);
     super.initState();
   }
 
@@ -51,14 +69,31 @@ class _AddCommentWidgetState extends State<AddCommentWidget> {
   Future<void> _submit() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
+      CommentModel commentModel = CommentModel(
+        profile: widget.comment?.profile,
+        commentId: widget.comment?.commentId ?? 0,
+        text: _enteredComment,
+        commentDate: DateTime.now(),
+      );
+      await BlocProvider.of<AddEditDeleteCommentCubit>(context)
+          .addOrEditComment(
+        widget.comment?.text != null && widget.comment!.text.isNotEmpty
+            ? 'edit'
+            : 'add',
+        commentModel,
+        widget.postOrAdvice,
+        widget.postId,
+      );
+      await widget.refreshComment();
     }
   }
 
-   @override
+  @override
   void didUpdateWidget(AddCommentWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.comment != oldWidget.comment) {
-      _textEditingController.text = widget.comment ?? '';
+      _textEditingController.text = widget.comment?.text ?? '';
+      _enteredComment = widget.comment?.text ?? '';
     }
   }
 
@@ -71,45 +106,61 @@ class _AddCommentWidgetState extends State<AddCommentWidget> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width - 16;
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        SizedBox(
-          width: width * 0.85,
-          child: Form(
-            key: _formKey,
-            child: TextFormField(
-              maxLines: _lineCount > 4 ? 4 : null,
-              textAlign: TextAlign.right,
-              textDirection: TextDirection.rtl,
-              textInputAction: TextInputAction.newline,
-              controller: _textEditingController,
-              style: Theme.of(context).textTheme.bodyLarge,
-              cursorHeight: Theme.of(context).textTheme.bodyLarge!.fontSize,
-              textCapitalization: TextCapitalization.sentences,
-              autocorrect: true,
-              enableSuggestions: true,
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: 'أضف تعليقك',
-                hintTextDirection: TextDirection.rtl,
-                hintStyle: Theme.of(context).textTheme.labelLarge,
+    return BlocConsumer<AddEditDeleteCommentCubit, AddEditDeleteCommentState>(
+      listener: (context, state) {
+        if (state is AddEditDeleteCommentDone) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            setState(() {
+              _textEditingController.clear();
+              _enteredComment = '';
+              _lineCount = 1;
+            });
+          });
+          // widget.refresh;
+        }
+      },
+      builder: (context, state) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            SizedBox(
+              width: width * 0.85,
+              child: Form(
+                key: _formKey,
+                child: TextFormField(
+                  maxLines: _lineCount > 4 ? 4 : null,
+                  textAlign: TextAlign.right,
+                  textDirection: TextDirection.rtl,
+                  textInputAction: TextInputAction.newline,
+                  controller: _textEditingController,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                  cursorHeight: Theme.of(context).textTheme.bodyLarge!.fontSize,
+                  textCapitalization: TextCapitalization.sentences,
+                  autocorrect: true,
+                  enableSuggestions: true,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: 'أضف تعليقك',
+                    hintTextDirection: TextDirection.rtl,
+                    hintStyle: Theme.of(context).textTheme.labelLarge,
+                  ),
+                  onChanged: (value) {
+                    _enteredComment = value;
+                  },
+                ),
               ),
-              onChanged: (value) {
-                _enteredComment = value;
-              },
             ),
-          ),
-        ),
-        SizedBox(
-          width: width * 0.1,
-          child: IconButton(
-            onPressed: _enteredComment.trim().isEmpty ? null : _submit,
-            icon: const Icon(Icons.reply_rounded),
-          ),
-        )
-      ],
+            SizedBox(
+              width: width * 0.1,
+              child: IconButton(
+                onPressed: _enteredComment.trim().isEmpty ? null : _submit,
+                icon: const Icon(Icons.reply_rounded),
+              ),
+            )
+          ],
+        );
+      },
     );
   }
 }

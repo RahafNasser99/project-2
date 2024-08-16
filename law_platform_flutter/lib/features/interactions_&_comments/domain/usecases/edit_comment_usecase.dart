@@ -7,8 +7,7 @@ import 'package:law_platform_flutter/features/interactions_&_comments/data/repos
 class EditCommentUseCase {
   CommentsRepository commentsRepository = CommentsRepositoryImpl();
 
-  Future<Either<Failure, Unit>> call(Comment comment) async {
-    print('edit comment use case');
-    return await commentsRepository.editComments(comment);
+  Future<Either<Failure, Unit>> call(Comment comment, bool postOrAdvice) async {
+    return await commentsRepository.editComments(comment,  postOrAdvice);
   }
 }

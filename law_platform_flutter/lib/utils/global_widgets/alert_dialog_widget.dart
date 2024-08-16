@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 
-class DeleteCommentAlertDialog extends StatelessWidget {
-  const DeleteCommentAlertDialog(
-      {super.key, this.onPressed, required this.alertTitle});
+class AlertDialogWidget extends StatelessWidget {
+  const AlertDialogWidget({
+    super.key,
+    this.onPressed,
+    required this.alertTitle,
+    required this.alertContent,
+  });
 
   final void Function()? onPressed;
   final String alertTitle;
+  final String alertContent;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +28,7 @@ class DeleteCommentAlertDialog extends StatelessWidget {
         fontWeight: FontWeight.bold,
       ),
       content: Text(
-        'تأكيد الحذف',
+        alertContent,
         textAlign: TextAlign.center,
         style: Theme.of(context).textTheme.bodyLarge,
       ),
