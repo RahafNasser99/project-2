@@ -2,313 +2,114 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AdviceType;
 use App\Models\LegalAdvice;
-use App\Models\Member;
+use App\Models\LegalAdviceComment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class LegalAdviceController extends Controller
+class LegalAdviceCommentController extends Controller
 {
-
-    public function getMyLegalAdvices(Request $request)
-    {
-        // Get the authenticated member
-        $member = Auth::user();
-
-        // Get the number of legal advices per page from the query parameter, default to 10 if not provided
-        $perPage = $request->query('per_page', 10);
-
-        // Get the page number from the query parameter, default to 1 if not provided
-        $page = $request->query('page', 1);
-
-        // Retrieve the member's legal advices with pagination
-        $legalAdvices = LegalAdvice::where('member_id', $member->id)
-            ->with('adviceType', 'member.profile')
-            ->paginate($perPage, ['*'], 'page', $page);
-
-        $legalAdvicesData = $legalAdvices->map(function ($legalAdvice) {
-            return [
-                'id' => $legalAdvice->id,
-                'member_id' => $legalAdvice->member_id,
-                'advice_type_id' => $legalAdvice->advice_type_id,
-                'type' => $legalAdvice->adviceType->name,
-                'text' => $legalAdvice->text,
-                'image' => $legalAdvice->image,
-                'date' => $legalAdvice->date,
-                'member' => [
-                    'id' => $legalAdvice->member->id,
-                    'name' => $legalAdvice->member->name,
-                    'email' => $legalAdvice->member->email,
-                    'profile' => [
-                        'work' => $legalAdvice->member->profile->work ?? 'N/A',
-                        'image' => $legalAdvice->member->profile->image ? '/storage/' . $legalAdvice->member->profile->image : null,
-                    ],
-                ],
-                'comments_count' => $legalAdvice->comments_count,
-            ];
-        });
-
-        return response()->json([
-            'status' => true,
-            'data' => $legalAdvicesData,
-            'pagination' => [
-                'current_page' => $legalAdvices->currentPage(),
-                'per_page' => $legalAdvices->perPage(),
-                'total_pages' => $legalAdvices->lastPage(),
-                'total_advices' => $legalAdvices->total(),
-            ]
-        ]);
-    }
-
-
-
-    // Get all legal advices
-    public function index(Request $request)
-    {
-        // Get the number of legal advices per page from the query parameter, default to 10 if not provided
-        $perPage = $request->query('per_page', 10);
-
-        // Get the page number from the query parameter, default to 1 if not provided
-        $page = $request->query('page', 1);
-
-        // Paginate the legal advices, setting the current page and loading the lawyer relationship
-        $legalAdvices = LegalAdvice::with('member.profile', 'adviceType')->paginate($perPage, ['*'], 'page', $page);
-
-        //$legalAdvices = LegalAdvice::with('adviceType')->get();
-
-        $legalAdvicesData = $legalAdvices->map(function ($legalAdvice) {
-            $profile = $legalAdvice->member->profile;
-            return [
-                'id' => $legalAdvice->id,
-                'member_id' => $legalAdvice->member_id,
-                'advice_type_id' => $legalAdvice->advice_type_id,
-                'type' => $legalAdvice->adviceType->name,
-                'text' => $legalAdvice->text,
-                'image' => $legalAdvice->image,
-                'date' => $legalAdvice->date,
-                'member' => [
-                    'id' => $legalAdvice->member->id,
-                    'name' => $legalAdvice->member->name,
-                    'email' => $legalAdvice->member->email,
-                    'profile' => [
-                        'work' => $profile ? $profile->work : 'N/A',
-                        'image' => $profile && $profile->image ? '/storage/' . $profile->image : null,
-                    ],
-                ],
-                'comments_count' => $legalAdvice->comments_count,
-            ];
-        });
-
-        return response()->json([
-            'status' => true,
-            'data' => $legalAdvicesData,
-            'pagination' => [
-                'current_page' => $legalAdvices->currentPage(),
-                'per_page' => $legalAdvices->perPage(),
-                'total_pages' => $legalAdvices->lastPage(),
-                'total_posts' => $legalAdvices->total(),
-            ]
-        ]);
-    }
-
-    // Get legal advices by advice type
-    public function getByAdviceType($adviceTypeId)
-    {
-        $adviceType = AdviceType::findOrFail($adviceTypeId);
-        $legalAdvices = $adviceType->legalAdvices()->with('adviceType')->get();
-
-        $legalAdvicesData = $legalAdvices->map(function ($legalAdvice) {
-            return [
-                'id' => $legalAdvice->id,
-                'member_id' => $legalAdvice->member_id,
-                'advice_type_id' => $legalAdvice->advice_type_id,
-                'type' => $legalAdvice->adviceType->name,
-                'text' => $legalAdvice->text,
-                'image' => $legalAdvice->image,
-                'date' => $legalAdvice->date,
-                'comments_count' => $legalAdvice->comments_count,
-            ];
-        });
-
-        return response()->json([
-            'status' => true,
-            'data' => $legalAdvicesData
-        ]);
-    }
-
-    public function getLegalAdvicesByMember($memberId, Request $request)
-    {
-        // Check if the member exists
-        $member = Member::find($memberId);
-
-        if (!$member) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Member not found'
-            ], 404);
-        }
-
-        // Get the number of legal advices per page from the query parameter, default to 10 if not provided
-        $perPage = $request->query('per_page', 10);
-
-        // Get the page number from the query parameter, default to 1 if not provided
-        $page = $request->query('page', 1);
-
-        // Retrieve the legal advices of the specific member with pagination
-        $legalAdvices = LegalAdvice::where('member_id', $member->id)
-            ->with('adviceType', 'member.profile')
-            ->paginate($perPage, ['*'], 'page', $page);
-
-        $legalAdvicesData = $legalAdvices->map(function ($legalAdvice) {
-            return [
-                'id' => $legalAdvice->id,
-                'member_id' => $legalAdvice->member_id,
-                'advice_type_id' => $legalAdvice->advice_type_id,
-                'type' => $legalAdvice->adviceType->name,
-                'text' => $legalAdvice->text,
-                'image' => $legalAdvice->image,
-                'date' => $legalAdvice->date,
-                'member' => [
-                    'id' => $legalAdvice->member->id,
-                    'name' => $legalAdvice->member->name,
-                    'email' => $legalAdvice->member->email,
-                    'profile' => [
-                        'work' => $legalAdvice->member->profile->work ?? 'N/A',
-                        'image' => $legalAdvice->member->profile->image ? '/storage/' . $legalAdvice->member->profile->image : null,
-                    ],
-                ],
-                'comments_count' => $legalAdvice->comments_count,
-            ];
-        });
-
-        return response()->json([
-            'status' => true,
-            'data' => $legalAdvicesData,
-            'pagination' => [
-                'current_page' => $legalAdvices->currentPage(),
-                'per_page' => $legalAdvices->perPage(),
-                'total_pages' => $legalAdvices->lastPage(),
-                'total_advices' => $legalAdvices->total(),
-            ]
-        ]);
-    }
-
-
-
-    // Add a legal advice
-    public function store(Request $request)
+    // Add a comment
+    public function store(Request $request, $legalAdviceId)
     {
         $request->validate([
-            'advice_type_id' => 'required|exists:advice_types,id',
-            'text' => 'required|string',
-            'image' => 'nullable|image|max:2048',
+            'comment' => 'required|string',
         ]);
 
-        $imagePath = $request->hasFile('image') ? $request->file('image')->store('legal_advices_images', 'public') : null;
+        $legalAdvice = LegalAdvice::findOrFail($legalAdviceId);
 
-        $member = Auth::user();
-
-        $legalAdvice = LegalAdvice::create([
-            'member_id' => $member->id,
-            'advice_type_id' => $request->input('advice_type_id'),
-            'text' => $request->input('text'),
-            'image' => $imagePath,
-            'date' => now(), // Set the current timestamp
+        $comment = LegalAdviceComment::create([
+            'legal_advice_id' => $legalAdvice->id,
+            'lawyer_id' => Auth::id(),
+            'comment' => $request->comment,
         ]);
 
         return response()->json([
             'status' => true,
-            'message' => 'Legal advice added successfully',
-            'data' => $legalAdvice
+            'message' => 'Comment added successfully',
+            'data' => $comment,
         ]);
     }
 
-    // Get specific legal advice by ID
-    public function show($id)
-    {
-        $legalAdvice = LegalAdvice::with(['member.profile', 'adviceType', 'comments'])->findOrFail($id);
-
-        return response()->json([
-            'status' => true,
-            'data' => [
-                'id' => $legalAdvice->id,
-                'member_id' => $legalAdvice->member_id,
-                'advice_type_id' => $legalAdvice->advice_type_id,
-                'type' => $legalAdvice->adviceType->name,
-                'text' => $legalAdvice->text,
-                'image' => $legalAdvice->image,
-                'date' => $legalAdvice->date,
-                'member' => [
-                    'id' => $legalAdvice->member->id,
-                    'name' => $legalAdvice->member->name,
-                    'email' => $legalAdvice->member->email,
-                    'profile' => [
-                        'work' => $legalAdvice->member->profile->work ?? 'N/A',
-                        'image' => $legalAdvice->member->profile->image ? '/storage/' . $legalAdvice->member->profile->image : null,
-                    ],
-                ],
-                'comments_count' => $legalAdvice->comments_count,
-                //'comments' => $legalAdvice->comments, // Optionally include comments if needed
-            ]
-        ]);
-    }
-
-    // Update a legal advice
+    // Update a comment
     public function update(Request $request, $id)
     {
-        $legalAdvice = LegalAdvice::findOrFail($id);
+        $request->validate([
+            'comment' => 'required|string',
+        ]);
 
-        // Check if the authenticated user is the owner of the legal advice
-        if ($legalAdvice->member_id !== Auth::id()) {
+        $comment = LegalAdviceComment::findOrFail($id);
+
+        if ($comment->lawyer_id !== Auth::id()) {
             return response()->json([
                 'status' => false,
-                'message' => 'Unauthorized'
+                'message' => 'Unauthorized',
             ], 403);
         }
 
-        $request->validate([
-            'advice_type_id' => 'required|exists:advice_types,id',
-            'text' => 'required|string',
-            'image' => 'nullable|image|max:2048',
-        ]);
-
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('legal_advices_images', 'public');
-        }
-
-        $legalAdvice->update([
-            'advice_type_id' => $request->input('advice_type_id'),
-            'text' => $request->input('text'),
-            'image' => $request->hasFile('image') ? $imagePath : $legalAdvice->image,
-            'date' => now(), // Update the timestamp to the current time
+        $comment->update([
+            'comment' => $request->comment,
         ]);
 
         return response()->json([
             'status' => true,
-            'message' => 'Legal advice updated successfully',
-            'data' => $legalAdvice
+            'message' => 'Comment updated successfully',
+            'data' => $comment,
         ]);
     }
 
-    // Delete a legal advice
+    // Delete a comment
     public function destroy($id)
     {
-        $legalAdvice = LegalAdvice::findOrFail($id);
+        $comment = LegalAdviceComment::findOrFail($id);
 
-        // Check if the authenticated user is the owner of the legal advice
-        if ($legalAdvice->member_id !== Auth::id()) {
+        if ($comment->lawyer_id !== Auth::id()) {
             return response()->json([
                 'status' => false,
-                'message' => 'Unauthorized'
+                'message' => 'Unauthorized',
             ], 403);
         }
 
-        $legalAdvice->delete();
+        $comment->delete();
 
         return response()->json([
             'status' => true,
-            'message' => 'Legal advice deleted successfully'
+            'message' => 'Comment deleted successfully',
+        ]);
+    }
+
+    // View all comments for a specific legal advice
+    public function index($legalAdviceId)
+    {
+        // Load comments along with the lawyer who made each comment and their profile
+        $comments = LegalAdviceComment::where('legal_advice_id', $legalAdviceId)
+            ->with('lawyer.profile')
+            ->get();
+
+        // Format the response to include the commenter information
+        $commentsData = $comments->map(function ($comment) {
+            return [
+                'id' => $comment->id,
+                'comment' => $comment->comment,
+                'created_at' => $comment->created_at,
+                'updated_at' => $comment->updated_at,
+                'lawyer' => [
+                    'id' => $comment->lawyer->id,
+                    'name' => $comment->lawyer->name,
+                    'email' => $comment->lawyer->email,
+                    'profile' => [
+                        'image' => $comment->lawyer->profile->image
+                            ? '/storage/' . $comment->lawyer->profile->image
+                            : null,
+                        'specialization' => $comment->lawyer->profile->specialization ?? 'N/A',
+                    ]
+                ],
+            ];
+        });
+
+        return response()->json([
+            'status' => true,
+            'data' => $commentsData,
         ]);
     }
 }
