@@ -66,4 +66,11 @@ class Member extends Authenticatable
     {
         return $this->hasMany(LegalAdvice::class);
     }
+
+    // Relationship to ratings given by this member
+    public function ratings()
+    {
+        return $this->morphMany(Rating::class, 'user');
+    }
+
 }
