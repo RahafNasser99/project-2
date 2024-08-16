@@ -18,18 +18,21 @@ class SearchCubit extends Cubit<SearchState> {
 
     final either = await searchUseCase(searchQuery);
 
-    either.fold(
-      (failure) {
-        switch (failure.runtimeType) {
-          case ServerException:
-            return const SearchError(errorMessage: SERVER_FAILURE_MESSAGE);
-          case OfflineFailure:
-            return const SearchError(errorMessage: OFFLINE_SERVER_MESSAGE);
-          default:
-            return const SearchError(errorMessage: DEFAULT_FAILURE_MESSAGE);
-        }
-      },
-      (profiles) => SearchDone(profiles: profiles),
-    );
+    either.fold((failure) {
+      switch (failure.runtimeType) {
+        case ServerException:
+          emit(const SearchError(errorMessage: SERVER_FAILURE_MESSAGE));
+        case OfflineFailure:
+          emit(const SearchError(errorMessage: OFFLINE_SERVER_MESSAGE));
+        default:
+          emit(const SearchError(errorMessage: DEFAULT_FAILURE_MESSAGE));
+      }
+    }, (profiles) {
+      if (profiles.isEmpty) {
+        emit(SearchEmpty());
+      } else {
+        emit(SearchDone(profiles: profiles));
+      }
+    });
   }
 }

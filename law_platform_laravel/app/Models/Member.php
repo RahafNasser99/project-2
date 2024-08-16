@@ -68,7 +68,11 @@ class Member extends Authenticatable
     }
 
     // Relationship to ratings given by this member
+<<<<<<< HEAD
     public function ratings(): \Illuminate\Database\Eloquent\Relations\MorphMany
+=======
+    public function ratings()
+>>>>>>> fbc098416843d9e6016a791f9a5948cdbbea3787
     {
         return $this->morphMany(Rating::class, 'user');
     }

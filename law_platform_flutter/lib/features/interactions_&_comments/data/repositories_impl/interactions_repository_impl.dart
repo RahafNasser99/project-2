@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:law_platform_flutter/features/profile/domain/entities/profile.dart';
 import 'package:law_platform_flutter/utils/error/failures.dart';
 import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
 import 'package:law_platform_flutter/utils/error/exceptions.dart';
@@ -10,10 +11,10 @@ class InteractionsRepositoryImpl extends InteractionsRepository {
       InteractionsRemoteDataSourceImpl();
 
   @override
-  Future<Either<Failure, Unit>> addInteraction(bool interaction) async {
+  Future<Either<Failure, Unit>> addInteraction(bool interaction,int postId) async {
     if (await internetConnectionChecker.hasConnection) {
       try {
-        await interactionsRemoteDataSource.addInteraction(interaction);
+        await interactionsRemoteDataSource.addInteraction( interaction, postId);
         return const Right(unit);
       } on ServerException {
         return Left(ServerFailure());
@@ -24,15 +25,30 @@ class InteractionsRepositoryImpl extends InteractionsRepository {
   }
 
   @override
-  Future<Either<Failure, Unit>> removeInteraction() async {
+  Future<Either<Failure, Unit>> removeInteraction(bool interaction,int postId) async {
     if (await internetConnectionChecker.hasConnection) {
       try {
-        await interactionsRemoteDataSource.removeInteraction();
+        await interactionsRemoteDataSource.removeInteraction( interaction, postId);
 
         return const Right(unit);
 
       } on ServerException {
         return Left(OfflineFailure());
+      }
+    } else {
+      return Left(OfflineFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<Profile>>> getInteractions(int postId, bool likeOrDislike) async {
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+        final profiles =
+            await interactionsRemoteDataSource.getInteractions(postId, likeOrDislike);
+        return Right(profiles);
+      } on ServerException {
+        return Left(ServerFailure());
       }
     } else {
       return Left(OfflineFailure());

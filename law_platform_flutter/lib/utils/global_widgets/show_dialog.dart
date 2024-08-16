@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 
 class ShowDialog extends StatelessWidget {
   const ShowDialog(
-      {required this.dialogMessage, required this.onPressed, Key? key})
-      : super(key: key);
+      {required this.dialogMessage, required this.onPressed, super.key});
 
   final String dialogMessage;
   final void Function() onPressed;

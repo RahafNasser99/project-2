@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class SearchBarWidget extends StatefulWidget {
-  const SearchBarWidget({super.key});
+  const SearchBarWidget({super.key, required this.search});
+
+  final Future<void> Function(String) search;
 
   @override
   State<SearchBarWidget> createState() => _SearchBarWidgetState();
@@ -9,10 +11,6 @@ class SearchBarWidget extends StatefulWidget {
 
 class _SearchBarWidgetState extends State<SearchBarWidget> {
   final TextEditingController _controller = TextEditingController();
-
-  void _onSearchSubmitted(String query) {
-    print('Search query: $query');
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +36,9 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
       cursorColor: Colors.grey[600],
       cursorWidth: 1.3,
       textInputAction: TextInputAction.search,
-      onSubmitted: _onSearchSubmitted,
+      onSubmitted: (value) async {
+        await widget.search(_controller.text);
+      },
     );
   }
 }

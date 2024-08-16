@@ -9,13 +9,15 @@ import 'package:law_platform_flutter/features/profile/data/models/lawyer_profile
 abstract class ProfileRemoteDataSource {
   Future<Unit> editProfile(String? name, String? specializationOrJob,
       String? imagePath, String? imageName);
-  Future<ProfileModel> getProfile();
+  Future<ProfileModel> getMyProfile();
+  Future<ProfileModel> getAnotherUserProfile(String accountType, int userId);
 }
 
 class ProfileRemoteDataSourceImpl extends ProfileRemoteDataSource {
   @override
   Future<Unit> editProfile(String? name, String? specializationOrJob,
       String? imagePath, String? imageName) async {
+
     final url = checkAuthentication.getAccountType() == 'member'
         ? '/api/member/editProfile'
         : '/api/lawyer/editProfile';
@@ -24,11 +26,17 @@ class ProfileRemoteDataSourceImpl extends ProfileRemoteDataSource {
         ? await MultipartFile.fromFile(imagePath, filename: imageName)
         : null;
 
-    FormData formData = FormData.fromMap({
-      'biography': 'biography',
-      'specialization': specializationOrJob,
-      'image': multipartFile,
-    });
+    FormData formData = checkAuthentication.getAccountType() == 'member'
+        ? FormData.fromMap({
+            'biography': 'biography',
+            'work': specializationOrJob,
+            'image': multipartFile,
+          })
+        : FormData.fromMap({
+            'biography': 'biography',
+            'specialization': specializationOrJob,
+            'image': multipartFile,
+          });
 
     final response = await dio.post(
       url,
@@ -40,6 +48,8 @@ class ProfileRemoteDataSourceImpl extends ProfileRemoteDataSource {
       ),
       data: formData,
     );
+
+    print(response.data);
 
     final editNameUrl = checkAuthentication.getAccountType() == 'member'
         ? '/api/member/nameUpdate'
@@ -71,10 +81,40 @@ class ProfileRemoteDataSourceImpl extends ProfileRemoteDataSource {
   }
 
   @override
-  Future<ProfileModel> getProfile() async {
+  Future<ProfileModel> getMyProfile() async {
     final url = checkAuthentication.getAccountType() == 'member'
         ? '/api/member/viewProfile'
         : '/api/lawyer/viewProfile';
+
+    final response = await dio.get(
+      url,
+      options: Options(
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${checkAuthentication.getToken()}'
+        },
+      ),
+    );
+
+    if (response.statusCode! >= 200 && response.statusCode! < 400) {
+      final decodedJson = response.data['data'];
+
+      final profileModel = checkAuthentication.getAccountType() == 'member'
+          ? MemberProfileModel.fromJson(decodedJson['member'])
+          : LawyerProfileModel.fromJson(decodedJson['lawyer']);
+
+      return profileModel;
+    } else {
+      throw ServerException();
+    }
+  }
+
+  @override
+  Future<ProfileModel> getAnotherUserProfile(
+      String accountType, int userId) async {
+    final url = accountType == 'member'
+        ? '/api/member/member-profile/$userId'
+        : '/api/lawyer/lawyer-profile/$userId';
 
     final response = await dio.get(
       url,

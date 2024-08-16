@@ -8,7 +8,6 @@ class DeletePostUseCase {
 
   // true for posts, false for advice
   Future<Either<Failure, Unit>> call(int postId,bool postOrAdvice) async {
-    print('delete post use case');
     return await postRepository.deletePost(postId,postOrAdvice);
   }
 }

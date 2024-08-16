@@ -34,7 +34,13 @@ class _AppDrawerState extends State<AppDrawer> {
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               onTap: () {
-                Navigator.of(context).pushNamed('profile-page');
+                Navigator.of(context).pushNamed(
+                  'profile-page',
+                  arguments: {
+                    'userId': null,
+                    'accountType': null,
+                  },
+                );
               },
             ),
             const Divider(),

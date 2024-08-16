@@ -6,11 +6,11 @@ import 'package:law_platform_flutter/utils/global_classes/check_authentication.d
 import 'package:law_platform_flutter/features/posts_&_advices/data/models/post_model.dart';
 
 abstract class PostRemoteDataSource {
-  Future<Map<String, dynamic>> getPosts(
-      int pageNumber, bool postOrAdvice); // true for posts, false for advice
+  Future<Map<String, dynamic>> getPosts(int pageNumber, bool postOrAdvice,
+      int? userId); // true for posts, false for advice
   Future<Unit> addPost(
       String postBody, String? imagePath, String? imageName, bool postOrAdvice);
-  Future<Unit> updatePost(String postId, String postBody, String? imagePath,
+  Future<Unit> updatePost(int postId, String postBody, String? imagePath,
       String? imageName, bool postOrAdvice);
   Future<Unit> deletePost(int postId, bool postOrAdvice);
 }
@@ -19,10 +19,14 @@ class PostRemoteDataSourceImpl extends PostRemoteDataSource {
   CheckAuthentication checkAuthentication = CheckAuthentication();
   @override
   Future<Map<String, dynamic>> getPosts(
-      int pageNumber, bool postOrAdvice) async {
+      int pageNumber, bool postOrAdvice, int? userId) async {
     final url = postOrAdvice
-        ? '/api/post/all?per_page=6&page=$pageNumber'
-        : '/api/legalAdvice/all?per_page=6&page=$pageNumber';
+        ? userId != null
+            ? '/api/post/lawyers/$userId/posts?per_page=6&page=$pageNumber'
+            : '/api/post/all?per_page=6&page=$pageNumber'
+        : userId != null
+            ? '/api/legalAdvice/members/$userId/legal-advices?per_page=6&page=$pageNumber'
+            : '/api/member/my-legal-advices?per_page=6&page=$pageNumber';
 
     final response = await dio.get(
       url,
@@ -90,15 +94,36 @@ class PostRemoteDataSourceImpl extends PostRemoteDataSource {
   }
 
   @override
-  Future<Unit> updatePost(String postId, String postBody, String? imagePath,
+  Future<Unit> updatePost(int postId, String postBody, String? imagePath,
       String? imageName, bool postOrAdvice) async {
-    final url = postOrAdvice ? '/api/post/update/$postId' : '';
+    final url = postOrAdvice
+        ? '/api/post/update/$postId'
+        : '/api/legalAdvice/update/$postId';
 
-    // final data = postModel.toJson();
+    MultipartFile? multipartFile = (imagePath != null)
+        ? await MultipartFile.fromFile(imagePath, filename: imageName)
+        : null;
+
+    FormData formData = postOrAdvice
+        ? FormData.fromMap({
+            'text': postBody,
+            'image': multipartFile,
+          })
+        : FormData.fromMap({
+            'advice_type_id': 1,
+            'text': postBody,
+            'image': multipartFile,
+          });
 
     final response = await dio.post(
       url,
-      // data: data,
+      options: Options(
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${checkAuthentication.getToken()}'
+        },
+      ),
+      data: formData,
     );
     if (response.statusCode! >= 200 && response.statusCode! < 400) {
       return Future.value(unit);
@@ -109,16 +134,18 @@ class PostRemoteDataSourceImpl extends PostRemoteDataSource {
 
   @override
   Future<Unit> deletePost(int postId, bool postOrAdvice) async {
-    final url = postOrAdvice ? '' : '';
-    print('delete post');
+    final url = postOrAdvice
+        ? '/api/post/delete/$postId'
+        : '/api/legalAdvice/delete/$postId';
 
-    final data = {
-      'id': postId,
-    };
-
-    final response = await dio.post(
+    final response = await dio.delete(
       url,
-      data: data,
+      options: Options(
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${checkAuthentication.getToken()}'
+        },
+      ),
     );
 
     if (response.statusCode! >= 200 && response.statusCode! < 400) {

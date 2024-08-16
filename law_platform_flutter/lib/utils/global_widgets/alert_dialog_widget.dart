@@ -1,15 +1,24 @@
 import 'package:flutter/material.dart';
 
-class DeleteCommentAlertDialog extends StatelessWidget {
-  const DeleteCommentAlertDialog({super.key});
+class AlertDialogWidget extends StatelessWidget {
+  const AlertDialogWidget({
+    super.key,
+    this.onPressed,
+    required this.alertTitle,
+    required this.alertContent,
+  });
+
+  final void Function()? onPressed;
+  final String alertTitle;
+  final String alertContent;
 
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
     return AlertDialog(
       backgroundColor: Theme.of(context).colorScheme.surface,
-      title: const Text(
-        'حذف التعليق',
+      title: Text(
+        alertTitle,
         textAlign: TextAlign.center,
       ),
       titleTextStyle: const TextStyle(
@@ -19,7 +28,7 @@ class DeleteCommentAlertDialog extends StatelessWidget {
         fontWeight: FontWeight.bold,
       ),
       content: Text(
-        'تأكيد الحذف',
+        alertContent,
         textAlign: TextAlign.center,
         style: Theme.of(context).textTheme.bodyLarge,
       ),
@@ -42,9 +51,7 @@ class DeleteCommentAlertDialog extends StatelessWidget {
           ),
         ),
         ElevatedButton(
-          onPressed: () async {
-            //send delete request
-          },
+          onPressed: onPressed,
           style: ElevatedButton.styleFrom(
             fixedSize: Size.fromWidth(width / 4),
             backgroundColor: Theme.of(context).colorScheme.primary,

@@ -8,7 +8,7 @@ class GetPostsUseCase {
 
   // true for posts, false for advice
   Future<Either<Failure, Map<String, dynamic>>> call(
-      int pageNumber, bool postOrAdvice) async {
-    return await postRepository.getPosts(pageNumber, postOrAdvice);
+      int pageNumber, bool postOrAdvice, int? userId) async {
+    return await postRepository.getPosts(pageNumber, postOrAdvice, userId);
   }
 }

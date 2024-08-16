@@ -6,8 +6,7 @@ import 'package:law_platform_flutter/utils/error/failures.dart';
 class RemoveInteractionUseCase {
   InteractionsRepository interactionsRepository = InteractionsRepositoryImpl();
 
-  Future<Either<Failure, Unit>> call() async {
-    print("remove interaction usecase");
-    return await interactionsRepository.removeInteraction();
+  Future<Either<Failure, Unit>> call(bool interaction,int postId) async {
+    return await interactionsRepository.removeInteraction( interaction, postId);
   }
 }

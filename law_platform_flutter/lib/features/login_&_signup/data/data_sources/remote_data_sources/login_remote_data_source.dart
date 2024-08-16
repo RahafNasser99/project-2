@@ -25,9 +25,11 @@ class LoginRemoteDataSourceImpl extends LoginRemoteDataSource {
 
     if (response.statusCode! >= 200 && response.statusCode! < 400) {
       final String token = response.data['token'];
+      final int id = response.data['id'];
       final String storedAccountType =
           accountType == AccountType.member ? 'member' : 'lawyer';
       checkAuthentication.storeAuthenticationValue(
+        id,
         email,
         token,
         storedAccountType,

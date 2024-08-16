@@ -9,23 +9,27 @@ class AddPostWidget extends StatefulWidget {
     super.key,
     required this.postOrAdvice,
     required this.postBody,
+    required this.postCurrentImage,
     required this.postImage,
     required this.height,
     required this.image,
     required this.textEditingController,
     required this.editImage,
     required this.setImage,
+    required this.removeCurrentImage,
     required this.setPostBody,
   });
 
   final bool postOrAdvice; //true for post, false for advice
   final String? postBody;
+  final String? postCurrentImage;
   final String? postImage;
   final double height;
   final File? image;
   final TextEditingController textEditingController;
   final void Function()? editImage;
   final void Function(File?) setImage;
+  final void Function() removeCurrentImage;
   final void Function(String) setPostBody;
 
   @override
@@ -46,11 +50,14 @@ class _AddPostWidgetState extends State<AddPostWidget> {
 
   @override
   void initState() {
-    // if (widget.post != null) {
-    //   _textEditingController.text = widget.post!.postBody;
-    // }
-    postText = widget.postBody;
-    postImage = widget.postImage;
+    _textEditingController.text =
+        widget.postBody != null && widget.postBody!.isNotEmpty
+            ? widget.postBody!
+            : '';
+    postText = widget.postBody != null && widget.postBody!.isNotEmpty
+        ? widget.postBody!
+        : '';
+    postImage = widget.postCurrentImage;
     _keyboardHeightPlugin.onKeyboardHeightChanged((double height) {
       setState(() {
         _keyboardHeight = height;
@@ -61,8 +68,12 @@ class _AddPostWidgetState extends State<AddPostWidget> {
 
   @override
   void didUpdateWidget(covariant AddPostWidget oldWidget) {
-    showedImage = widget.image;
     super.didUpdateWidget(oldWidget);
+    showedImage = widget.image;
+    if (widget.postBody != oldWidget.postBody) {
+      _textEditingController.text = widget.postBody ?? '';
+      postText = widget.postBody ?? '';
+    }
   }
 
   @override
@@ -121,7 +132,8 @@ class _AddPostWidgetState extends State<AddPostWidget> {
                           ),
                         ),
                       ),
-                      if (showedImage != null)
+                      if (showedImage != null ||
+                          (postImage != null && postImage!.isNotEmpty))
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8.0, vertical: 4.0),
@@ -152,7 +164,11 @@ class _AddPostWidgetState extends State<AddPostWidget> {
                               ),
                               ElevatedButton(
                                 onPressed: () {
+                                  widget.removeCurrentImage();
                                   widget.setImage(null);
+                                  setState(() {
+                                    postImage = null;
+                                  });
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor:
@@ -179,11 +195,14 @@ class _AddPostWidgetState extends State<AddPostWidget> {
                           ),
                         ),
                       if (showedImage != null) Image.file(widget.image!),
+                      if (postImage != null && postImage!.isNotEmpty)
+                        Image.network(postImage!),
                     ],
                   ),
                 ),
               ),
-              if (showedImage == null)
+              if (showedImage == null &&
+                  (postImage == null || postImage!.isEmpty))
                 SizedBox(
                   height: 50,
                   child: IconButton(

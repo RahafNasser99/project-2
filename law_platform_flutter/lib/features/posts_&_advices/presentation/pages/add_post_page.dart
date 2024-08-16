@@ -13,7 +13,7 @@ import 'package:law_platform_flutter/features/posts_&_advices/presentation/cubit
 class AddPostPage extends StatefulWidget {
   const AddPostPage({super.key, required this.addPostPage});
 
-  final bool addPostPage;  // true for posts, false for advice
+  final bool addPostPage; // true for posts, false for advice
 
   @override
   State<AddPostPage> createState() => _AddPostState();
@@ -22,7 +22,9 @@ class AddPostPage extends StatefulWidget {
 class _AddPostState extends State<AddPostPage> {
   bool _isInit = true;
   File? _imageFile;
+  int? _postId;
   String _postBody = '';
+  String? _postImage = '';
   final TextEditingController _textEditingController = TextEditingController();
 
   @override
@@ -32,22 +34,56 @@ class _AddPostState extends State<AddPostPage> {
           ? ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>
           : null;
       if (postData != null) {
-        _textEditingController.text = postData['postBody'];
+        if (postData['postBody'] != null) {
+          _textEditingController.text = postData['postBody'];
+          _postBody = postData['postBody'];
+        }
+        _postId = postData['postId'];
+        _postImage = postData['postImage'];
       }
     }
     _isInit = false;
     super.didChangeDependencies();
   }
 
+  @override
+  void dispose() {
+    _textEditingController.clear();
+    _postImage = null;
+    _imageFile = null;
+    super.dispose();
+  }
+
   void _post() {
-    BlocProvider.of<AddUpdateDeletePostCubit>(context).addUpdatePost(
-      'add',
-      '',
-      _postBody,
-      _imageFile?.path,
-      _imageFile?.path.split('/').last,
-      widget.addPostPage,
-    );
+    if (_postId != null) {
+      String? editPostImage;
+      // remove current page
+      if (_postImage == null || _postImage!.isEmpty) {
+        editPostImage = null;
+      }
+      if (_imageFile == null) {
+        editPostImage = null;
+      } else {
+        editPostImage = _imageFile?.path;
+      }
+      BlocProvider.of<AddUpdateDeletePostCubit>(context).addUpdatePost(
+        'update',
+        _postId!,
+        _postBody,
+        editPostImage,
+        _imageFile?.path.split('/').last,
+        widget.addPostPage,
+      );
+    } else {
+      BlocProvider.of<AddUpdateDeletePostCubit>(context).addUpdatePost(
+        'add',
+        0,
+        _postBody,
+        _imageFile?.path,
+        _imageFile?.path.split('/').last,
+        widget.addPostPage,
+      );
+    }
   }
 
   void _setImage(File? image) {
@@ -56,8 +92,17 @@ class _AddPostState extends State<AddPostPage> {
     });
   }
 
+  void _removeCurrentPost() {
+    setState(() {
+      _postImage = null;
+    });
+    print(_postImage);
+  }
+
   void _setPostBody(String postText) {
-    _postBody = postText;
+    setState(() {
+      _postBody = postText;
+    });
   }
 
   Future _pickImage() async {
@@ -175,12 +220,14 @@ class _AddPostState extends State<AddPostPage> {
                   AddPostWidget(
                     postOrAdvice: widget.addPostPage,
                     postBody: _postBody,
+                    postCurrentImage: _postImage,
                     postImage: _imageFile?.path,
                     height: height - (height * 0.1) - statusBarHeight,
                     image: _imageFile,
                     textEditingController: _textEditingController,
                     editImage: _pickImage,
                     setImage: _setImage,
+                    removeCurrentImage: _removeCurrentPost,
                     setPostBody: _setPostBody,
                   ),
                 ],

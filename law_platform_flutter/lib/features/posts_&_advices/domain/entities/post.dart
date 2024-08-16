@@ -9,6 +9,7 @@ class Post extends Equatable {
   final int commentsCount;
   final int likesCount;
   final int dislikesCount;
+  final bool? userInteraction;
   final Profile profile;
 
   const Post({
@@ -19,6 +20,7 @@ class Post extends Equatable {
     required this.commentsCount,
     required this.likesCount,
     required this.dislikesCount,
+    required this.userInteraction,
     required this.profile,
   });
 

@@ -14,26 +14,27 @@ class InteractionCubit extends Cubit<InteractionState> {
 
   InteractionCubit() : super(InteractionInitial());
 
-  Future<void> addOrRemoveInteraction(bool? interaction) async {
+  Future<void> addOrRemoveInteraction(String addOrRemove,bool interaction, int postId) async {
     emit(InteractionLoading());
 
-    final either = interaction != null
-        ? await addInteractionUseCase(interaction)
-        : await removeInteractionUseCase();
+    // interaction is true for like, false for dislike
+
+    final either = addOrRemove == 'add'
+        ? await addInteractionUseCase(interaction, postId)
+        : await removeInteractionUseCase(interaction, postId);
 
     either.fold(
       (failure) {
         switch (failure.runtimeType) {
           case ServerFailure:
-            return const InteractionError(errorMessage: SERVER_FAILURE_MESSAGE);
+            emit(const InteractionError(errorMessage: SERVER_FAILURE_MESSAGE));
           case OfflineFailure:
-            return const InteractionError(errorMessage: OFFLINE_SERVER_MESSAGE);
+            emit(const InteractionError(errorMessage: OFFLINE_SERVER_MESSAGE));
           default:
-            return const InteractionError(
-                errorMessage: DEFAULT_FAILURE_MESSAGE);
+            emit(const InteractionError(errorMessage: DEFAULT_FAILURE_MESSAGE));
         }
       },
-      (_) => InteractionDone(),
+      (_) => emit(InteractionDone()),
     );
   }
 }

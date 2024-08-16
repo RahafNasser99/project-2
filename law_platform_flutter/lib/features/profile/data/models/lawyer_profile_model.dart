@@ -1,12 +1,13 @@
+import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
 import 'package:law_platform_flutter/features/profile/data/models/profile_model.dart';
 import 'package:law_platform_flutter/features/profile/domain/entities/lawyer_profile.dart';
-import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
 
 class LawyerProfileModel extends LawyerProfile implements ProfileModel {
   LawyerProfileModel({
     required super.id,
     required super.name,
     required super.email,
+    required super.accountType,
     required super.profilePicture,
     required super.specialization,
   });
@@ -16,11 +17,13 @@ class LawyerProfileModel extends LawyerProfile implements ProfileModel {
         id: json['id'],
         name: json['name'],
         email: json['email'],
+        accountType: 'lawyer',
         profilePicture: json['profile']['image'] != null
             ? '$BASE_URL${json['profile']['image']}'
             : null,
         specialization: json['profile']['specialization'],
       );
+
 
   @override
   Map<String, dynamic> toJson() => {

@@ -71,16 +71,21 @@ class Lawyer extends Authenticatable
     }
 
     // Relationship to ratings given by this member
+<<<<<<< HEAD
 //    public function ratings(): \Illuminate\Database\Eloquent\Relations\MorphMany
 //    {
 //        return $this->morphMany(Rating::class, 'user');
 //    }
 
     public function ratings(): \Illuminate\Database\Eloquent\Relations\MorphMany
+=======
+    public function ratings()
+>>>>>>> fbc098416843d9e6016a791f9a5948cdbbea3787
     {
         return $this->morphMany(Rating::class, 'user');
     }
 
+<<<<<<< HEAD
 //    function app($abstract = null, array $parameters = [])
 //    {
 //        if (is_null($abstract)) {
@@ -196,10 +201,44 @@ class Lawyer extends Authenticatable
 
         // Calculate weighted final rating
         $finalRating = ($lawyerAverageRating * $lawyerWeight) + ($memberAverageRating * $memberWeight);
+=======
+    public function calculateRating(): float
+    {
+        // Calculate the total likes and dislikes from all posts of the lawyer
+        $totalLikes = 0;
+        $totalDislikes = 0;
+
+        foreach ($this->posts as $post) {
+            $totalLikes += $post->likes_count;
+            $totalDislikes += $post->dislikes_count;
+        }
+
+        // Handle edge case when there are no likes or dislikes
+        if ($totalLikes + $totalDislikes === 0) {
+            $r1 = 0;  // Avoid division by zero
+        } else {
+            // Calculate r1
+            $r1 = ($totalLikes * 2.5) / ($totalLikes + $totalDislikes);
+        }
+
+        // Calculate r2 (direct ratings)
+        $totalRatings = $this->ratings()->sum('rating');
+        $ratingsCount = $this->ratings()->count();
+
+        if ($ratingsCount === 0) {
+            $r2 = 0;  // No direct ratings, avoid division by zero
+        } else {
+            $r2 = ($totalRatings * 2.5) / $ratingsCount;
+        }
+
+        // Final rating is the sum of r1 and r2
+        $finalRating = $r1 + $r2;
+>>>>>>> fbc098416843d9e6016a791f9a5948cdbbea3787
 
         return round($finalRating, 2); // Round the result to 2 decimal places
     }
 
+<<<<<<< HEAD
 //    public function calculateRating(): float
 //    {
 //        // Get ratings for the lawyer grouped by user type (lawyer and member)
@@ -342,4 +381,6 @@ class Lawyer extends Authenticatable
 //    }
 
 
+=======
+>>>>>>> fbc098416843d9e6016a791f9a5948cdbbea3787
 }

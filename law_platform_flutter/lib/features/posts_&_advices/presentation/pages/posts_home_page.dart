@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:law_platform_flutter/features/posts_&_advices/presentation/cubits/add_update_delete_post_cubit/add_update_delete_post_cubit.dart';
 import 'package:law_platform_flutter/utils/global_widgets/loading.dart';
 import 'package:law_platform_flutter/utils/global_widgets/show_dialog.dart';
 import 'package:law_platform_flutter/features/posts_&_advices/domain/entities/post.dart';
@@ -22,71 +23,107 @@ class _PostsHomePageState extends State<PostsHomePage> {
   @override
   Future<void> didChangeDependencies() async {
     if (_isInit) {
-      await BlocProvider.of<GetPostCubit>(context).getPosts(widget.postPage);
+      await BlocProvider.of<GetPostCubit>(context)
+          .getPosts(widget.postPage, null);
     }
     _isInit = false;
     super.didChangeDependencies();
   }
 
+  Future<void> _deletePost(int postId, bool postOrAdvice) async {
+    BlocProvider.of<AddUpdateDeletePostCubit>(context)
+        .deletePost(postId, postOrAdvice);
+  }
+
+  Future<void> _refreshPage() async {
+    await BlocProvider.of<GetPostCubit>(context)
+        .getPosts(widget.postPage, null);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<GetPostCubit, GetPostState>(
-      listener: (context, state) {
-        if (state is GetPostError) {
-          showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (context) => ShowDialog(
-              dialogMessage: state.errorMessage,
-              onPressed: () {
-                Navigator.of(context).pop();
+    return RefreshIndicator(
+      onRefresh: _refreshPage,
+      child: BlocConsumer<GetPostCubit, GetPostState>(
+        listener: (context, state) {
+          if (state is GetPostError) {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) => ShowDialog(
+                dialogMessage: state.errorMessage,
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            );
+          }
+        },
+        builder: (context, state) {
+          if (state is GetPostLoading) {
+            return Center(
+              child: Loading(
+                evenColor: Theme.of(context).colorScheme.primary,
+                oddColor: Theme.of(context).colorScheme.secondary,
+              ),
+            );
+          } else if (state is GetPostIsEmpty) {
+            return Center(
+              child: Text(
+                'لا يوجد مناشير لعرضها',
+                style: Theme.of(context).textTheme.labelLarge,
+              ),
+            );
+          } else if (state is GetPostDone) {
+            List<Post> posts = state.posts;
+            return ListView.builder(
+              controller: context.read<GetPostCubit>().scrollController,
+              padding: EdgeInsets.zero,
+              itemCount: context.read<GetPostCubit>().isLoadingMore
+                  ? posts.length + 1
+                  : posts.length,
+              itemBuilder: (context, index) {
+                if (index >= posts.length) {
+                  return SpinKitThreeInOut(
+                      itemBuilder: (BuildContext context, int index) {
+                    return DecoratedBox(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: index.isEven ? Colors.blue : Colors.grey,
+                      ),
+                    );
+                  });
+                } else {
+                  return BlocConsumer<AddUpdateDeletePostCubit,
+                      AddUpdateDeletePostState>(listener: (context, state) {
+                    if (state is AddUpdateDeletePostError) {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (context) => ShowDialog(
+                          dialogMessage: state.errorMessage,
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      );
+                    }
+                  }, builder: (context, state) {
+                    return PostWidget(
+                      post: posts[index],
+                      postPage: widget.postPage,
+                      deletePost: _deletePost,
+                      refreshPosts: _refreshPage,
+                    );
+                  });
+                }
               },
-            ),
-          );
-        }
-      },
-      builder: (context, state) {
-        if (state is GetPostLoading) {
-          return Center(
-            child: Loading(
-              evenColor: Theme.of(context).colorScheme.primary,
-              oddColor: Theme.of(context).colorScheme.secondary,
-            ),
-          );
-        } else if (state is GetPostIsEmpty) {
-          return const Center(
-            child: Text('لا يوجد مناشير لعرضها'),
-          );
-        } else if (state is GetPostDone) {
-          List<Post> posts = state.posts;
-          return ListView.builder(
-            controller: context.read<GetPostCubit>().scrollController,
-            padding: EdgeInsets.zero,
-            itemCount: context.read<GetPostCubit>().isLoadingMore
-                ? posts.length + 1
-                : posts.length,
-            itemBuilder: (context, index) {
-              if (index >= posts.length) {
-                return SpinKitThreeInOut(
-                    itemBuilder: (BuildContext context, int index) {
-                  return DecoratedBox(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: index.isEven ? Colors.blue : Colors.grey,
-                    ),
-                  );
-                });
-              } else {
-                return PostWidget(
-                  post: posts[index],
-                );
-              }
-            },
-          );
-        } else {
-          return Container();
-        }
-      },
+            );
+          } else {
+            return Container();
+          }
+        },
+      ),
     );
   }
 }
