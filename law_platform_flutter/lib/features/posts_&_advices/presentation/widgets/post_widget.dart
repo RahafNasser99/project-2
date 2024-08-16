@@ -24,7 +24,6 @@ class PostWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final double width = MediaQuery.of(context).size.width;
     return Container(
       margin: const EdgeInsets.only(bottom: 6.0),
@@ -68,6 +67,12 @@ class PostWidget extends StatelessWidget {
                                 ElevatedButton.icon(
                                   onPressed: () {
                                     Navigator.pop(context);
+                                    Navigator.of(context)
+                                        .pushNamed('add-post-page', arguments: {
+                                      'postId': post.postId,
+                                      'postBody': post.postBody,
+                                      'postImage': post.postImage,
+                                    });
                                   },
                                   style: ElevatedButton.styleFrom(
                                       backgroundColor:

@@ -7,7 +7,7 @@ class UpdatePostUseCase {
   PostRepository postRepository = PostRepositoryImpl();
 
   // true for posts, false for advice
-  Future<Either<Failure, Unit>> call(String postId, String postBody,
+  Future<Either<Failure, Unit>> call(int postId, String postBody,
       String? imagePath, String? imageName,bool postOrAdvice) async {
     return await postRepository.updatePost(
         postId, postBody, imagePath, imageName,postOrAdvice);

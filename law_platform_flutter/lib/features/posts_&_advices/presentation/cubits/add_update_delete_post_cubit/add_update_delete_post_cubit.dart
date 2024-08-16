@@ -16,7 +16,7 @@ class AddUpdateDeletePostCubit extends Cubit<AddUpdateDeletePostState> {
 
   AddUpdateDeletePostCubit() : super(AddUpdateDeletePostInitial());
 
-  Future<void> addUpdatePost(String addOrUpdate, String postId, String postBody,
+  Future<void> addUpdatePost(String addOrUpdate, int postId, String postBody,
       String? imagePath, String? imageName,bool postOrAdvice) async {
     emit(AddUpdateDeletePostLoading());
 

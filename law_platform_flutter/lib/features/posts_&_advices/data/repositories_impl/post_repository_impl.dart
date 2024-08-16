@@ -38,7 +38,7 @@ class PostRepositoryImpl extends PostRepository {
   }
 
   @override
-  Future<Either<Failure, Unit>> updatePost(String postId, String postBody,
+  Future<Either<Failure, Unit>> updatePost(int postId, String postBody,
       String? imagePath, String? imageName,bool postOrAdvice) async {
     if (await internetConnectionChecker.hasConnection) {
       try {

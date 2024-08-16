@@ -116,7 +116,6 @@ class _AddCommentWidgetState extends State<AddCommentWidget> {
               _lineCount = 1;
             });
           });
-          // widget.refresh;
         }
       },
       builder: (context, state) {

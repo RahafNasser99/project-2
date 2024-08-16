@@ -197,7 +197,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                             ),
                             SizedBox(
-                                height: height * 0.79,
+                                height: height * 0.47,
                                 child: MultiBlocProvider(
                                   providers: [
                                     BlocProvider<GetPostCubit>(

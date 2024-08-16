@@ -10,7 +10,7 @@ abstract class PostRemoteDataSource {
       int? userId); // true for posts, false for advice
   Future<Unit> addPost(
       String postBody, String? imagePath, String? imageName, bool postOrAdvice);
-  Future<Unit> updatePost(String postId, String postBody, String? imagePath,
+  Future<Unit> updatePost(int postId, String postBody, String? imagePath,
       String? imageName, bool postOrAdvice);
   Future<Unit> deletePost(int postId, bool postOrAdvice);
 }
@@ -94,15 +94,36 @@ class PostRemoteDataSourceImpl extends PostRemoteDataSource {
   }
 
   @override
-  Future<Unit> updatePost(String postId, String postBody, String? imagePath,
+  Future<Unit> updatePost(int postId, String postBody, String? imagePath,
       String? imageName, bool postOrAdvice) async {
     final url = postOrAdvice ? '/api/post/update/$postId' : '';
 
     // final data = postModel.toJson();
 
+    MultipartFile? multipartFile = (imagePath != null)
+        ? await MultipartFile.fromFile(imagePath, filename: imageName)
+        : null;
+
+    FormData formData = postOrAdvice
+        ? FormData.fromMap({
+            'text': postBody,
+            'image': multipartFile,
+          })
+        : FormData.fromMap({
+            'advice_type_id': 1,
+            'text': postBody,
+            'image': multipartFile,
+          });
+
     final response = await dio.post(
       url,
-      // data: data,
+      options: Options(
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${checkAuthentication.getToken()}'
+        },
+      ),
+      data: formData,
     );
     if (response.statusCode! >= 200 && response.statusCode! < 400) {
       return Future.value(unit);

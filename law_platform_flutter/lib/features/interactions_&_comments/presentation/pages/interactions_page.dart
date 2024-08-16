@@ -85,7 +85,15 @@ class _InteractionsPageState extends State<InteractionsPage> {
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     itemBuilder: (context, index) => ListTileWidget(
                       profile: state.profiles[index],
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context).pushNamed(
+                          'profile-page',
+                          arguments: {
+                            'userId': state.profiles[index].id,
+                            'accountType': state.profiles[index].accountType,
+                          },
+                        );
+                      },
                     ),
                     separatorBuilder: (context, index) => const SizedBox(
                       height: 16.0,
