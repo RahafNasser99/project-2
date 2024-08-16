@@ -5,12 +5,15 @@ use App\Http\Controllers\LawyerProfileController;
 use App\Http\Controllers\LegalAdviceCommentController;
 use App\Http\Controllers\LegalAdviceController;
 use App\Http\Controllers\MemberProfileController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\PostInteractionController;
+use App\Http\Controllers\UserSearchController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MemberAuthController;
 use App\Http\Controllers\LawyerAuthController;
+use App\Http\Controllers\RatingController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -87,6 +90,8 @@ Route::prefix('post')->group(function () {
     Route::post('{id}/dislike', [PostInteractionController::class, 'dislike']);
     Route::post('{id}/undislike', [PostInteractionController::class, 'undislike']);
     Route::get('{id}/interactions', [PostInteractionController::class, 'getInteractions']);
+    Route::get('{id}/getLikes', [PostInteractionController::class, 'getLikes']);
+    Route::get('{id}/getDislikes', [PostInteractionController::class, 'getDislikes']);
     Route::get('{postId}/allComments', [CommentController::class, 'index']);
     Route::post('{postId}/createComment', [CommentController::class, 'store']);
     Route::post('updateComment/{commentId}', [CommentController::class, 'update']);
@@ -118,5 +123,32 @@ Route::prefix('legalAdvice')->group(function () {
     Route::get('adviceTypes/{adviceTypeId}', [LegalAdviceController::class, 'getByAdviceType']);
     Route::get('{legalAdviceId}/allComments', [LegalAdviceCommentController::class, 'index']);
     });
+});
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Route for searching users
+//Route::middleware(['auth:sanctum'])->get('search/users', [UserSearchController::class, 'search']);
+
+
+
+
+Route::middleware(['auth:sanctum'])->group(function () {
+
+    Route::get('search/users', [UserSearchController::class, 'search']);
+
+    // Submit a rating for a lawyer
+    Route::post('lawyers/{lawyerId}/rate', [RatingController::class, 'rateLawyer']);
+
+    // Get the final rating of a lawyer
+    Route::get('lawyers/{lawyerId}/Getrating', [RatingController::class, 'getLawyerRating']);
+
+    //Route::get('getNotifications', [NotificationController::class, 'getNotifications']);
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/notifications', [NotificationController::class, 'getNotifications']);
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
 });
 

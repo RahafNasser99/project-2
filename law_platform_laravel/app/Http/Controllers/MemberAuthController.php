@@ -28,7 +28,7 @@ class MemberAuthController extends Controller
         ]);
 
         // Create a MemberProfile for the newly created member
-        MemberProfile::create([
+        $profile = MemberProfile::create([
             'member_id' => $member->id,
             'work' => 'Default Work',
             'biography' => 'Default Biography',
@@ -43,7 +43,10 @@ class MemberAuthController extends Controller
             "status" => true,
             "message" => "User registered successfully",
             "id" => $member->id,
-            "token" => $token
+            "token" => $token,
+            "name" => $member -> name,
+            "email" => $member -> email,
+            "profileImage" => $profile -> image
         ]);
     }
 
@@ -65,11 +68,16 @@ class MemberAuthController extends Controller
             // Login is ok
             $token = $user->createToken("authToken")->plainTextToken;
 
+            $profile = $user->profile;
+
             return response()->json([
                 "status" => true,
                 "message" => "Login successful",
                 "id" => $user->id,
-                "token" => $token
+                "token" => $token,
+                "name" => $user -> name,
+                "email" => $user -> email,
+                "profileImage" => $profile -> image
             ]);
         } else {
             return response()->json([

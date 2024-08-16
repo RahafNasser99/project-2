@@ -19,6 +19,11 @@ class LegalAdvice extends Model
 
     protected $table = 'legal_advices'; // Ensure the table name is correct
 
+    public function user()
+    {
+        return $this->belongsTo(Member::class, 'member_id');  // Assuming legal advice is requested by members
+    }
+
     public function member(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Member::class);
