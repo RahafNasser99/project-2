@@ -41,9 +41,20 @@ class CommentWidget extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
-                  Text(
-                    comment.profile?.name ?? 'مستخدم',
-                    style: Theme.of(context).textTheme.titleLarge,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pushNamed(
+                        'profile-page',
+                        arguments: {
+                          'userId': comment.profile?.id,
+                          'accountType': comment.profile?.accountType,
+                        },
+                      );
+                    },
+                    child: Text(
+                      comment.profile?.name ?? 'مستخدم',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
                   ),
                   GestureDetector(
                     onLongPress: comment.profile?.id ==
@@ -132,19 +143,27 @@ class CommentWidget extends StatelessWidget {
           const SizedBox(
             width: 8.0,
           ),
-          Container(
-            margin: const EdgeInsets.only(top: 16.0),
-            width: (width - 32.0) * 0.15,
-            child: CircleAvatar(
-              backgroundImage: comment.profile?.profilePicture != null
-                  ? NetworkImage((comment.profile?.profilePicture)!)
-                  : null,
-              child: comment.profile?.profilePicture == null
-                  ? Icon(
-                      Icons.person_rounded,
-                      color: Theme.of(context).colorScheme.primary,
-                    )
-                  : null,
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).pushNamed('profile-page', arguments: {
+                'userId': comment.profile?.id,
+                'accountType': comment.profile?.accountType,
+              });
+            },
+            child: Container(
+              margin: const EdgeInsets.only(top: 16.0),
+              width: (width - 32.0) * 0.15,
+              child: CircleAvatar(
+                backgroundImage: comment.profile?.profilePicture != null
+                    ? NetworkImage((comment.profile?.profilePicture)!)
+                    : null,
+                child: comment.profile?.profilePicture == null
+                    ? Icon(
+                        Icons.person_rounded,
+                        color: Theme.of(context).colorScheme.primary,
+                      )
+                    : null,
+              ),
             ),
           ),
         ],

@@ -10,7 +10,9 @@ import 'package:law_platform_flutter/features/posts_&_advices/presentation/cubit
 import 'package:law_platform_flutter/features/posts_&_advices/presentation/cubits/add_update_delete_post_cubit/add_update_delete_post_cubit.dart';
 
 class ProfilePosts extends StatefulWidget {
-  const ProfilePosts({super.key});
+  const ProfilePosts({super.key, required this.userId});
+
+  final int userId;
 
   @override
   State<ProfilePosts> createState() => _ProfilePostsState();
@@ -24,7 +26,7 @@ class _ProfilePostsState extends State<ProfilePosts> {
     if (_isInit) {
       BlocProvider.of<GetPostCubit>(context).getPosts(
         checkAuthentication.getAccountType() == 'member' ? false : true,
-        checkAuthentication.getId(),
+        widget.userId,
       );
     }
     _isInit = false;

@@ -104,8 +104,8 @@ class ProfileRemoteDataSourceImpl extends ProfileRemoteDataSource {
   Future<ProfileModel> getAnotherUserProfile(
       String accountType, int userId) async {
     final url = accountType == 'member'
-        ? '/api/member/users/$userId'
-        : '/api/lawyer/users/$userId';
+        ? '/api/member/member-profile/$userId'
+        : '/api/lawyer/lawyer-profile/$userId';
 
     final response = await dio.get(
       url,
@@ -116,6 +116,8 @@ class ProfileRemoteDataSourceImpl extends ProfileRemoteDataSource {
         },
       ),
     );
+
+    print(response.data);
 
     if (response.statusCode! >= 200 && response.statusCode! < 400) {
       final decodedJson = response.data['data'];

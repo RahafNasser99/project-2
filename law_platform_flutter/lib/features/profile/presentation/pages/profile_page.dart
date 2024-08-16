@@ -2,15 +2,14 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:law_platform_flutter/features/rate/data/models/rate_model.dart';
-import 'package:law_platform_flutter/features/rate/presentation/cubits/rate_cubit.dart';
-import 'package:law_platform_flutter/features/rate/presentation/widgets/rate_widget.dart';
-import 'package:law_platform_flutter/features/search/presentation/cubit/search_cubit.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:law_platform_flutter/utils/global_widgets/loading.dart';
 import 'package:law_platform_flutter/utils/global_widgets/show_dialog.dart';
 import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
+import 'package:law_platform_flutter/features/rate/data/models/rate_model.dart';
+import 'package:law_platform_flutter/features/rate/presentation/cubits/rate_cubit.dart';
+import 'package:law_platform_flutter/features/rate/presentation/widgets/rate_widget.dart';
 import 'package:law_platform_flutter/features/profile/domain/entities/lawyer_profile.dart';
 import 'package:law_platform_flutter/features/profile/domain/entities/member_profile.dart';
 import 'package:law_platform_flutter/features/profile/presentation/widgets/profile_posts.dart';
@@ -40,15 +39,14 @@ class _ProfilePageState extends State<ProfilePage> {
     if (_isInit) {
       final settingsData =
           ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
-      // _userId = settingsData['userId'];
-      _userId = checkAuthentication.getId();
+      _userId = settingsData['userId'];
       _accountType = settingsData['accountType'];
-      // if (_userId == null) {
-      await BlocProvider.of<GetProfileCubit>(context).getMyProfile();
-      // } else {
-      //   await BlocProvider.of<GetProfileCubit>(context)
-      //       .getAnotherUserProfile(_accountType!, _userId!);
-      // }
+      if (_userId == null) {
+        await BlocProvider.of<GetProfileCubit>(context).getMyProfile();
+      } else {
+        await BlocProvider.of<GetProfileCubit>(context)
+            .getAnotherUserProfile(_accountType!, _userId!);
+      }
     }
     _isInit = false;
     super.didChangeDependencies();
@@ -79,7 +77,10 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             );
           } else if (state is GetProfileDone) {
-            RateWidget(userId: _userId!,addRate: _addRate).showRateModelBottomSheet(context);
+            if (_userId != null) {
+              RateWidget(userId: _userId!, addRate: _addRate)
+                  .showRateModelBottomSheet(context);
+            }
           }
         },
         builder: (context, state) {
@@ -168,6 +169,17 @@ class _ProfilePageState extends State<ProfilePage> {
                                   icon: Icons.work_rounded,
                                 ),
                               ),
+                            if (checkAuthentication.getAccountType() !=
+                                'member')
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    right: 12.0, left: 12.0, bottom: 10.0),
+                                child: ProfileInfoWidget(
+                                  width: width,
+                                  text: '3.5',
+                                  icon: Icons.star_rate_rounded,
+                                ),
+                              ),
                             Directionality(
                               textDirection: TextDirection.rtl,
                               child: Container(
@@ -196,7 +208,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                           AddUpdateDeletePostCubit(),
                                     ),
                                   ],
-                                  child: const ProfilePosts(),
+                                  child: ProfilePosts(
+                                    userId: _userId == null
+                                        ? checkAuthentication.getId()
+                                        : _userId!,
+                                  ),
                                 ))
                           ],
                         ),

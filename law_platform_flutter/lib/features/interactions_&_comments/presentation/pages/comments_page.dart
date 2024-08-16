@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:law_platform_flutter/features/interactions_&_comments/presentation/cubits/get_interactions_cubit/get_interactions_cubit.dart';
+import 'package:law_platform_flutter/features/interactions_&_comments/presentation/pages/interactions_page.dart';
 import 'package:law_platform_flutter/features/profile/domain/entities/profile.dart';
 import 'package:law_platform_flutter/utils/global_widgets/show_dialog.dart';
 import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
@@ -9,6 +11,7 @@ import 'package:law_platform_flutter/features/interactions_&_comments/presentati
 import 'package:law_platform_flutter/features/interactions_&_comments/presentation/widgets/add_comment_widget.dart';
 import 'package:law_platform_flutter/features/interactions_&_comments/presentation/cubits/comment_cubit/get_comments_cubit.dart';
 import 'package:law_platform_flutter/features/interactions_&_comments/presentation/cubits/add_update_delete_comment_cubit/add_edit_delete_comment_cubit.dart';
+import 'package:page_transition/page_transition.dart';
 
 class CommentsPage extends StatefulWidget {
   const CommentsPage({super.key});
@@ -72,6 +75,19 @@ class _CommentsPageState extends State<CommentsPage> {
           Row(
             children: [
               GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(PageTransition(
+                    child: BlocProvider<GetInteractionsCubit>(
+                      create: (context) => GetInteractionsCubit(),
+                      child: InteractionsPage(
+                        likeOrDislike: true,
+                        postId: _postId,
+                      ),
+                    ),
+                    type: PageTransitionType.rightToLeft,
+                    duration: const Duration(milliseconds: 300),
+                  ));
+                },
                 child: Icon(
                   Icons.thumb_up_alt,
                   color: Colors.green[300],
@@ -81,6 +97,19 @@ class _CommentsPageState extends State<CommentsPage> {
                 width: 6.0,
               ),
               GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(PageTransition(
+                    child: BlocProvider<GetInteractionsCubit>(
+                      create: (context) => GetInteractionsCubit(),
+                      child: InteractionsPage(
+                        likeOrDislike: false,
+                        postId: _postId,
+                      ),
+                    ),
+                    type: PageTransitionType.rightToLeft,
+                    duration: const Duration(milliseconds: 300),
+                  ));
+                },
                 child: Icon(
                   Icons.thumb_down_alt,
                   color: Colors.red[300],

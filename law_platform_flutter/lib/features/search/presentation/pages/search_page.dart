@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:law_platform_flutter/features/search/presentation/cubit/search_cubit.dart';
-import 'package:law_platform_flutter/features/search/presentation/widgets/list_tile_widget.dart';
+import 'package:law_platform_flutter/utils/global_widgets/list_tile_widget.dart';
 import 'package:law_platform_flutter/features/search/presentation/widgets/search_bar_widget.dart';
 import 'package:law_platform_flutter/utils/global_widgets/loading.dart';
 import 'package:law_platform_flutter/utils/global_widgets/show_dialog.dart';

@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:law_platform_flutter/features/profile/domain/entities/profile.dart';
 import 'package:law_platform_flutter/utils/error/failures.dart';
 import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
 import 'package:law_platform_flutter/utils/error/exceptions.dart';
@@ -33,6 +34,21 @@ class InteractionsRepositoryImpl extends InteractionsRepository {
 
       } on ServerException {
         return Left(OfflineFailure());
+      }
+    } else {
+      return Left(OfflineFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<Profile>>> getInteractions(int postId, bool likeOrDislike) async {
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+        final profiles =
+            await interactionsRemoteDataSource.getInteractions(postId, likeOrDislike);
+        return Right(profiles);
+      } on ServerException {
+        return Left(ServerFailure());
       }
     } else {
       return Left(OfflineFailure());
