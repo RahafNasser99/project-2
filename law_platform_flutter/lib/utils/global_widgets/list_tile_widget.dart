@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
 import 'package:law_platform_flutter/features/profile/domain/entities/profile.dart';
 import 'package:law_platform_flutter/features/profile/domain/entities/lawyer_profile.dart';
 import 'package:law_platform_flutter/features/profile/domain/entities/member_profile.dart';
 
 class ListTileWidget extends StatelessWidget {
-  const ListTileWidget({super.key, required this.profile,required this.onTap});
+  const ListTileWidget({super.key, required this.profile, required this.onTap});
 
   final Profile profile;
   final void Function()? onTap;
@@ -32,7 +31,7 @@ class ListTileWidget extends StatelessWidget {
           profile.name,
           style: Theme.of(context).textTheme.titleLarge,
         ),
-        subtitle: (checkAuthentication.getAccountType() == 'member' &&
+        subtitle: (profile.accountType == 'member' &&
                 (profile as MemberProfile).job != null)
             ? Text((profile as MemberProfile).job!,
                 style: Theme.of(context).textTheme.headlineSmall)

@@ -85,8 +85,6 @@ class MessagingRemoteDataSourceImpl extends MessagingRemoteDataSource {
       data: data,
     );
 
-    print(response);
-
     if (response.statusCode! >= 200 && response.statusCode! < 400) {
       return Future.value(unit);
     } else {

@@ -17,7 +17,6 @@ class ProfileRemoteDataSourceImpl extends ProfileRemoteDataSource {
   @override
   Future<Unit> editProfile(String? name, String? specializationOrJob,
       String? imagePath, String? imageName) async {
-
     final url = checkAuthentication.getAccountType() == 'member'
         ? '/api/member/editProfile'
         : '/api/lawyer/editProfile';
@@ -48,8 +47,6 @@ class ProfileRemoteDataSourceImpl extends ProfileRemoteDataSource {
       ),
       data: formData,
     );
-
-    print(response.data);
 
     final editNameUrl = checkAuthentication.getAccountType() == 'member'
         ? '/api/member/nameUpdate'
@@ -113,8 +110,8 @@ class ProfileRemoteDataSourceImpl extends ProfileRemoteDataSource {
   Future<ProfileModel> getAnotherUserProfile(
       String accountType, int userId) async {
     final url = accountType == 'member'
-        ? '/api/member/member-profile/$userId'
-        : '/api/lawyer/lawyer-profile/$userId';
+        ? '/api/${checkAuthentication.getAccountType()}/member-profile/$userId'
+        : '/api/${checkAuthentication.getAccountType()}/lawyer-profile/$userId';
 
     final response = await dio.get(
       url,
@@ -126,14 +123,12 @@ class ProfileRemoteDataSourceImpl extends ProfileRemoteDataSource {
       ),
     );
 
-    print(response.data);
-
     if (response.statusCode! >= 200 && response.statusCode! < 400) {
       final decodedJson = response.data['data'];
 
-      final profileModel = checkAuthentication.getAccountType() == 'member'
+      final profileModel = accountType == 'member'
           ? MemberProfileModel.fromJson(decodedJson)
-          : LawyerProfileModel.fromJson(decodedJson['lawyer']);
+          : LawyerProfileModel.fromJson(decodedJson);
 
       return profileModel;
     } else {

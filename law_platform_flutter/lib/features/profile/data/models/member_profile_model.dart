@@ -12,17 +12,18 @@ class MemberProfileModel extends MemberProfile implements ProfileModel {
     required super.job,
   });
 
-  factory MemberProfileModel.fromJson(Map<String, dynamic> json) =>
-      MemberProfileModel(
-        id: json['id'],
-        name: json['name'],
-        email: json['email'],
-        accountType: 'member',
-        profilePicture: json['profile']['image'] != null
-            ? '$BASE_URL${json['profile']['image']}'
-            : null,
-        job: json['profile']['work'],
-      );
+  factory MemberProfileModel.fromJson(Map<String, dynamic> json) {
+    return MemberProfileModel(
+      id: json['id'],
+      name: json['name'],
+      email: json['email'],
+      accountType: 'member',
+      profilePicture: json['profile']['image'] != null
+          ? '$BASE_URL${json['profile']['image']}'
+          : null,
+      job: json['profile']['work'],
+    );
+  }
 
   @override
   Map<String, dynamic> toJson() => {

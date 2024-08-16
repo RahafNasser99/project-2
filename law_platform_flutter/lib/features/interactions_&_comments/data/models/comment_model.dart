@@ -15,11 +15,9 @@ class CommentModel extends Comment {
     final String commentData = (json['created_at'] as String)
         .substring(0, (json['created_at'] as String).indexOf('T'));
     return CommentModel(
-      profile: json['user'] != null
-          ? json['user']['account-type'] == 'member'
-              ? MemberProfileModel.fromJson(json['user'])
-              : LawyerProfileModel.fromJson(json['user'])
-          : LawyerProfileModel.fromJson(json['lawyer']),
+      profile: (json['user']['account_type'] == 'Lawyer')
+          ? LawyerProfileModel.fromJson(json['user'])
+          : MemberProfileModel.fromJson(json['user']),
       commentId: json['id'],
       text: json['content'] ?? json['comment'],
       commentDate: Date(comingDate: commentData).handleDate(),

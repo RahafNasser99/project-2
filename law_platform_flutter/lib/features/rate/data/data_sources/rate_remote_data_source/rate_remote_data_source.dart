@@ -26,8 +26,6 @@ class RateRemoteDataSourceImpl extends RateRemoteDataSource {
       data: data,
     );
 
-    print(response.data);
-
     if (response.statusCode! >= 200 && response.statusCode! < 400) {
       return Future.value(unit);
     } else {

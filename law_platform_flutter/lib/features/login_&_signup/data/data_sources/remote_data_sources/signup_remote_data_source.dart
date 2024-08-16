@@ -26,7 +26,9 @@ class SignUpRemoteDataSourceImpl extends SignUpRemoteDataSource {
 
     final response = await dio.post(
       url,
-      options: Options(headers: {'Accept': 'application/json'}),
+      options: Options(
+        headers: {'Accept': 'application/json'},
+      ),
       data: data,
     );
 
@@ -35,11 +37,15 @@ class SignUpRemoteDataSourceImpl extends SignUpRemoteDataSource {
       final int id = response.data['id'];
       final String storedAccountType =
           accountType == AccountType.member ? 'member' : 'lawyer';
-      checkAuthentication.storeAuthenticationValue(
+      final String name = response.data['name'];
+      final String image = response.data['profileImage'] ?? '';
+      await checkAuthentication.storeAuthenticationValue(
         id,
         email,
         token,
         storedAccountType,
+        name,
+        image,
       );
       return Future.value(unit);
     } else {
