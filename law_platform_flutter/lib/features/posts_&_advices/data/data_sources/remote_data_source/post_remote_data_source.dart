@@ -25,8 +25,8 @@ class PostRemoteDataSourceImpl extends PostRemoteDataSource {
             ? '/api/post/lawyers/$userId/posts?per_page=6&page=$pageNumber'
             : '/api/post/all?per_page=6&page=$pageNumber'
         : userId != null
-            ? ''
-            : '/api/legalAdvice/all?per_page=6&page=$pageNumber';
+            ? '/api/legalAdvice/members/$userId/legal-advices?per_page=6&page=$pageNumber'
+            : '/api/member/my-legal-advices?per_page=6&page=$pageNumber';
 
     final response = await dio.get(
       url,
@@ -96,9 +96,9 @@ class PostRemoteDataSourceImpl extends PostRemoteDataSource {
   @override
   Future<Unit> updatePost(int postId, String postBody, String? imagePath,
       String? imageName, bool postOrAdvice) async {
-    final url = postOrAdvice ? '/api/post/update/$postId' : '';
-
-    // final data = postModel.toJson();
+    final url = postOrAdvice
+        ? '/api/post/update/$postId'
+        : '/api/legalAdvice/update/$postId';
 
     MultipartFile? multipartFile = (imagePath != null)
         ? await MultipartFile.fromFile(imagePath, filename: imageName)
@@ -137,7 +137,6 @@ class PostRemoteDataSourceImpl extends PostRemoteDataSource {
     final url = postOrAdvice
         ? '/api/post/delete/$postId'
         : '/api/legalAdvice/delete/$postId';
-    print('delete post');
 
     final response = await dio.delete(
       url,
@@ -148,8 +147,6 @@ class PostRemoteDataSourceImpl extends PostRemoteDataSource {
         },
       ),
     );
-
-    print(response.data);
 
     if (response.statusCode! >= 200 && response.statusCode! < 400) {
       return Future.value(unit);

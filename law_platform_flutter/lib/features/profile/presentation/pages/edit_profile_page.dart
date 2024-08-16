@@ -126,7 +126,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
               ),
             );
           } else if (state is EditProfileDone) {
-            Navigator.of(context).pushNamed('profile-page');
+            Navigator.of(context).pushReplacementNamed(
+              'profile-page',
+              arguments: {
+                'userId': null,
+                'accountType': null,
+              },
+            );
           }
         },
         builder: (context, state) {

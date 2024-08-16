@@ -17,6 +17,7 @@ class ProfileRemoteDataSourceImpl extends ProfileRemoteDataSource {
   @override
   Future<Unit> editProfile(String? name, String? specializationOrJob,
       String? imagePath, String? imageName) async {
+
     final url = checkAuthentication.getAccountType() == 'member'
         ? '/api/member/editProfile'
         : '/api/lawyer/editProfile';
@@ -25,11 +26,17 @@ class ProfileRemoteDataSourceImpl extends ProfileRemoteDataSource {
         ? await MultipartFile.fromFile(imagePath, filename: imageName)
         : null;
 
-    FormData formData = FormData.fromMap({
-      'biography': 'biography',
-      'specialization': specializationOrJob,
-      'image': multipartFile,
-    });
+    FormData formData = checkAuthentication.getAccountType() == 'member'
+        ? FormData.fromMap({
+            'biography': 'biography',
+            'work': specializationOrJob,
+            'image': multipartFile,
+          })
+        : FormData.fromMap({
+            'biography': 'biography',
+            'specialization': specializationOrJob,
+            'image': multipartFile,
+          });
 
     final response = await dio.post(
       url,
@@ -41,6 +48,8 @@ class ProfileRemoteDataSourceImpl extends ProfileRemoteDataSource {
       ),
       data: formData,
     );
+
+    print(response.data);
 
     final editNameUrl = checkAuthentication.getAccountType() == 'member'
         ? '/api/member/nameUpdate'
@@ -91,7 +100,7 @@ class ProfileRemoteDataSourceImpl extends ProfileRemoteDataSource {
       final decodedJson = response.data['data'];
 
       final profileModel = checkAuthentication.getAccountType() == 'member'
-          ? MemberProfileModel.fromJson(decodedJson)
+          ? MemberProfileModel.fromJson(decodedJson['member'])
           : LawyerProfileModel.fromJson(decodedJson['lawyer']);
 
       return profileModel;

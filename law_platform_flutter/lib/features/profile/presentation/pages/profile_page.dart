@@ -189,7 +189,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                 child: Padding(
                                   padding: const EdgeInsets.only(right: 8.0),
                                   child: Text(
-                                    'المنشورات',
+                                    checkAuthentication.getAccountType() ==
+                                            'member'
+                                        ? 'الاستشارات'
+                                        : 'المنشورات',
                                     style:
                                         Theme.of(context).textTheme.bodyLarge,
                                   ),

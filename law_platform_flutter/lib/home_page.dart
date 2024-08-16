@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:law_platform_flutter/app_drawer.dart';
-import 'package:law_platform_flutter/features/posts_&_advices/presentation/cubits/add_update_delete_post_cubit/add_update_delete_post_cubit.dart';
-import 'package:law_platform_flutter/features/posts_&_advices/presentation/pages/add_post_page.dart';
 import 'package:law_platform_flutter/features/posts_&_advices/presentation/pages/posts_home_page.dart';
 import 'package:law_platform_flutter/features/posts_&_advices/presentation/cubits/get_post_cubit/get_post_cubit.dart';
-import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
-import 'package:page_transition/page_transition.dart';
+import 'package:law_platform_flutter/features/posts_&_advices/presentation/cubits/add_update_delete_post_cubit/add_update_delete_post_cubit.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,18 +17,6 @@ class _HomePageState extends State<HomePage> {
 
   void _onItemTapped(int index) {
     if (index == 2) {
-      // PageTransition(
-      //   child: BlocProvider(
-      //     create: (context) => AddUpdateDeletePostCubit(),
-      //     child: AddPostPage(
-      //       addPostPage:
-      //           checkAuthentication.getAccountType() == 'member' ? false : true,
-      //     ),
-      //   ),
-      //   // settings: settings,
-      //   type: PageTransitionType.bottomToTop,
-      //   duration: const Duration(milliseconds: 300),
-      // );
       Navigator.of(context).pushNamed('add-post-page');
     } else {
       setState(() {

@@ -50,9 +50,6 @@ class _AddPostWidgetState extends State<AddPostWidget> {
 
   @override
   void initState() {
-    print('----------------------------------------');
-    print(widget.postBody);
-    print(widget.postImage);
     _textEditingController.text =
         widget.postBody != null && widget.postBody!.isNotEmpty
             ? widget.postBody!
@@ -135,7 +132,8 @@ class _AddPostWidgetState extends State<AddPostWidget> {
                           ),
                         ),
                       ),
-                      if (showedImage != null || postImage != null)
+                      if (showedImage != null ||
+                          (postImage != null && postImage!.isNotEmpty))
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8.0, vertical: 4.0),
@@ -168,6 +166,9 @@ class _AddPostWidgetState extends State<AddPostWidget> {
                                 onPressed: () {
                                   widget.removeCurrentImage();
                                   widget.setImage(null);
+                                  setState(() {
+                                    postImage = null;
+                                  });
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor:
@@ -194,14 +195,14 @@ class _AddPostWidgetState extends State<AddPostWidget> {
                           ),
                         ),
                       if (showedImage != null) Image.file(widget.image!),
-                      if (postImage != null) Image.asset(postImage!),
+                      if (postImage != null && postImage!.isNotEmpty)
+                        Image.network(postImage!),
                     ],
                   ),
                 ),
               ),
               if (showedImage == null &&
-                  widget.postCurrentImage != null &&
-                  widget.postCurrentImage!.isNotEmpty)
+                  (postImage == null || postImage!.isEmpty))
                 SizedBox(
                   height: 50,
                   child: IconButton(

@@ -1,5 +1,6 @@
 import 'package:law_platform_flutter/features/profile/data/models/profile_model.dart';
 import 'package:law_platform_flutter/features/profile/domain/entities/member_profile.dart';
+import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
 
 class MemberProfileModel extends MemberProfile implements ProfileModel {
   MemberProfileModel({
@@ -17,7 +18,9 @@ class MemberProfileModel extends MemberProfile implements ProfileModel {
         name: json['name'],
         email: json['email'],
         accountType: 'member',
-        profilePicture: json['profile']['image'],
+        profilePicture: json['profile']['image'] != null
+            ? '$BASE_URL${json['profile']['image']}'
+            : null,
         job: json['profile']['work'],
       );
 

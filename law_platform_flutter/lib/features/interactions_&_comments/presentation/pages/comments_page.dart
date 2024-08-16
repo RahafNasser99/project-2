@@ -72,51 +72,52 @@ class _CommentsPageState extends State<CommentsPage> {
             'التعليقات',
             style: Theme.of(context).textTheme.titleLarge,
           ),
-          Row(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(PageTransition(
-                    child: BlocProvider<GetInteractionsCubit>(
-                      create: (context) => GetInteractionsCubit(),
-                      child: InteractionsPage(
-                        likeOrDislike: true,
-                        postId: _postId,
+          if (_postOrAdvice)
+            Row(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(PageTransition(
+                      child: BlocProvider<GetInteractionsCubit>(
+                        create: (context) => GetInteractionsCubit(),
+                        child: InteractionsPage(
+                          likeOrDislike: true,
+                          postId: _postId,
+                        ),
                       ),
-                    ),
-                    type: PageTransitionType.rightToLeft,
-                    duration: const Duration(milliseconds: 300),
-                  ));
-                },
-                child: Icon(
-                  Icons.thumb_up_alt,
-                  color: Colors.green[300],
+                      type: PageTransitionType.rightToLeft,
+                      duration: const Duration(milliseconds: 300),
+                    ));
+                  },
+                  child: Icon(
+                    Icons.thumb_up_alt,
+                    color: Colors.green[300],
+                  ),
                 ),
-              ),
-              const SizedBox(
-                width: 6.0,
-              ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(PageTransition(
-                    child: BlocProvider<GetInteractionsCubit>(
-                      create: (context) => GetInteractionsCubit(),
-                      child: InteractionsPage(
-                        likeOrDislike: false,
-                        postId: _postId,
+                const SizedBox(
+                  width: 6.0,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(PageTransition(
+                      child: BlocProvider<GetInteractionsCubit>(
+                        create: (context) => GetInteractionsCubit(),
+                        child: InteractionsPage(
+                          likeOrDislike: false,
+                          postId: _postId,
+                        ),
                       ),
-                    ),
-                    type: PageTransitionType.rightToLeft,
-                    duration: const Duration(milliseconds: 300),
-                  ));
-                },
-                child: Icon(
-                  Icons.thumb_down_alt,
-                  color: Colors.red[300],
+                      type: PageTransitionType.rightToLeft,
+                      duration: const Duration(milliseconds: 300),
+                    ));
+                  },
+                  child: Icon(
+                    Icons.thumb_down_alt,
+                    color: Colors.red[300],
+                  ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
         ],
       ),
       backgroundColor: Theme.of(context).colorScheme.surface,

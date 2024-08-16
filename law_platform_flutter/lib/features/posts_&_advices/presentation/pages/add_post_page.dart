@@ -34,21 +34,28 @@ class _AddPostState extends State<AddPostPage> {
           ? ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>
           : null;
       if (postData != null) {
-        _textEditingController.text = postData['postBody'];
+        if (postData['postBody'] != null) {
+          _textEditingController.text = postData['postBody'];
+          _postBody = postData['postBody'];
+        }
         _postId = postData['postId'];
-        _postBody = postData['postBody'];
         _postImage = postData['postImage'];
       }
-      print('----------------------------------------');
-      print(_textEditingController.text);
-      print(_postImage);
     }
     _isInit = false;
     super.didChangeDependencies();
   }
 
+  @override
+  void dispose() {
+    _textEditingController.clear();
+    _postImage = null;
+    _imageFile = null;
+    super.dispose();
+  }
+
   void _post() {
-    if (_postBody.isNotEmpty) {
+    if (_postId != null) {
       String? editPostImage;
       // remove current page
       if (_postImage == null || _postImage!.isEmpty) {
@@ -56,6 +63,8 @@ class _AddPostState extends State<AddPostPage> {
       }
       if (_imageFile == null) {
         editPostImage = null;
+      } else {
+        editPostImage = _imageFile?.path;
       }
       BlocProvider.of<AddUpdateDeletePostCubit>(context).addUpdatePost(
         'update',
@@ -87,6 +96,7 @@ class _AddPostState extends State<AddPostPage> {
     setState(() {
       _postImage = null;
     });
+    print(_postImage);
   }
 
   void _setPostBody(String postText) {
