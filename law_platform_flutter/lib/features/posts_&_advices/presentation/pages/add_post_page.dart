@@ -96,7 +96,6 @@ class _AddPostState extends State<AddPostPage> {
     setState(() {
       _postImage = null;
     });
-    print(_postImage);
   }
 
   void _setPostBody(String postText) {

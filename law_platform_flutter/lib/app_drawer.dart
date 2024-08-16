@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:law_platform_flutter/features/logout/presentation/cubit/logout_cubit.dart';
 import 'package:law_platform_flutter/features/logout/presentation/widgets/logout_dialog_widget.dart';
+import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
 
 class AppDrawer extends StatefulWidget {
   const AppDrawer({super.key});
@@ -24,12 +25,20 @@ class _AppDrawerState extends State<AppDrawer> {
             ),
             ListTile(
               trailing: CircleAvatar(
-                backgroundColor: Colors.grey[600],
-                maxRadius: 18,
+                backgroundImage: checkAuthentication.getImage().isNotEmpty
+                    ? NetworkImage(
+                        '$BASE_URL/${checkAuthentication.getImage()}')
+                    : null,
+                child: checkAuthentication.getImage().isEmpty
+                    ? Icon(
+                        Icons.person_rounded,
+                        color: Theme.of(context).colorScheme.primary,
+                      )
+                    : null,
               ),
               contentPadding: const EdgeInsets.only(left: 20.0),
               title: Text(
-                'Rahaf Nasser',
+                checkAuthentication.getName(),
                 textAlign: TextAlign.end,
                 style: Theme.of(context).textTheme.titleLarge,
               ),

@@ -12,18 +12,18 @@ class LawyerProfileModel extends LawyerProfile implements ProfileModel {
     required super.specialization,
   });
 
-  factory LawyerProfileModel.fromJson(Map<String, dynamic> json) =>
-      LawyerProfileModel(
-        id: json['id'],
-        name: json['name'],
-        email: json['email'],
-        accountType: 'lawyer',
-        profilePicture: json['profile']['image'] != null
-            ? '$BASE_URL${json['profile']['image']}'
-            : null,
-        specialization: json['profile']['specialization'],
-      );
-
+  factory LawyerProfileModel.fromJson(Map<String, dynamic> json) {
+    return LawyerProfileModel(
+      id: json['id'],
+      name: json['name'],
+      email: json['email'],
+      accountType: 'lawyer',
+      profilePicture: json['profile']['image'] != null
+          ? '$BASE_URL${json['profile']['image']}'
+          : null,
+      specialization: json['profile']['specialization'],
+    );
+  }
 
   @override
   Map<String, dynamic> toJson() => {

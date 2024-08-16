@@ -28,11 +28,15 @@ class LoginRemoteDataSourceImpl extends LoginRemoteDataSource {
       final int id = response.data['id'];
       final String storedAccountType =
           accountType == AccountType.member ? 'member' : 'lawyer';
-      checkAuthentication.storeAuthenticationValue(
+      final String name = response.data['name'];
+      final String? image = response.data['profileImage'] ?? '';
+      await checkAuthentication.storeAuthenticationValue(
         id,
         email,
         token,
         storedAccountType,
+        name,
+        image,
       );
       return Future.value(unit);
     } else {

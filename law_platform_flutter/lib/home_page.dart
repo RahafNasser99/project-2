@@ -4,6 +4,7 @@ import 'package:law_platform_flutter/app_drawer.dart';
 import 'package:law_platform_flutter/features/posts_&_advices/presentation/pages/posts_home_page.dart';
 import 'package:law_platform_flutter/features/posts_&_advices/presentation/cubits/get_post_cubit/get_post_cubit.dart';
 import 'package:law_platform_flutter/features/posts_&_advices/presentation/cubits/add_update_delete_post_cubit/add_update_delete_post_cubit.dart';
+import 'package:law_platform_flutter/utils/global_classes/configurations.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -126,8 +127,19 @@ class _HomePageState extends State<HomePage> {
                     child: Builder(builder: (context) {
                       return GestureDetector(
                         child: CircleAvatar(
-                          backgroundColor: Colors.grey[600],
                           maxRadius: height * 0.03,
+                          backgroundImage: checkAuthentication
+                                  .getImage()
+                                  .isNotEmpty
+                              ? NetworkImage(
+                                  '$BASE_URL/${checkAuthentication.getImage()}')
+                              : null,
+                          child: checkAuthentication.getImage().isEmpty
+                              ? Icon(
+                                  Icons.person_rounded,
+                                  color: Theme.of(context).colorScheme.primary,
+                                )
+                              : null,
                         ),
                         onTap: () {
                           Scaffold.of(context).openDrawer();

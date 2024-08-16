@@ -77,7 +77,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             );
           } else if (state is GetProfileDone) {
-            if (_userId != null) {
+            if (_userId != null && state.profile.accountType == 'lawyer') {
               RateWidget(userId: _userId!, addRate: _addRate)
                   .showRateModelBottomSheet(context);
             }
@@ -147,12 +147,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                 icon: Icons.alternate_email_rounded,
                               ),
                             ),
-                            if ((checkAuthentication.getAccountType() ==
-                                        'member' &&
+                            if ((state.profile.accountType == 'member' &&
                                     (state.profile as MemberProfile).job !=
                                         null) ||
-                                (checkAuthentication.getAccountType() ==
-                                        'lawyer' &&
+                                (state.profile.accountType == 'lawyer' &&
                                     (state.profile as LawyerProfile)
                                             .specialization !=
                                         null))
@@ -161,16 +159,14 @@ class _ProfilePageState extends State<ProfilePage> {
                                     right: 12.0, left: 12.0, bottom: 10.0),
                                 child: ProfileInfoWidget(
                                   width: width,
-                                  text: checkAuthentication.getAccountType() ==
-                                          'member'
+                                  text: state.profile.accountType == 'member'
                                       ? (state.profile as MemberProfile).job!
                                       : (state.profile as LawyerProfile)
                                           .specialization!,
                                   icon: Icons.work_rounded,
                                 ),
                               ),
-                            if (checkAuthentication.getAccountType() !=
-                                'member')
+                            if (state.profile.accountType != 'member')
                               Padding(
                                 padding: const EdgeInsets.only(
                                     right: 12.0, left: 12.0, bottom: 10.0),
@@ -189,8 +185,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 child: Padding(
                                   padding: const EdgeInsets.only(right: 8.0),
                                   child: Text(
-                                    checkAuthentication.getAccountType() ==
-                                            'member'
+                                    state.profile.accountType == 'member'
                                         ? 'الاستشارات'
                                         : 'المنشورات',
                                     style:

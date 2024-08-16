@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:law_platform_flutter/features/messaging/presentation/pages/chat_page.dart';
-import 'package:law_platform_flutter/utils/global_widgets/list_tile_widget.dart';
 
 class ChatsPage extends StatelessWidget {
   const ChatsPage({super.key});
